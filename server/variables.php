@@ -1,0 +1,5 @@
+<?php
+$ps = PhoneStatus::getInstance();
+
+
+?>

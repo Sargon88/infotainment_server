@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Phone Status Monitor</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      #a { border: 0; padding: 10px; width: 20%; margin-right: .2%; }
+      #m { border: 0; padding: 10px; width: 65%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
+  </head>
+  <body class="container-fluid">
+    <div class="row">
+      <div class="col-md-10">
+          <ul id="messages"></ul>
+          <form action="">
+            <input id="a" autocomplete="off" />
+            <input id="m" autocomplete="off" />
+            <button>Send</button>
+          </form>
+      </div>
+      <div class="col-md-2">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Pulsanti</h3>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Phone Status" onclick="sendPhoneStatus()">
+              </div>
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="DEBUG" onclick="sendDEBUG()">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="CP Home" onclick="sendChangePageHome()">
+              </div>
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="CP Maps" onclick="sendChangePageMaps()">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="CP Omx" onclick="sendChangePageOmx()">
+              </div>
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="CP youtube" onclick="sendChangePageYoutube()">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="CP car" onclick="sendChangePageCar()">
+              </div>
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Load Youtube" onclick="sendLoadYoutube()">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="get page" onclick="sendGetPage()">
+              </div>
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="get status" onclick="sendGetStatus()">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="reboot" onclick="sendReboot()">
+              </div>
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Wifi" onclick="sendWifi()">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Brigthness" onclick="sendBrightness()">
+              </div>
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Start Call" onclick="sendStartCall()">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Explore direcotry" onclick="sendExploreDirectory()">
+              </div>
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Load Omx" onclick="sendLoadOmx()">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Play File" onclick="sendPlayFile()">
+              </div>
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Stop File" onclick="sendStopFile()">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Save Playlist" onclick="sendSavePlaylist()">
+              </div>
+              <div class="col-md-6">
+                  <input class="btn btn-default" type="button" value="Load Playlist" onclick="sendLoadPlaylist()">
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <input class="btn btn-default" type="button" value="Open YT Video" onclick="sendOpenYTVideo()">
+                </div>
+                <div class="col-md-6">
+                    <input class="btn btn-default" type="button" value="Load YT" onclick="sendLoadYoutube()">
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-md-6">
+                    <input class="btn btn-default" type="button" value="YT History" onclick="sendYoutubeHistory()">
+                </div>
+                <div class="col-md-6">
+                    <input class="btn btn-default" type="button" value="OMX Pause" onclick="sendOmxPause()">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <input class="btn btn-default" type="button" value="OMX Pause" onclick="sendOmxPlay()">
+                </div>
+                <div class="col-md-6">
+                    <input class="btn btn-default" type="button" value="" onclick="">
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-md-6">
+                    <input class="btn btn-default" type="button" value="" onclick="">
+                </div>
+                <div class="col-md-6">
+                    <input class="btn btn-default" type="button" value="" onclick="">
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/popper/popper.min.js"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="js/debug_monitor/debug_socket.js"></script>
+
+  </body>
+</html>

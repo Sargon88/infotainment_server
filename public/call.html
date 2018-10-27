@@ -1,0 +1,86 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Calling...</title>
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/fontawesome/fontawesome-all.css">
+
+
+</head>
+
+<body class="container-fluid" data-bind="if: callerNumber" background="/images/1TaP.gif">
+
+    <br />
+    <!-- info -->
+    <div class="row">
+        <div class="col-xs-12" data-bind="text: message"></div>
+    </div>
+<!----
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <img width="16px" height="16px" data-bind="attr:{src: photo}" />
+        </div>
+    </div>
+-->
+    <div class="row">
+
+        <!-- ko ifnot: callerName == "" -->
+        <div class="col-xs-12 text-center"><h1 data-bind="text: callerName"></h1></div>
+        <div class="col-xs-12 text-center"><h1><small data-bind="text: callerNumber"></small></h1></div>
+        <!-- /ko -->
+
+        <!-- ko if: callerName == "" -->
+        <div class="col-xs-12 text-center"><h1 data-bind="text: callerNumber"></h1></div>
+        <!-- /ko -->
+
+       
+
+    </div>
+    <!-- fine info -->
+    
+    <br />
+
+    <!-- tasti -->
+    <div class="row">
+        <!-- answer -->
+        <!-- ko ifnot: answered  -->
+            <!-- ko ifnot: ended -->
+            <div class="col-xs-6">
+                    <button class="btn btn-success btn-lg btn-block" data-bind="click:answerCall, disable:ended">Rispondi</button>
+            </div>
+
+            <!-- reject -->
+            <div class="col-xs-6">
+                    <button class="btn btn-danger btn-lg btn-block" data-bind="click:endCall, disable:ended">Rifiuta</button>
+            </div>
+            <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: answered  -->
+            <!-- ko if: calling  -->
+            <div class="col-xs-12">
+                    <button class="btn btn-danger btn-lg btn-block" data-bind="click:endCall">Aggancia</button>
+            </div>
+            <!-- /ko -->
+
+            <!-- ko if: ended -->
+            <div class="col-xs-12">
+                    <button class="btn btn-danger btn-lg btn-block" disabled="disabled">Aggancia</button>
+            </div>
+            <!-- /ko -->
+        <!-- /ko -->
+    </div>
+    <!-- fine tasti -->
+    
+
+    <!-- Scripts -->
+        <script src="/js/jquery/jquery.min.js"></script>
+        <script src="/js/bootstrap/bootstrap.min.js"></script>
+        <script src="/js/knockout/knockout.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/application_call.js"></script>
+</body>
+</html>

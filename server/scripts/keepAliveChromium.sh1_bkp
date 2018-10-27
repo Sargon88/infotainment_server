@@ -1,0 +1,32 @@
+#!/bin/bash
+
+export DISPLAY=:0.0
+
+host=127.0.0.1
+port=8080
+
+while true ; do
+
+    ## CICLO DI ATTESA PER IL SERVER
+    state=1;
+    state=$(ps -axl | grep node | wc -l)
+    echo "state1: ".$state;
+
+    while [ $state -lt 2 ]; do
+        echo $state Attendo che il server ritorni su!!
+        sleep 5
+        state=$(ps -axl | grep node | wc -l)
+
+    done
+    ## FINE
+
+
+        
+    killall chromium-browser 
+    chromium-browser --no-first-run --disable-translate --no-default-browser-check --no-touch-pinch --overscroll-history-navigation='0' --incognito --kiosk --kiosk-printing --disable-pinch --process-per-site  http://$host:$port/interface & $kapid=$!
+
+
+    wait $kapid
+
+done
+
