@@ -756,6 +756,8 @@ function saveFileInPlaylist(msg, fileName){
 function returnYoutubeHistory(){
 	var cmd = "tail -7 " + playlistDir + yt_playlist + " | awk '{print}' ORS=', '";
 
+	console.log("CMD YT: " + cmd);
+
 	exec(cmd, {shell: "/bin/bash"}, function(err, stdout, stderr){
 
 		var rsp = "{urls: []}";
@@ -767,7 +769,13 @@ function returnYoutubeHistory(){
 
 			var msg = stdout.substr(0, stdout.length-2);
 
+			if(msg == ""){
+				//DEBUG ONLY
+				msg = "{'url': 'DEBUG', 'description':'DEBUG'}, {'url': 'https://www.youtube.com/watch?v=cHImmMWehhE', 'description':'Descr1'}, {'url':'https://www.youtube.com/watch?v=P_kn2rtuc4o', 'description':'descr2'}, {'url':'https://www.youtube.com/watch?v=lLtuT4Wq0ug', 'description':'descr3'}";
+			}
+
 			rsp = '{"urls": [' + msg + ']}';
+			
 		}
 
 		log("MSG2: " + rsp);
