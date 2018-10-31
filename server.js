@@ -603,7 +603,7 @@ function changeToMapYtPage(){
 
 		var completeCommand = cmd_startYTOmx.replace("%yturl%", InfotainmentStatus.yturl);
 		console.log("YTURL: " + completeCommand);
-		exec(cmd_startYTOmx);		
+		exec(completeCommand);		
 	}
 
 	if(InfotainmentStatus.page != "ytPlay" && InfotainmentStatus.page != "map"){
@@ -771,7 +771,10 @@ function returnYoutubeHistory(){
 
 			if(msg == ""){
 				//DEBUG ONLY
-				msg = "{'url': 'DEBUG', 'description':'DEBUG'}, {'url': 'https://www.youtube.com/watch?v=cHImmMWehhE', 'description':'Descr1'}, {'url':'https://www.youtube.com/watch?v=P_kn2rtuc4o', 'description':'descr2'}, {'url':'https://www.youtube.com/watch?v=lLtuT4Wq0ug', 'description':'descr3'}";
+				msg = msg+JSON.stringify({'url': 'DEBUG', 'description':'DEBUG'})+', ';
+				msg = msg+JSON.stringify({'url': 'https://www.youtube.com/watch?v=cHImmMWehhE', 'description':'Descr1'})+', ';
+				msg = msg+JSON.stringify({'url': 'https://www.youtube.com/watch?v=P_kn2rtuc4o', 'description':'descr2'})+', ';
+				msg = msg+JSON.stringify({'url':'https://www.youtube.com/watch?v=lLtuT4Wq0ug', 'description':'descr3'});
 			}
 
 			rsp = '{"urls": [' + msg + ']}';
