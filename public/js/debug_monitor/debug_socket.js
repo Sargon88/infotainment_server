@@ -11,7 +11,7 @@ $(function () {
 
   setInterval(function(){
     sendPhoneStatusMessage();
-  }, 45000);
+  }, 2000);
 
   function msgTime(){
     var today = new Date();
