@@ -22,19 +22,26 @@ var cmd_reboot = "sudo reboot";
 var cmd_killKeepAlive = "sudo killall keepAliveChromium.sh omxplayer.bin keepAliveNavit.sh navit";
 var cmd_startNavit = "/home/pi/info_scripts/keepAliveNavit.sh >> /home/pi/infotainment_logs/navit.log &";
 var cmd_tailCommandFile = "tail -f /dev/null > " + omxCommandFile;
-var cmd_startYTOmx = 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,142,800,500 $(youtube-dl -g -f mp4 "%yturl%")';
+var cmd_startYTOmx = 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,152,800,500 $(youtube-dl -g -f mp4 "%yturl%")';
 var cmd_setBrightness = 'sudo bash -c "echo %br% > /sys/class/backlight/rpi_backlight/brightness"';
 
 
-
-
 /** PAGE MANAGER */
-app.use(express.static('public'))
+app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, "dist/infotainment")));
 app.get('/monitor', function(req, res){
 	res.sendFile(__dirname + '/public/monitor.html');
 });
+/*
 app.get('/interface', function(req, res){
 	res.sendFile(__dirname + '/public/interface.html');
+});
+*/
+app.get('/interface', function(req, res){
+	
+		res.sendFile(__dirname + '/dist/infotainment/index.html');
+	
+	
 });
 app.get('/call', function(req, res){
 	res.sendFile(__dirname + '/public/call.html');
@@ -89,8 +96,9 @@ function emit(event, msg){
 
 	if(event != "coordinates"){
 		//satura i log
-		log(">>>", event + ": " + msg);
-		log(" ");
+		//TODO decommentare
+		//log(">>>", event + ": " + msg);
+		//log(" ");
 	}	
 
 	io.emit(event, msg);
@@ -462,6 +470,7 @@ GenericService = {
 	},
 
 	getPage: function(msg){
+		console.log("SET PAGE: " + InfotainmentStatus.page);
 		emit("set page", InfotainmentStatus.page);
 	},
 
@@ -629,7 +638,7 @@ function startFullscreenChromium(){
 function startBarChromium(){
 	log("START BAR CHROMIUM");
 
-	exec("./../info_scripts/keepAliveChromium.sh 1920 110 0 0 >> /home/pi/infotainment_logs/chromium.log &", function(err, stdout, stderr) {
+	exec("./../info_scripts/keepAliveChromium.sh 1920 120 0 0 >> /home/pi/infotainment_logs/chromium.log &", function(err, stdout, stderr) {
 		if(stderr != ""){
 			log("---- stderr --- ");
 			log(stderr);
