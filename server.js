@@ -25,6 +25,12 @@ var cmd_tailCommandFile = "tail -f /dev/null > " + omxCommandFile;
 var cmd_startYTOmx = 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,152,800,500 $(youtube-dl -g -f mp4 "%yturl%")';
 var cmd_setBrightness = 'sudo bash -c "echo %br% > /sys/class/backlight/rpi_backlight/brightness"';
 
+var commands = {
+	omx: {
+		getPlaylistList: "ls -F " + playlistDir + " | grep playlist_",
+	},
+}
+
 
 /** PAGE MANAGER */
 app.use(express.static('public'));
@@ -191,17 +197,14 @@ io.on('connection', function(socket){
 		CallService.outgoingCall(msg);
 	});
 
-
-
+	/** ----------- OMX ------------ */
+	Socket.on('load omx', function(msg){
+		log("load OMX page: " + msg);
+		OmxService.loadOmxPage();
+	});
 
 /************************************************************************************************ */
 
-
-	/** ----------- INIZIO OMX ------------ */
-	Socket.on('load omx', function(msg){
-		log("load OMX page: " + msg);
-		loadOmxPage();
-	});
 
 	Socket.on('explore directory', function(msg){
 		log("--------- explore directory: " + msg + " ---------");
@@ -427,7 +430,7 @@ GenericService = {
 	},
 
 	changePage: function(msg, extra){
-
+		
 		InfotainmentStatus.newPage = msg;
 		
 		if(InfotainmentStatus.newPage == "map" || InfotainmentStatus.newPage == "ytPlay"){
@@ -585,13 +588,57 @@ CallService = {
 
 		emit("outgoing calling", msg);
 	}
+}
 
-
-
-
+OmxService = {
 	/****************************************************************************************** */
-
-
+	loadOmxPage: function(){
+		log("loadOmxPage function");
+	
+		//carica l'elenco delle playlist
+		exec(commands.omx.getPlaylistList, function(err, stdout, stderr) {
+			var rsp = "";
+			if(stdout != ""){
+				var array = stdout.split("\n");
+	
+				removeUselessElements(array);
+								
+				rsp = JSON.stringify(array);
+	
+			} else if(stderr != ""){
+				rsp = stderr;
+				log(rsp);	
+			}
+			emit("loaded playlist dir", rsp);
+	
+			//qualunque periferica venga collegata viene automaticamente montata sotto /media/pi
+			setInterval(function(){
+				exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
+					var rsp = "";
+					if(stdout != ""){
+						var array = stdout.split("\n");
+	
+						removeUselessElements(array);
+										
+						rsp = JSON.stringify(array);
+	
+					} else if(stderr != ""){
+						rsp = stderr;
+						log(rsp);	
+					}
+	
+					if(InfotainmentStatus.lastUsbStatus != rsp){
+						InfotainmentStatus.lastUsbStatus = rsp;
+	
+						emit("loaded omx page", rsp);
+					}
+					
+				})
+			}, 2000);
+	
+		})
+	
+	}
 }
 
 /** GENERIC FUNCTIONS */
@@ -651,55 +698,7 @@ function startBarChromium(){
 
 
 
-/** ---------- INIZIO FUNZIONI OMX ---------- */
-function loadOmxPage(){
-	log("loadOmxPage function");
-
-	//carica l'elenco delle playlist
-	exec("ls -F " + playlistDir + " | grep playlist_", function(err, stdout, stderr) {
-		var rsp = "";
-		if(stdout != ""){
-			var array = stdout.split("\n");
-
-			removeUselessElements(array);
-							
-			rsp = JSON.stringify(array);
-
-		} else if(stderr != ""){
-			rsp = stderr;
-			log(rsp);	
-		}
-		emit("loaded playlist dir", rsp);
-
-		//qualunque periferica venga collegata viene automaticamente montata sotto /media/pi
-		setInterval(function(){
-			exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
-				var rsp = "";
-				if(stdout != ""){
-					var array = stdout.split("\n");
-
-					removeUselessElements(array);
-									
-					rsp = JSON.stringify(array);
-
-				} else if(stderr != ""){
-					rsp = stderr;
-					log(rsp);	
-				}
-
-				if(InfotainmentStatus.lastUsbStatus != rsp){
-					InfotainmentStatus.lastUsbStatus = rsp;
-
-					emit("loaded omx page", rsp);
-				}
-				
-			})
-		}, 2000);
-
-	})
-
-}
-
+											/** ---------- INIZIO FUNZIONI OMX ---------- */
 function removeUselessElements(array){
 	var index = array.indexOf("");
 	if (index > -1) {
