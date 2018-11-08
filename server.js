@@ -415,7 +415,7 @@ GenericService = {
 
 		//TODO debug per angular
 		var msgObj = JSON.parse(msg);
-		emit('status', '{"bluetooth":' + msgObj.bluetooth + ', "wifi":' + msgObj.wifi + ', "batteryValue":' + msgObj.batt + ', "hour":"10:30"}');
+		emit('status', '{"bluetooth":' + msgObj.bluetooth + ', "wifi":' + msgObj.wifi + ', "batteryValue":' + msgObj.batt +'}');
 		
 
 		if(InfotainmentStatus.page == "map"){
