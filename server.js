@@ -601,8 +601,8 @@ CallService = {
 OmxService = {
 	/****************************************************************************************** */
 	loadOmxPage: function(){
-		log("loadOmxPage function");
-	
+		log("loadOmxPage function: " + commands.omx.getPlaylistList);
+
 		//carica l'elenco delle playlist
 		exec(commands.omx.getPlaylistList, function(err, stdout, stderr) {
 			var rsp = "";
@@ -617,10 +617,15 @@ OmxService = {
 				rsp = stderr;
 				log(rsp);	
 			}
+
 			emit("loaded playlist dir", rsp);
 	
 			//qualunque periferica venga collegata viene automaticamente montata sotto /media/pi
+			console.log("OK");
 			setInterval(function(){
+
+				console.log("OK INTERVAL");
+
 				exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
 					var rsp = "";
 					if(stdout != ""){
@@ -635,7 +640,11 @@ OmxService = {
 						log(rsp);	
 					}
 	
+					console.log("status: " + InfotainmentStatus.lastUsbStatus);
+					console.log("rsp: " + rsp);
+
 					if(InfotainmentStatus.lastUsbStatus != rsp){
+						console.log("OK INTERVAL1");
 						InfotainmentStatus.lastUsbStatus = rsp;
 	
 						emit("loaded omx page", rsp);
