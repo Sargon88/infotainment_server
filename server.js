@@ -38,11 +38,12 @@ app.use(express.static(path.join(__dirname, "dist/infotainment")));
 app.get('/monitor', function(req, res){
 	res.sendFile(__dirname + '/public/monitor.html');
 });
-/*
+/* //versione con knockout
 app.get('/interface', function(req, res){
 	res.sendFile(__dirname + '/public/interface.html');
 });
 */
+//versione con angular
 app.get('/interface', function(req, res){
 	
 		res.sendFile(__dirname + '/dist/infotainment/index.html');
@@ -113,7 +114,13 @@ function emit(event, msg){
 function shell(cmd, lvl, f){
 	log("SHELL", cmd);
 
-	exec(cmd, function(err, stdout, stderr, lvl) {
+	var isWin = /^win/.test(process.platform);
+
+	if (!isWin) {
+		process.env.PATH = process.env.PATH + ':/usr/local/bin';
+	}
+
+	exec(cmd, {shell: '/bin/bash'}, function(err, stdout, stderr, lvl) {
 		if(lvl == "stdout"){
 			log("---- stdout --- ");
 			log(stdout);
@@ -128,6 +135,7 @@ function shell(cmd, lvl, f){
 		} 
 		
 		if(f != null){
+			//funzione di callback
 			f();
 		}
 	});
@@ -657,9 +665,11 @@ function changeToMapYtPage(){
 
 		shell(cmd_tailCommandFile);
 
-		var completeCommand = cmd_startYTOmx.replace("%yturl%", InfotainmentStatus.yturl);
+		var completeCommand = cmd_startYTOmx.replace('%yturl%', InfotainmentStatus.yturl);
 		console.log("YTURL: " + completeCommand);
-		exec(completeCommand);		
+		//TODO
+		shell(completeCommand, "stdout");
+		//exec(completeCommand);		
 	}
 
 	if(InfotainmentStatus.page != "ytPlay" && InfotainmentStatus.page != "map"){
