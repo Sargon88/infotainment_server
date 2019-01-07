@@ -38,18 +38,18 @@ app.use(express.static(path.join(__dirname, "dist/infotainment")));
 app.get('/monitor', function(req, res){
 	res.sendFile(__dirname + '/public/monitor.html');
 });
-/* //versione con knockout
+//versione con knockout
 app.get('/interface', function(req, res){
 	res.sendFile(__dirname + '/public/interface.html');
 });
-*/
+
 //versione con angular
+/*
 app.get('/interface', function(req, res){
 	
 		res.sendFile(__dirname + '/dist/infotainment/index.html');
-	
-	
 });
+*/
 app.get('/call', function(req, res){
 	res.sendFile(__dirname + '/public/call.html');
 });

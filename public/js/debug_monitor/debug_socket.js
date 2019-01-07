@@ -3,6 +3,7 @@ var socket = io();
 $(function () {
   /* UTILITY */
   $('form').submit(function(){
+    console.log("SENDING");
     socket.emit($('#a').val(), $('#m').val());
     $('#m').val('');
     $('#a').val('');
