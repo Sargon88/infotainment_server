@@ -22,20 +22,35 @@ var cmd_reboot = "sudo reboot";
 var cmd_killKeepAlive = "sudo killall keepAliveChromium.sh omxplayer.bin keepAliveNavit.sh navit";
 var cmd_startNavit = "/home/pi/info_scripts/keepAliveNavit.sh >> /home/pi/infotainment_logs/navit.log &";
 var cmd_tailCommandFile = "tail -f /dev/null > " + omxCommandFile;
-var cmd_startYTOmx = 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,142,800,500 $(youtube-dl -g -f mp4 "%yturl%")';
+var cmd_startYTOmx = 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,152,800,500 $(youtube-dl -g -f mp4 "%yturl%")';
 var cmd_setBrightness = 'sudo bash -c "echo %br% > /sys/class/backlight/rpi_backlight/brightness"';
 
-
+var commands = {
+	omx: {
+		getPlaylistList: "ls -F " + playlistDir + " | grep playlist_",
+	},
+}
 
 
 /** PAGE MANAGER */
-app.use(express.static('public'))
+app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, "dist/infotainment")));
 app.get('/monitor', function(req, res){
 	res.sendFile(__dirname + '/public/monitor.html');
 });
+//versione con knockout
 app.get('/interface', function(req, res){
 	res.sendFile(__dirname + '/public/interface.html');
 });
+
+//versione con angular
+/*
+app.get('/interface', function(req, res){
+	
+		res.sendFile(__dirname + '/dist/infotainment/index.html');
+});
+*/
+
 app.get('/call', function(req, res){
 	res.sendFile(__dirname + '/public/call.html');
 });
@@ -81,16 +96,16 @@ function log(tag, msg){
 	} else {
 		//temporanea retrocompatibilità
 		console.log(tag);
-	}
-	
+	}	
 };
 
 function emit(event, msg){
 
 	if(event != "coordinates"){
 		//satura i log
-		log(">>>", event + ": " + msg);
-		log(" ");
+		//TODO decommentare
+		//log(">>>", event + ": " + msg);
+		//log(" ");
 	}	
 
 	io.emit(event, msg);
@@ -99,7 +114,13 @@ function emit(event, msg){
 function shell(cmd, lvl, f){
 	log("SHELL", cmd);
 
-	exec(cmd, function(err, stdout, stderr, lvl) {
+	var isWin = /^win/.test(process.platform);
+
+	if (!isWin) {
+		process.env.PATH = process.env.PATH + ':/usr/local/bin';
+	}
+
+	exec(cmd, {shell: '/bin/bash'}, function(err, stdout, stderr, lvl) {
 		if(lvl == "stdout"){
 			log("---- stdout --- ");
 			log(stdout);
@@ -114,23 +135,24 @@ function shell(cmd, lvl, f){
 		} 
 		
 		if(f != null){
+			//funzione di callback
 			f();
 		}
 	});
-}
+};
 
 
 /** EVENT MANAGER */
 io.on('connection', function(socket){
 	Socket = socket;
-	console.log("---------------------------- CONNECTED! --------------------------------------");
+	log("---------------------------- CONNECTED! --------------------------------------");
 
 	/** --------- GENERIC --------------- */
 	Socket.on('phone status', function(msg){	
 		GenericService.phoneStatus(msg);
 
 	}).on('disconnetc', function(msg){
-		console.log("---------------------------- DISCONNECTED! --------------------------------------");
+		log("---------------------------- DISCONNECTED! --------------------------------------");
 		
 	}).on('DEBUG', function(msg){
 		GenericService.debug(msg);
@@ -152,8 +174,7 @@ io.on('connection', function(socket){
 
 	}).on('brightness', function(){
 		log("brightness", "now: " + InfotainmentStatus.brightness);
-		GenericService.changeBrightness();
-		
+		GenericService.changeBrightness();		
 	});
 
 
@@ -181,208 +202,40 @@ io.on('connection', function(socket){
 
 	}).on('outgoing calling', function(msg){
 		CallService.outgoingCall(msg);
+
 	});
 
-
-
-
-/************************************************************************************************ */
-
-
-	/** ----------- INIZIO OMX ------------ */
+	/** ----------- OMX ------------ */
 	Socket.on('load omx', function(msg){
 		log("load OMX page: " + msg);
-		loadOmxPage();
+		OmxService.loadOmxPage(msg);
+	}).on('explore directory', function(msg){
+		OmxService.exploreDirectory(msg);
+	}).on('play file', function(msg){
+		OmxService.playFile(msg);
+	}).on('stop file', function(msg){
+		OmxService.stopFile(msg);
+	}).on('omx command', function(msg){
+		OmxService.omxCommand(msg);
+	}).on('save playlist', function(msg){
+		OmxService.savePlaylist(msg);
+	}).on('load playlist', function(msg){
+		OmxService.loadPlaylist(msg);
 	});
 
-	Socket.on('explore directory', function(msg){
-		log("--------- explore directory: " + msg + " ---------");
-		
-		var path = mediaDocRoot + msg;
-
-		exec("ls -F " + path, function(err, stdout, stderr) {
-			var rsp = "";
-			if(stdout != ""){
-				var array = stdout.split("\n");
-				removeUselessElements(array);
-				rsp = JSON.stringify(array);
-				
-			} else if(stderr != ""){
-				rsp = stderr;
-				log(rsp);	
-			}
-
-			emit("explore response", rsp);
-		});
-
-	});
-
-	Socket.on('play file', function(msg){
-		log("--------- play file: " + msg + " ---------");
-
-		//ripulisco il file dei comandi
-		var cmd = "tail -f /dev/null > " + omxCommandFile;
-		log(cmd);
-		exec(cmd, function(err, stdout, stderr) {});
-
-		var cmd = 'cat ' + omxCommandFile + " | omxplayer " + docRoot+'\"' + msg + '\" ';
-		log(cmd);_PAGE
-		exec(cmd, function(err, stdout, stderr) {
-		
-			if(stderr != ""){
-				log(stderr);	
-			}
-			
-			emit("started playing", "");
-		});
-
-
-	});
-
-	Socket.on('stop file', function(msg){
-		log("--------- play file: " + msg + " ---------");
-
-		exec("killall omxplayer.bin", function(err, stdout, stderr) {
-			
-			if(stderr != ""){
-				log(stderr);	
-			}
-			
-			emit("stopped playing", "");
-			
-		});
-
-		
-	});
-		
-	Socket.on('omx command', function(msg){
-		log("omx command: " + msg);
-
-		switch(msg){
-			case "pause":
-				var cmd = 'echo -n p > ' + omxCommandFile;
-				log(cmd);
-				exec(cmd, function(err, stdout, stderr){
-
-					if(stderr != ""){
-						log(stderr);	
-					}
-
-					if(stdout != ""){
-						log(stdout);	
-					}
-
-				});
-				break;
-			default:
-		}
-
-		log("END");
-
-	});
-
-	Socket.on('save playlist', function(msg){
-		log("--------- save playlst: " + msg + " ---------");
-
-		var playlist = JSON.parse(msg);
-
-		var fileName = playlistDir + playlist.name;
-		var songsArray = playlist.files;
-
-		exec("> " + fileName, function(err, stdout, stderr) {
-			
-			for(var i = 0; i < songsArray.length; i++){
-
-				saveFileInPlaylist(songsArray[i], fileName);
-			}
-
-		});
-
-	});
-
-	Socket.on('load playlist', function(msg){
-		log("--------- load playlst: " + msg + " ---------");
-
-		var filePath = playlistDir + msg;
-
-		log("Path: " + filePath);
-		exec("cat " + filepath, function(err, stdout, stderr) {
-			
-			log("ERR: " + err);
-			log("-------");
-			log("");
-			log("Stdout: " + stdout);
-			log("-------");
-			log("");
-			log("Stderr: " + stderr);
-
-			if(stdout != ""){
-
-				log(stdout);
-				
-				Socket.emit('load playlist data', stdout);
-
-			} else if(stderr != ""){
-				log(stderr);	
-			}
-			
-			log("Loaded");
-
-		});
-
-
-	});
-	/** ----------- FINE OMX ------------ */
-
-	/** ----------- INIZIO YOUTUBE ------ */
+	/** ----------- YOUTUBE ------------ */
 	Socket.on('open yt video', function(msg){
-		log("--------- Open Youtube Video: " + msg + " ---------");
-
-		msgObj = JSON.parse(msg);
-		InfotainmentStatus.yturl = msgObj.url;
-		
-		saveFileInPlaylist(msg, yt_playlist);
-
-		GenericService.changePage("ytPlay");
-
-	});
-
-	Socket.on('load youtube', function(msg){
-		log("--------- Load Youtube: " + InfotainmentStatus.yturl + " ---------");
-		emit('youtube url', InfotainmentStatus.yturl);
-	});
-
-	Socket.on('youtube history', function(msg){
+		YoutubeService.openVideo(msg);
+	}).on('load youtube', function(msg){
+		YoutubeService.loadYoutube(msg);
+	}).on('youtube history', function(msg){
 		returnYoutubeHistory();
-	})
-	/** ----------- FINE YOUTUBE -------- */
+	});
 
 	/** ----------- INIZIO GPS -------- */
 	Socket.on('coordinates', function(msg){
-		//inserire le coordinate nell'oggetto dello stato del raspberry
-
-		var cooObj = JSON.parse(msg);
-
-		InfotainmentStatus.longitude = cooObj.longitude;
-		InfotainmentStatus.latitude = cooObj.latitude;
-
-		if(InfotainmentStatus.page=="map"){
-			var msgObj = JSON.parse(msg);
-			var coordinates = InfotainmentStatus.longitude + " " + InfotainmentStatus.latitude;
-
-			exec("export DISPLAY=:0.0; dbus-send  --print-reply --session --dest=org.navit_project.navit /org/navit_project/navit/default_navit org.navit_project.navit.navit.set_position string:\"geo: " + coordinates + "\"", function(err, stdout, stderr) {
-				if(stderr != ""){
-					log("---- stderr --- ");
-					log(stderr);
-					log("");	
-				}
-			});
-		}
-
-		emit('coordinates', msg);
+		GPSService.coordinates(msg);
 	})
-	/** ----------- FINE GPS -------- */
-
 });
 
 /** EVENTS SERVICES */
@@ -396,7 +249,7 @@ GenericService = {
 
 		//TODO debug per angular
 		var msgObj = JSON.parse(msg);
-		emit('status', '{"bluetooth":' + msgObj.bluetooth + ', "wifi":' + msgObj.wifi + ', "batteryValue":' + msgObj.batt + ', "hour":"10:30"}');
+		emit('status', '{"bluetooth":' + msgObj.bluetooth + ', "wifi":' + msgObj.wifi + ', "batteryValue":' + msgObj.batt +'}');
 		
 
 		if(InfotainmentStatus.page == "map"){
@@ -419,7 +272,7 @@ GenericService = {
 	},
 
 	changePage: function(msg, extra){
-
+		
 		InfotainmentStatus.newPage = msg;
 		
 		if(InfotainmentStatus.newPage == "map" || InfotainmentStatus.newPage == "ytPlay"){
@@ -457,11 +310,11 @@ GenericService = {
 		} else {
 			//caso in cui non devo riavviare il browser
 			emit("set page", msg);
-		}
-	
+		}	
 	},
 
 	getPage: function(msg){
+		console.log("SET PAGE: " + InfotainmentStatus.page);
 		emit("set page", InfotainmentStatus.page);
 	},
 
@@ -474,9 +327,8 @@ GenericService = {
 
 		var cmd_complete = cmd_setBrightness.replace("%br%", InfotainmentStatus.brightness);
 		exec(cmd_complete);
-
 	}
-}
+};
 
 CallService = {
 	incomingCall: function(msg){
@@ -507,8 +359,7 @@ CallService = {
 		} else {
 			log("ERROR", "Get Call not in Calling");
 
-		}
-		
+		}		
 	},
 
 	callAnswer: function(msg){
@@ -521,7 +372,6 @@ CallService = {
 			log("ERROR", "Call Answer not in Calling");
 
 		}
-
 	},
 
 	answerCall: function(msg){
@@ -534,7 +384,6 @@ CallService = {
 			log("ERROR", "Answer Call not in Calling");
 
 		}
-
 	},
 
 	endCall: function(msg){
@@ -548,7 +397,6 @@ CallService = {
 			log("ERROR", "Answer Call not in Calling");
 
 		}
-
 	},
 
 	startPhoneCall: function(msg){
@@ -562,8 +410,7 @@ CallService = {
 		} else {
 			log("ERROR", "Starting Another Call during a Call");
 
-		}
-		
+		}		
 	},
 
 	outgoingCall: function(msg){
@@ -576,14 +423,240 @@ CallService = {
 
 		emit("outgoing calling", msg);
 	}
+};
 
-
-
-
+OmxService = {
 	/****************************************************************************************** */
+	loadOmxPage: function(msg){
+		log("loadOmxPage function: " + commands.omx.getPlaylistList);
 
+		//carica l'elenco delle playlist
+		exec(commands.omx.getPlaylistList, function(err, stdout, stderr) {
+			var rsp = "";
+			if(stdout != ""){
+				var array = stdout.split("\n");
+	
+				removeUselessElements(array);
+								
+				rsp = JSON.stringify(array);
+	
+			} else if(stderr != ""){
+				rsp = stderr;
+				log(rsp);	
+			}
 
-}
+			emit("loaded playlist dir", rsp);
+	
+			//qualunque periferica venga collegata viene automaticamente montata sotto /media/pi
+			console.log("OK");
+			setInterval(function(){
+
+				console.log("OK INTERVAL");
+
+				exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
+					var rsp = "";
+					if(stdout != ""){
+						var array = stdout.split("\n");
+	
+						removeUselessElements(array);
+										
+						rsp = JSON.stringify(array);
+	
+					} else if(stderr != ""){
+						rsp = stderr;
+						log(rsp);	
+					}
+	
+					console.log("status: " + InfotainmentStatus.lastUsbStatus);
+					console.log("rsp: " + rsp);
+
+					if(InfotainmentStatus.lastUsbStatus != rsp){
+						console.log("OK INTERVAL1");
+						InfotainmentStatus.lastUsbStatus = rsp;
+	
+						emit("loaded omx page", rsp);
+					}
+					
+				})
+			}, 2000);
+	
+		})	
+	},
+
+	exploreDirectory: function(msg){
+		log("--------- explore directory: " + msg + " ---------");
+		
+		var path = mediaDocRoot + msg;
+
+		exec("ls -F " + path, function(err, stdout, stderr) {
+			var rsp = "";
+			if(stdout != ""){
+				var array = stdout.split("\n");
+				removeUselessElements(array);
+				rsp = JSON.stringify(array);
+				
+			} else if(stderr != ""){
+				rsp = stderr;
+				log(rsp);	
+			}
+
+			emit("explore response", rsp);
+		});
+	},
+
+	playFile: function(msg){
+		log("--------- play file: " + msg + " ---------");
+
+		//ripulisco il file dei comandi
+		var cmd = "tail -f /dev/null > " + omxCommandFile;
+		log(cmd);
+		exec(cmd, function(err, stdout, stderr) {});
+
+		var cmd = 'cat ' + omxCommandFile + " | omxplayer " + docRoot+'\"' + msg + '\" ';
+		log(cmd);_PAGE
+		exec(cmd, function(err, stdout, stderr) {
+		
+			if(stderr != ""){
+				log(stderr);	
+			}
+			
+			emit("started playing", "");
+		});
+	},
+
+	stopFile: function(msg){
+		log("--------- play file: " + msg + " ---------");
+
+		exec("killall omxplayer.bin", function(err, stdout, stderr) {
+			
+			if(stderr != ""){
+				log(stderr);	
+			}
+			
+			emit("stopped playing", "");
+			
+		});	
+	},
+
+	omxCommand: function(msg){
+		log("omx command: " + msg);
+
+		switch(msg){
+			case "pause":
+				var cmd = 'echo -n p > ' + omxCommandFile;
+				log(cmd);
+				exec(cmd, function(err, stdout, stderr){
+
+					if(stderr != ""){
+						log(stderr);	
+					}
+
+					if(stdout != ""){
+						log(stdout);	
+					}
+
+				});
+				break;
+			default:
+		}
+
+		log("END");
+	},
+
+	savePlaylist: function(msg){
+		log("--------- save playlst: " + msg + " ---------");
+
+		var playlist = JSON.parse(msg);
+
+		var fileName = playlistDir + playlist.name;
+		var songsArray = playlist.files;
+
+		exec("> " + fileName, function(err, stdout, stderr) {
+			
+			for(var i = 0; i < songsArray.length; i++){
+
+				saveFileInPlaylist(songsArray[i], fileName);
+			}
+
+		});
+	},
+
+	loadPlaylist: function(msg){
+		log("--------- load playlst: " + msg + " ---------");
+
+		var filePath = playlistDir + msg;
+
+		log("Path: " + filePath);
+		exec("cat " + filepath, function(err, stdout, stderr) {
+			
+			log("ERR: " + err);
+			log("-------");
+			log("");
+			log("Stdout: " + stdout);
+			log("-------");
+			log("");
+			log("Stderr: " + stderr);
+
+			if(stdout != ""){
+
+				log(stdout);
+				
+				Socket.emit('load playlist data', stdout);
+
+			} else if(stderr != ""){
+				log(stderr);	
+			}
+			
+			log("Loaded");
+
+		});
+	}
+};
+
+YoutubeService = {
+
+	openVideo: function(msg){
+		log("--------- Open Youtube Video: " + msg + " ---------");
+
+		msgObj = JSON.parse(msg);
+		InfotainmentStatus.yturl = msgObj.url;
+		
+		saveFileInPlaylist(msg, yt_playlist);
+
+		GenericService.changePage("ytPlay");
+	},
+
+	loadYoutube: function(msg){
+		log("--------- Load Youtube: " + InfotainmentStatus.yturl + " ---------");
+		emit('youtube url', InfotainmentStatus.yturl);
+	}
+};
+
+GPSService = {
+	coordinates: function(msg){
+		//inserire le coordinate nell'oggetto dello stato del raspberry
+
+		var cooObj = JSON.parse(msg);
+
+		InfotainmentStatus.longitude = cooObj.longitude;
+		InfotainmentStatus.latitude = cooObj.latitude;
+
+		if(InfotainmentStatus.page=="map"){
+			var msgObj = JSON.parse(msg);
+			var coordinates = InfotainmentStatus.longitude + " " + InfotainmentStatus.latitude;
+
+			exec("export DISPLAY=:0.0; dbus-send  --print-reply --session --dest=org.navit_project.navit /org/navit_project/navit/default_navit org.navit_project.navit.navit.set_position string:\"geo: " + coordinates + "\"", function(err, stdout, stderr) {
+				if(stderr != ""){
+					log("---- stderr --- ");
+					log(stderr);
+					log("");	
+				}
+			});
+		}
+
+		emit('coordinates', msg);
+	}
+};
 
 /** GENERIC FUNCTIONS */
 function changeToMapYtPage(){	
@@ -601,9 +674,11 @@ function changeToMapYtPage(){
 
 		shell(cmd_tailCommandFile);
 
-		var completeCommand = cmd_startYTOmx.replace("%yturl%", InfotainmentStatus.yturl);
+		var completeCommand = cmd_startYTOmx.replace('%yturl%', InfotainmentStatus.yturl);
 		console.log("YTURL: " + completeCommand);
-		exec(cmd_startYTOmx);		
+		//TODO
+		shell(completeCommand, "stdout");
+		//exec(completeCommand);		
 	}
 
 	if(InfotainmentStatus.page != "ytPlay" && InfotainmentStatus.page != "map"){
@@ -612,8 +687,7 @@ function changeToMapYtPage(){
 
 	InfotainmentStatus.page = InfotainmentStatus.newPage;
 	InfotainmentStatus.newPage = "";
-
-}
+};
 
 function startFullscreenChromium(){
 	log("START FULLSCREEN CHROMIUM");
@@ -629,7 +703,7 @@ function startFullscreenChromium(){
 function startBarChromium(){
 	log("START BAR CHROMIUM");
 
-	exec("./../info_scripts/keepAliveChromium.sh 1920 110 0 0 >> /home/pi/infotainment_logs/chromium.log &", function(err, stdout, stderr) {
+	exec("./../info_scripts/keepAliveChromium.sh 1920 120 0 0 >> /home/pi/infotainment_logs/chromium.log &", function(err, stdout, stderr) {
 		if(stderr != ""){
 			log("---- stderr --- ");
 			log(stderr);
@@ -637,67 +711,18 @@ function startBarChromium(){
 			log("");	
 		}
 	});
-}
+};
 
 
 
 
 /** ---------- INIZIO FUNZIONI OMX ---------- */
-function loadOmxPage(){
-	log("loadOmxPage function");
-
-	//carica l'elenco delle playlist
-	exec("ls -F " + playlistDir + " | grep playlist_", function(err, stdout, stderr) {
-		var rsp = "";
-		if(stdout != ""){
-			var array = stdout.split("\n");
-
-			removeUselessElements(array);
-							
-			rsp = JSON.stringify(array);
-
-		} else if(stderr != ""){
-			rsp = stderr;
-			log(rsp);	
-		}
-		emit("loaded playlist dir", rsp);
-
-		//qualunque periferica venga collegata viene automaticamente montata sotto /media/pi
-		setInterval(function(){
-			exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
-				var rsp = "";
-				if(stdout != ""){
-					var array = stdout.split("\n");
-
-					removeUselessElements(array);
-									
-					rsp = JSON.stringify(array);
-
-				} else if(stderr != ""){
-					rsp = stderr;
-					log(rsp);	
-				}
-
-				if(InfotainmentStatus.lastUsbStatus != rsp){
-					InfotainmentStatus.lastUsbStatus = rsp;
-
-					emit("loaded omx page", rsp);
-				}
-				
-			})
-		}, 2000);
-
-	})
-
-}
-
 function removeUselessElements(array){
 	var index = array.indexOf("");
 	if (index > -1) {
 		array.splice(index, 1);
 	}
-}
-
+};
 function saveFileInPlaylist(msg, fileName){
 
 	msgObj = JSON.parse(msg);
@@ -748,8 +773,7 @@ function saveFileInPlaylist(msg, fileName){
 		returnYoutubeHistory();
 
 	})
-}
-
+};
 /** ---------- FINE FUNZIONI OMX ---------- */
 
 /** ---------- INIZIO FUNZIONI YOUTUBE ---- */
@@ -771,7 +795,10 @@ function returnYoutubeHistory(){
 
 			if(msg == ""){
 				//DEBUG ONLY
-				msg = "{'url': 'DEBUG', 'description':'DEBUG'}, {'url': 'https://www.youtube.com/watch?v=cHImmMWehhE', 'description':'Descr1'}, {'url':'https://www.youtube.com/watch?v=P_kn2rtuc4o', 'description':'descr2'}, {'url':'https://www.youtube.com/watch?v=lLtuT4Wq0ug', 'description':'descr3'}";
+				msg = msg+JSON.stringify({'url': 'DEBUG', 'description':'DEBUG'})+', ';
+				msg = msg+JSON.stringify({'url': 'https://www.youtube.com/watch?v=cHImmMWehhE', 'description':'Descr1'})+', ';
+				msg = msg+JSON.stringify({'url': 'https://www.youtube.com/watch?v=P_kn2rtuc4o', 'description':'descr2'})+', ';
+				msg = msg+JSON.stringify({'url':'https://www.youtube.com/watch?v=lLtuT4Wq0ug', 'description':'descr3'});
 			}
 
 			rsp = '{"urls": [' + msg + ']}';
@@ -784,6 +811,7 @@ function returnYoutubeHistory(){
 	});
 }
 /** ---------- FINE FUNZIONI YOUTUBE ------ */
+
 http.listen(8080, function(){
 	log('listening on *:8080');
 
