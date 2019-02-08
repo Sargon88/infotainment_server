@@ -1,28 +1,47 @@
 var infoViewModel = function(){
     var self = this;
 
-    //context
-//    self.server = "http://192.168.43.111:8080";
-    self.server = "http://infotainment_srv:8080";
-    self.callingendpoint = "/call";
-    self.socket =  io();
-
-    //navbar
-    self.hour = ko.observable();
-    self.battInt = ko.observable(0);
-    self.batt = ko.observable("--");
-    self.bluetooth = ko.observable(false);
-    self.wifi = ko.observable(false);
-    self.starredContacts = ko.observableArray();
-    self.lastCalls = ko.observableArray();
-    self.lastUpdate = ko.observable(new Date());
-    self.signal = ko.observable(0);
-    
-
     //DEBUG
     self.lat = ko.observable();
     self.long = ko.observable();
     //DEBUG
+
+    //context
+    self.params = {
+        server : "http://infotainment_srv:8080",
+        callingendpoint : "/call",
+        socket :  io(),
+    }
+
+    /** PARAMS */
+    self.status = {
+        //params
+        page: ko.observable("home"),
+        longitude: ko.observable(),
+        latitude: ko.observable(),
+        callerNum: ko.observable(),
+        yturl: ko.observable(),
+        lastUsbStatus: ko.observable(),
+        newPage: ko.observable(),
+        brightness: ko.observable(),
+
+        //CHIAMATE
+        calling: ko.observable(false),
+        inCall: ko.observable(false),
+
+        /** NAVBAR */
+        navbar: {
+            hour: ko.observable(),
+            battInt: ko.observable(0),
+            batt: ko.observable("--"),
+            bluetooth: ko.observable(false),
+            wifi: ko.observable(false),
+            starredContacts: ko.observableArray(),
+            lastCalls: ko.observableArray(),
+            lastUpdate: ko.observable(new Date()),
+            signal: ko.observable(0)
+        }
+    };
 
     //pages
     self.homepage = ko.observable(false);
@@ -36,8 +55,8 @@ var infoViewModel = function(){
     self.loaded = ko.observable(false);
     self.wazeurl = ko.observable("");
     self.callingUI = ko.observable(null);
-    self.brightness = 100;
-    self.inCall = ko.computed(function(){
+    //self.brightness = 100;
+    self.status.inCall = ko.computed(function(){
         if(self.callingUI() == null){
             return false;
         } else {
@@ -49,12 +68,12 @@ var infoViewModel = function(){
 
 
     //youtube
-    self.ytUrl = ko.observable(null);
+    self.status.ytUrl = ko.observable(null);
 
     /** FUNCTIONS */
     self.goHomepage = function(){
         console.log("home");
-        self.socket.emit("change page", "home");
+        self.params.socket.emit("change page", "home");
         //self.changePageHomepage();        
     }
 
@@ -69,7 +88,7 @@ var infoViewModel = function(){
 
     self.goMaps = function(){
         console.log("maps");
-       self.socket.emit("change page", "map");
+       self.params.socket.emit("change page", "map");
        //self.changePageMaps();
     }
 
@@ -83,7 +102,7 @@ var infoViewModel = function(){
 
     self.goOMX = function(){
         console.log("omx");
-        self.socket.emit("change page", "omx");
+        self.params.socket.emit("change page", "omx");
         //self.changePageOMX();
     }
 
@@ -100,7 +119,7 @@ var infoViewModel = function(){
 
     self.goYT = function(){
         console.log("youtube");
-        self.socket.emit("change page", "yt");
+        self.params.socket.emit("change page", "yt");
         self.changePageYT();
     }
 
@@ -112,12 +131,12 @@ var infoViewModel = function(){
         self.ytplaypage(false);
         self.carpage(false);
 
-        self.socket.emit('youtube history', '');
+        self.params.socket.emit('youtube history', '');
     }
 
     self.goCar = function(){
         console.log("car");
-        self.socket.emit("change page", "car");
+        self.params.socket.emit("change page", "car");
         //self.changePageCar();
     }
 
@@ -142,12 +161,12 @@ var infoViewModel = function(){
     self.startApp = function(){
         console.log("App Start");
         self.startTime();
-        self.socket.emit("getPage", "");
-        self.socket.emit("getStatus", "");
+        self.params.socket.emit("getPage", "");
+        self.params.socket.emit("getStatus", "");
 
         self.checkConnection();
 
-        self.socket.on('phone status', function(msg){
+        self.params.socket.on('phone status', function(msg){
             var msgObj = JSON.parse(msg);
 
             var stat = msgObj;
@@ -163,13 +182,13 @@ var infoViewModel = function(){
             var sContacts = stat.starredcontacts;
             var lastCalls = stat.lastcalls;
 
-            self.battInt(parseInt(stat.batt));
-            self.batt(stat.batt + "%");
-            self.bluetooth(stat.bluetooth == 'true');
-            self.wifi(stat.wifi == 'true');
-            self.starredContacts(sContacts.slice(0, 8));
+            self.status.navbar.battInt(parseInt(stat.batt));
+            self.status.navbar.batt(stat.batt + "%");
+            self.status.navbar.bluetooth(stat.bluetooth == 'true');
+            self.status.navbar.wifi(stat.wifi == 'true');
+            self.status.navbar.starredContacts(sContacts.slice(0, 8));
             self.loaded(true);
-            self.signal(parseInt(stat.signal));
+            self.status.navbar.signal(parseInt(stat.signal));
 
             self.buildLastCall(lastCalls);
             
@@ -177,24 +196,24 @@ var infoViewModel = function(){
             var url = "https://embed.waze.com/it/iframe?zoom=16&lat="+stat.latitude+"&lon="+stat.longitude+"&pin=1";
             self.wazeurl(url);  
 
-            self.lastUpdate(new Date());
+            self.status.navbar.lastUpdate(new Date());
         });
 
-        self.socket.on('coordinates', function(msg){
+        self.params.socket.on('coordinates', function(msg){
 
             var stat = JSON.parse(msg);
 
             self.lat(stat.latitude);
             self.long(stat.longitude);
 
-            self.lastUpdate(new Date());
+            self.status.navbar.lastUpdate(new Date());
         })
 
-        self.socket.on('DEBUG', function(msg){
+        self.params.socket.on('DEBUG', function(msg){
             console.log(msg);
         })
 
-        self.socket.on('set page', function(msg){
+        self.params.socket.on('set page', function(msg){
 
             console.log("set page: " + msg);
 
@@ -214,7 +233,7 @@ var infoViewModel = function(){
 
         });
 
-        self.socket.on('change page', function(msg){
+        self.params.socket.on('change page', function(msg){
 
             console.log("change page: " + msg);
 
@@ -232,30 +251,30 @@ var infoViewModel = function(){
 
         });
 
-        self.socket.on('incoming calling', function(msg){
+        self.params.socket.on('incoming calling', function(msg){
             self.openCallInterface();
         });
 
-        self.socket.on('outgoing calling', function(msg){
+        self.params.socket.on('outgoing calling', function(msg){
             self.openCallInterface();
         });
 
-        self.socket.on('end call', function(msg){
+        self.params.socket.on('end call', function(msg){
            setTimeout(self.closeCallInterface, 2000);
             
         });
 
-        self.socket.on('open yt video', function(msg){
+        self.params.socket.on('open yt video', function(msg){
             console.log("OPEN YT Video: " + msg);
             self.goYT();
         });
 
-        self.socket.on('youtube url', function(msg){
+        self.params.socket.on('youtube url', function(msg){
             console.log("youtube url: " + msg);
             self.ytUrl(msg);
         });
 
-        self.socket.on('url history', function(msg){
+        self.params.socket.on('url history', function(msg){
             console.log("URL HISTORY");
             self.loadYtHistory(msg);
            
@@ -265,29 +284,29 @@ var infoViewModel = function(){
     /** funzioni barra */
     self.turnoff = function(){
         console.log("REBOOT");
-        self.socket.emit('reboot', "");
+        self.params.socket.emit('reboot', "");
     }
 
     self.openwifi = function(){
         console.log("Open Wifi");
-        self.socket.emit('wifi', "")
+        self.params.socket.emit('wifi', "")
     }
 
     self.changeBrightness = function(){
         
-        if(self.brightness == 100){
-            self.brightness = 10;
-        } else if(self.brightness == 10){
-            self.brightness = 100;
+        if(self.status.brightness == 100){
+            self.status.brightness = 10;
+        } else if(self.status.brightness == 10){
+            self.status.brightness = 100;
         } 
 
-        self.socket.emit('brightness', self.brightness);
+        self.params.socket.emit('brightness', self.status.brightness);
     }
 
     /** Homepage */
     self.openCallInterface = function(){
         console.log("toggleCallInterface");
-        self.callingUI(window.open(self.server + self.callingendpoint , "_blank", "toolbar=no,scrollbars=no,resizable=no,top=20,left=200,width=400,height=400"));   
+        self.callingUI(window.open(self.params.server + self.params.callingendpoint , "_blank", "toolbar=no,scrollbars=no,resizable=no,top=20,left=200,width=400,height=400"));   
     }
 
     self.closeCallInterface = function(){
@@ -307,7 +326,7 @@ var infoViewModel = function(){
             number = data.phNumber();
         }
 
-        self.socket.emit("start phone call", number);        
+        self.params.socket.emit("start phone call", number);        
     }
 
     self.buildLastCall = function(lastcalls){
@@ -317,7 +336,7 @@ var infoViewModel = function(){
             return c;
         });
 
-        self.lastCalls(tempLastCall);
+        self.status.navbar.lastCalls(tempLastCall);
     }
 
     /** OMX */
@@ -337,12 +356,12 @@ var infoViewModel = function(){
 
         if(self.path.lenght > 0){
 
-            self.socket.emit("explore directory", self.stringPath());
+            self.params.socket.emit("explore directory", self.stringPath());
 
         } else {
-            self.socket.emit("load omx", "");
+            self.params.socket.emit("load omx", "");
 
-            self.socket.on('loaded omx page', function(msg){
+            self.params.socket.on('loaded omx page', function(msg){
                 if(msg != ""){
                     var driveArray = JSON.parse(msg);
 
@@ -380,14 +399,14 @@ var infoViewModel = function(){
 
         self.path.push(data.name());
 
-        self.socket.emit("explore directory", self.stringPath());    
+        self.params.socket.emit("explore directory", self.stringPath());    
     }
 
     self.backPath = function(){
         if(self.path().length > 0){
             self.path.pop();
 
-            self.socket.emit("explore directory", self.stringPath()); 
+            self.params.socket.emit("explore directory", self.stringPath()); 
         }
     }
 
@@ -398,7 +417,7 @@ var infoViewModel = function(){
         return path;
     });
 
-    self.socket.on('explore response', function(msg){
+    self.params.socket.on('explore response', function(msg){
         console.log('explore response: ' + msg);
 
         if(msg != ""){
@@ -413,19 +432,19 @@ var infoViewModel = function(){
     self.playFile = function(data){
         if(self.playingfile == null){
             self.playingfile = data;
-            self.socket.emit("play file", self.stringPath()+data.name());
+            self.params.socket.emit("play file", self.stringPath()+data.name());
         }
     }
 
-    self.socket.on('started playing', function(){
+    self.params.socket.on('started playing', function(){
         self.playingfile.playing(true);
     });
 
     self.stopFile = function(data){     
-        self.socket.emit("stop file", self.stringPath()+data.name());
+        self.params.socket.emit("stop file", self.stringPath()+data.name());
     }
 
-    self.socket.on('stopped playing', function(){
+    self.params.socket.on('stopped playing', function(){
         self.playingfile.playing(false);
         self.playingfile = null;
     });
@@ -447,7 +466,7 @@ var infoViewModel = function(){
         self.selectedPlaylist().files.remove(data.name());
     }
 
-    self.socket.on('loaded playlist dir', function(msg){
+    self.params.socket.on('loaded playlist dir', function(msg){
 
         var listArray = JSON.parse(msg);
 
@@ -472,7 +491,7 @@ var infoViewModel = function(){
     self.savePlaylist = function(data){
         
         var msg = ko.toJSON(data);
-        self.socket.emit('save playlist', msg);
+        self.params.socket.emit('save playlist', msg);
     }
 
     self.deletePlaylist = function(data){
@@ -482,10 +501,10 @@ var infoViewModel = function(){
     }
 
     self.loadPlaylistFiles = function(data){
-        self.socket.emit('load playlist', data.name());
+        self.params.socket.emit('load playlist', data.name());
     }
 
-    self.socket.on('load playlist data', function(msg){
+    self.params.socket.on('load playlist data', function(msg){
         var playlistObj = JSON.parse(msg);
 
         var index = self.playlistsList.indexOf(playlistObj);
@@ -510,7 +529,7 @@ var infoViewModel = function(){
     self.playYoutubeVideo = function(data){
         var msg = JSON.stringify(data);
 
-        self.socket.emit("open yt video", msg);
+        self.params.socket.emit("open yt video", msg);
     }
     /** FINE YOUTUBE */
 
@@ -521,7 +540,7 @@ var infoViewModel = function(){
         var m = today.getMinutes();
         m = self.checkTime(m);
 
-        self.hour(h + ":" + m);
+        self.status.navbar.hour(h + ":" + m);
         var t = setTimeout(self.startTime, 500);
     }
 
@@ -544,12 +563,12 @@ var infoViewModel = function(){
     }
 
     self.resetInterface = function(){
-        self.battInt(0);
-        self.batt("--");
-        self.bluetooth(false);
-        self.wifi(false);
-        self.starredContacts.removeAll();
-        self.lastCalls.removeAll();
+        self.status.navbar.battInt(0);
+        self.status.navbar.batt("--");
+        self.status.navbar.bluetooth(false);
+        self.status.navbar.wifi(false);
+        self.status.navbar.starredContacts.removeAll();
+        self.status.navbar.lastCalls.removeAll();
     }
 
     //LAST
