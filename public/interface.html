@@ -7,7 +7,7 @@
     <title>Infotainment System</title>
 
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/fontawesome/fontawesome-all.css">
+    <link rel="stylesheet" href="/css/fontawesome/all.min.css">
     <link rel="stylesheet" href="/css/custom/infotainment.css">
 
 
@@ -112,29 +112,19 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <ul class="nav nav-tabs">
-                            <!-- ko if: showDrives -->
-                            <li role="presentation" class="active"><a href="#">Drives</a></li>
-                            <!-- /ko -->
-                            <!-- ko ifnot: showDrives -->
-                            <li role="presentation" data-bind="click:changeDrivePlaylists"><a href="#">Drives</a></li>
-                            <!-- /ko -->
-                            <!-- ko if: showPlaylists -->
-                            <li role="presentation" class="active"><a href="#">Playlists</a></li>
-                            <!-- /ko -->
-                            <!-- ko ifnot: showPlaylists -->
-                            <li role="presentation" data-bind="click:changeDrivePlaylists"><a href="#">Playlists</a></li>
-                            <!-- /ko -->
+                            <li role="presentation" data-bind="css: {active: showDrives}, click:function(){changeDrivePlaylists('drives')}"class="active"><a>Drives</a></li>
+                            <li role="presentation" data-bind="css: {active: showPlaylists}, click:function(){changeDrivePlaylists('playlists')}"><a>Playlists</a></li>
 
-                            <!-- COMANDI AUDIO-->
+                            <!-- AUDIO commands-->
                             <div class="col-xs-9">
                                 <div class="row">
-                                        <div class="col-xs-1 col-xs-offset-5" style="color: green;"><i class="fas fa-play fa-lg"></i></div>
-                                        <div class="col-xs-1" style="color: red;"><i class="fas fa-stop fa-lg"></i></div>
-                                        <div class="col-xs-1" style="color: grey;"><i class="fas fa-pause fa-lg"></i></div>
-                                        <div class="col-xs-1" style="color: grey;"><i class="fas fa-step-forward fa-lg"></i></div>
+                                        <div class="col-xs-1 col-xs-offset-5"><i class="fas fa-play fa-lg"></i></div>
+                                        <div class="col-xs-1"><i class="fas fa-stop fa-lg"></i></div>
+                                        <div class="col-xs-1"><i class="fas fa-pause fa-lg"></i></div>
+                                        <div class="col-xs-1"><i class="fas fa-step-forward fa-lg"></i></div>
                                         <div class="col-xs-1"></div>
-                                        <div class="col-xs-1" style="color: grey;"><i class="fas fa-volume-down fa-lg"></i></div>
-                                        <div class="col-xs-1" style="color: grey;"><i class="fas fa-volume-up fa-lg"></i></div>
+                                        <div class="col-xs-1"><i class="fas fa-volume-down fa-lg"></i></div>
+                                        <div class="col-xs-1"><i class="fas fa-volume-up fa-lg"></i></div>
                                 </div>
                             </div>            
                         </ul>

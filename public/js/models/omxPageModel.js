@@ -130,9 +130,14 @@ var OmxPageModel = function(params, status){
         self.params.socket.emit("stop file", self.stringPath()+data.name());
     }
 
-    self.changeDrivePlaylists = function(){
-        self.showDrives(!self.showDrives());
-        self.showPlaylists(!self.showPlaylists());
+    self.changeDrivePlaylists = function(type){
+    	if((type == "drives" && !self.showDrives()) ||
+    	   (type == "playlists" && !self.showPlaylists())){
+
+    		self.showDrives(!self.showDrives());
+        	self.showPlaylists(!self.showPlaylists());	
+    	}
+        
     }
 
     self.addtoPlaylist = function(data){

@@ -12,9 +12,7 @@ body {
 } 
 
 .navbar-inverse .navbar-collapse {
-	border-top-width: 1px;
-	border-top-style: solid;
-	border-top-color: rgba(30, 144, 255, 1);
+	border-top: 1px solid rgba(30, 144, 255, 1);
 }
 
 .navbar-inverse{
@@ -31,19 +29,14 @@ body {
 
 /** HOME **/
 .btn-infotainment-starredC {
-	border-color: rgba(30, 144, 255, 1);
-	border-width: 1.5px;
+	border: 1.5px solid rgba(30, 144, 255, 1);
 	border-radius: 0px;
 	background-color: #222;
 }
 
 .btn-infotainment-lastC {
-	border-bottom-style: solid;
-	border-bottom-color: rgba(30, 144, 255, 1);
-	border-bottom-width: 0.2px;
-	border-right-style: solid;
-	border-right-color: rgba(30, 144, 255, 1);
-	border-right-width: 0.2px;
+	border-bottom: 0.2px solid rgba(30, 144, 255, 1);
+	border-right: 0.2px solid rgba(30, 144, 255, 1);
 	margin-bottom: 10px;
 	background-color: rgba(30, 144, 255, 0.05);
 }
@@ -51,4 +44,26 @@ body {
 .infotainment-lastCallLabel {
 	font-weight: bold;
 	color: rgba(30, 144, 255, 1);
+}
+
+/** OMX **/
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    color: rgba(30, 144, 255, 1);
+    cursor: default;
+    background-color: rgba(30, 144, 255, 0.05);
+    border: 1px solid rgba(30, 144, 255, 1);
+    border-radius: 0px;
+    border-bottom-color: transparent;
+}
+
+.nav-tabs>li>a:hover {
+	color: rgba(30, 144, 255, 1);
+	background-color: rgba(30, 144, 255, 0.05);
+    border: 1px solid rgba(30, 144, 255, 1);
+    border-radius: 0px;
+    border-bottom-color: transparent;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid rgba(30, 144, 255, 1);
 }
