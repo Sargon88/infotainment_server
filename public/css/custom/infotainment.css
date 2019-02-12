@@ -67,3 +67,7 @@ body {
 .nav-tabs {
     border-bottom: 1px solid rgba(30, 144, 255, 1);
 }
+
+.btn-infotainment-omx-cmd {
+	color: rgba(30, 144, 255, 1);
+}
