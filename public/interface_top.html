@@ -1,0 +1,168 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Infotainment System</title>
+
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/fontawesome/fontawesome-all.css">
+    <link rel="stylesheet" href="/css/custom/infotainment.css">
+
+
+</head>
+
+<body class="container-fluid" style="background-color: #333;">
+
+    <!-- status bar -->
+    <div class="row" data-bind="style:{ height: '58px'}">
+        <div class="col-md-12">
+
+            <!-- inizio -->
+            <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <a class="navbar-brand" id="label" data-bind="click:changeBrightness">Infotainment</a>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="navbar-buttons" style="text-align: center">
+                        <ul class="nav navbar-nav">
+                            <li data-bind="css: {active: homepage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('home') }"><i class="fas fa-phone" data-bind="style: { color: homepage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.6)' }"></i></a></li>
+                            <li data-bind="css: {active: mapspage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('map') }"><i class="fas fa-map-marker-alt" data-bind="style: { color: mapspage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.6)' }"></i></a></li>
+                            <li data-bind="css: {active: omxpage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('omx') }"><i class="fas fa-compact-disc" data-bind="style: { color: omxpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.6)' }"></i></a></li>
+                            <li data-bind="css: {active: ytpage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('yt') }"><i class="fab fa-youtube" data-bind="style: { color: ytpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.6)' }"></i></a></li>
+                            <li data-bind="css: {active: carpage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('car') }"><i class="fas fa-car" data-bind="style: { color: carpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.6)' }"></i></a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <span class="navbar-text" id="status">
+                                <!-- ko if: status.navbar.bluetooth -->
+                                    <i class="fab fa-bluetooth-b fa-lg" style="color: rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                                <!-- ko ifnot: status.navbar.bluetooth -->
+                                <i class="fab fa-bluetooth-b fa-lg"></i>
+                                <!-- /ko -->
+                                <!-- ko if: status.navbar.wifi -->
+                                <i class="fas fa-wifi fa-lg" data-bind="click: openwifi" style="color:rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                                <!-- ko ifnot: status.navbar.wifi -->
+                                <i class="fas fa-wifi fa-lg" data-bind="click: openwifi"></i>
+                                <!-- /ko -->
+                                <span id="batt" data-bind="text: status.navbar.batt" style="color:rgba(30, 144, 255, 1)"></span>
+                                <!-- ko if: status.navbar.battInt() <= 10 -->
+                                <i class="fas fa-battery-empty" style="color:crimson"></i>
+                                <!-- /ko -->
+                                <!-- ko if: (status.navbar.battInt() > 10 && status.navbar.battInt() <= 50) -->
+                                <i class="fas fa-battery-quarter fa-lg fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                                <!-- ko if: status.navbar.battInt() > 50 && status.navbar.battInt() <= 75 -->
+                                <i class="fas fa-battery-half fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                                <!-- ko if: status.navbar.battInt() > 75 && status.navbar.battInt() <= 90 -->
+                                <i class="fas fa-battery-three-quarters fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                                <!-- ko if: status.navbar.battInt() > 90 && status.navbar.battInt() <= 100 -->
+                                <i class="fas fa-battery-full fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                            </span>
+                            <p class="navbar-text" id="hour" data-bind="text: status.navbar.hour" style="color:rgba(30, 144, 255, 1)"></p>
+                            <p class="navbar-text" id="off" data-bind="click: turnoff"><i class="fas fa-power-off fa-lg" style="color:crimson"></i></p>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+            <!-- fine -->
+
+
+<!-- *********************************************************************************************************************** -->
+            <!-- inizio -->
+            <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <a class="navbar-brand" id="label" data-bind="click:changeBrightness">Infotainment</a>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="navbar-buttons" style="text-align: center">
+                        <ul class="nav navbar-nav">
+                            <li data-bind="css: {active: homepage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('home') }"><i class="fas fa-phone" data-bind="style: { color: homepage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.6)' }"></i></a></li>
+                            <li data-bind="css: {active: mapspage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('map') }"><i class="fas fa-map-marker-alt" data-bind="style: { color: mapspage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.6)' }"></i></a></li>
+                            <li data-bind="css: {active: omxpage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('omx') }"><i class="fas fa-compact-disc" data-bind="style: { color: omxpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.6)' }"></i></a></li>
+                            <li data-bind="css: {active: ytpage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('yt') }"><i class="fab fa-youtube" data-bind="style: { color: ytpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.6)' }"></i></a></li>
+                            <li data-bind="css: {active: carpage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('car') }"><i class="fas fa-car" data-bind="style: { color: carpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.6)' }"></i></a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <span class="navbar-text" id="status">
+                                <!-- ko if: status.navbar.bluetooth -->
+                                    <i class="fab fa-bluetooth-b fa-lg" style="color: rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                                <!-- ko ifnot: status.navbar.bluetooth -->
+                                <i class="fab fa-bluetooth-b fa-lg"></i>
+                                <!-- /ko -->
+                                <!-- ko if: status.navbar.wifi -->
+                                <i class="fas fa-wifi fa-lg" data-bind="click: openwifi" style="color:rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                                <!-- ko ifnot: status.navbar.wifi -->
+                                <i class="fas fa-wifi fa-lg" data-bind="click: openwifi"></i>
+                                <!-- /ko -->
+                                <span id="batt" data-bind="text: status.navbar.batt" style="color:rgba(30, 144, 255, 1)"></span>
+                                <!-- ko if: status.navbar.battInt() <= 10 -->
+                                <i class="fas fa-battery-empty" style="color:crimson"></i>
+                                <!-- /ko -->
+                                <!-- ko if: (status.navbar.battInt() > 10 && status.navbar.battInt() <= 50) -->
+                                <i class="fas fa-battery-quarter fa-lg fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                                <!-- ko if: status.navbar.battInt() > 50 && status.navbar.battInt() <= 75 -->
+                                <i class="fas fa-battery-half fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                                <!-- ko if: status.navbar.battInt() > 75 && status.navbar.battInt() <= 90 -->
+                                <i class="fas fa-battery-three-quarters fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                                <!-- ko if: status.navbar.battInt() > 90 && status.navbar.battInt() <= 100 -->
+                                <i class="fas fa-battery-full fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                                <!-- /ko -->
+                            </span>
+                            <p class="navbar-text" id="hour" data-bind="text: status.navbar.hour" style="color:rgba(30, 144, 255, 1)"></p>
+                            <p class="navbar-text" id="off" data-bind="click: turnoff"><i class="fas fa-power-off fa-lg" style="color:crimson"></i></p>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+            <!-- fine -->
+
+        </div> <!-- col-md-12 -->
+    </div> <!-- row -->
+    <!-- status bar -->
+<!-- *********************************************************************************************************************** -->
+    
+    <!-- Page Container -->
+    <div class="row" data-bind="with: model">
+        <div class="col-md-12" data-bind="text: page" style="color:#ffffff"></div>
+    </div>
+    <!-- Page Container -->
+
+
+
+    <!-- Scripts -->
+        <script src="/js/jquery/jquery.min.js"></script>
+        <script src="/js/popper/popper.min.js"></script>
+        <script src="/js/bootstrap/bootstrap.min.js"></script>
+        <script src="/js/knockout/knockout.min.js"></script>
+        <script src="/js/moment/moment.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/models/callsModel.js"></script>
+        <script src="/js/models/fileModel.js"></script>
+        <script src="/js/models/playlistModel.js"></script>
+        <script src="/js/models/phonePageModel.js"></script>
+        <script src="/js/models/mapPageModel.js"></script>
+        <script src="/js/models/omxPageModel.js"></script>
+        <script src="/js/models/ytPageModel.js"></script>
+        <script src="/js/models/ytplayPageModel.js"></script>
+        <script src="/js/models/carPageModel.js"></script>
+        <script src="/js/application.js"></script>
+
+</body>
+</html>

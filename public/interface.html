@@ -8,110 +8,222 @@
 
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/css/fontawesome/fontawesome-all.css">
+    <link rel="stylesheet" href="/css/custom/infotainment.css">
 
 
 </head>
 
 <body class="container-fluid">
+   
+    <!-- Page Container -->
+    <div class="row" data-bind="with: model">
 
-    <!-- status bar -->
-    <div class="row" data-bind="style:{ height: '58px'}">
-        <div class="col-md-12">
-
-            <!-- inizio -->
-            <nav class="navbar navbar-inverse navbar-default">
-                <div class="container-fluid">
-                    <!-- Brand and toggle get grouped for better mobile display -->
-                    <div class="navbar-header">
-                        <a class="navbar-brand" id="label" data-bind="click:changeBrightness">Infotainment</a>
+        <!-- *** HOMEPAGE *** -->
+        <!-- ko if: page() == $root.homepage() -->
+        <br />
+        <!-- ko if: $root.loaded-->
+        <div class="col-xs-12">
+            <div class="row">
+                <!-- lista chiamate-->
+                    <div class="col-xs-5">
+                        <!-- ko foreach: $root.status.lastCalls -->
+                        <div class="col-xs-12 btn-infotainment-lastC" data-bind="click: $parent.makeCall, disable:$parent.inCall">
+                            
+                            <!-- ko if: $data.name -->
+                                <div class="col-xs-9 infotainment-lastCallLabel" data-bind="text: $data.name"></div>
+                            <!-- /ko -->
+                            <!-- ko ifnot: $data.name -->
+                                <div class="col-xs-9 infotainment-lastCallLabel" data-bind="text: $data.phNumber, style:{fontWeight: 'bold'}"></div>
+                            <!-- /ko -->
+                            <div class="col-xs-1 pull-right">
+                                <!-- ko if: $data.callType() == 1 -->
+                                <span style="color: rgba(255, 51, 51, 1);"><i class="fas fa-angle-double-left"></i></span>
+                                <!-- /ko -->
+                                <!-- ko if: $data.callType() == 2 -->
+                                <span style="color: rgba(28, 255, 20, 1);"><i class="fas fa-angle-double-right"></i></span>
+                                <!-- /ko -->
+                                <!-- ko if: $data.callType() == 3 -->
+                                <span><i class="fas fa-phone-slash"></i></span>
+                                <!-- /ko -->
+                                <!-- ko if: $data.callType() == 5 -->
+                                <span><i class="fas fa-phone-slash"></i></span>
+                                <!-- /ko -->
+                            </div>
+                            <div class="col-xs-12" data-bind="text: $data.callDayTime"></div>
+                        </div>
+                        <!-- /ko -->
                     </div>
+                <!-- lista chiamate-->
+                <!-- chiamate rapide-->
+                    <div class="col-xs-6 col-xs-offset-1">
+                        <div class="row">
+                            <!-- ko foreach: $root.status.starredContacts-->
+                            <div class="col-xs-6">
+                                <button class="btn-block btn-infotainment-starredC" data-bind="click: $parent.makeCall, disable:$parent.inCall">
+                                   <div class="col-xs-12" data-bind="text: $data.name"></div> 
+                                   <div class="col-xs-12" data-bind="text: $data.number"></div>
+                                   <br />
+                                </button>
+                                <div class="col-xs-12"><br/></div>
+                            </div>
+                            <!-- /ko-->
+                        </div>
 
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="navbar-right">
-                        <span class="navbar-text" id="status">
-                            <!-- ko if: status.navbar.bluetooth -->
-                                <i class="fab fa-bluetooth-b fa-lg" style="color: dodgerblue"></i>
-                            <!-- /ko -->
-                            <!-- ko ifnot: status.navbar.bluetooth -->
-                            <i class="fab fa-bluetooth-b fa-lg"></i>
-                            <!-- /ko -->
-                            <!-- ko if: status.navbar.wifi -->
-                            <i class="fas fa-wifi fa-lg" data-bind="click: openwifi" style="color:dodgerblue"></i>
-                            <!-- /ko -->
-                            <!-- ko ifnot: status.navbar.wifi -->
-                            <i class="fas fa-wifi fa-lg" data-bind="click: openwifi"></i>
-                            <!-- /ko -->
-                            <span id="batt" data-bind="text: status.navbar.batt" style="color:dodgerblue"></span>
-                            <!-- ko if: status.navbar.battInt() <= 10 -->
-                            <i class="fas fa-battery-empty" style="color:crimson"></i>
-                            <!-- /ko -->
-                            <!-- ko if: (status.navbar.battInt() > 10 && status.navbar.battInt() <= 50) -->
-                            <i class="fas fa-battery-quarter fa-lg fa-lg" style="color:dodgerblue"></i>
-                            <!-- /ko -->
-                            <!-- ko if: status.navbar.battInt() > 50 && status.navbar.battInt() <= 75 -->
-                            <i class="fas fa-battery-half fa-lg" style="color:dodgerblue"></i>
-                            <!-- /ko -->
-                            <!-- ko if: status.navbar.battInt() > 75 && status.navbar.battInt() <= 90 -->
-                            <i class="fas fa-battery-three-quarters fa-lg" style="color:dodgerblue"></i>
-                            <!-- /ko -->
-                            <!-- ko if: status.navbar.battInt() > 90 && status.navbar.battInt() <= 100 -->
-                            <i class="fas fa-battery-full fa-lg" style="color:dodgerblue"></i>
-                            <!-- /ko -->
-                        </span>
-                        <p class="navbar-text" id="hour" data-bind="text: status.navbar.hour" style="color:dodgerblue"></p>
-                        <p class="navbar-text" id="off" data-bind="click: turnoff"><i class="fas fa-power-off fa-lg" style="color:crimson"></i></p>
-                    </div><!-- /.navbar-right -->
-                </div><!-- /.container-fluid -->
-            </nav>
-            <!-- fine -->
+                        <!-- DEBUG -->
+                        <div class="row">
+                            <div class="col-xs-12">DEBUG ------</div>
+                        </div>
+                        <table>
+                            <tr>
+                                <td>Latitude:</td>
+                                <td data-bind="text: $root.lat"></td>
+                            </tr>
+                            <tr>
+                                <td>Longitude:</td>
+                                <td data-bind="text: $root.long"></td>
+                            </tr>
+                            <tr>
+                                <td>Update:</td>
+                                <td data-bind="text: $root.status.navbar.lastUpdate"></td>
+                            </tr>
+                        </table>
 
-        </div> <!-- col-md-12 -->
-    </div> <!-- row -->
-
-    <!-- area centrale -->
-    <!-- MENU ORIZZONTALE -->
-    <div class="row">
-        <div class="col-md-12" id="menu">
-            <div class="btn-group btn-group-justified" role="group">
-                <!-- ko ifnot: homepage -->
-                <div class="btn-group" role="group">
-                    <button class="btn btn-default btn-lg" type="button" data-bind="click:goHomepage">
-                            <i class="fas fa-phone" data-bind="style: { color: loaded() ? 'dodgerblue' : 'crimson' }"></i>
-                    </button>
-                </div>
-                <!-- /ko -->
-                <!-- ko ifnot: mapspage -->
-                <div class="btn-group" role="group">
-                    <button class="btn btn-default btn-lg" type="button" data-bind="click:goMaps">
-                            <i class="fas fa-map-marker-alt" data-bind="style: { color: loaded() ? 'dodgerblue' : 'crimson' }"></i>
-                    </button>
-                </div>                        
-                <!-- /ko -->
-                <!-- ko ifnot: omxpage -->
-                <div class="btn-group" role="group">
-                    <button class="btn btn-default btn-lg" type="submit" data-bind="click:goOMX">
-                        <i class="fas fa-compact-disc" style="color: dodgerblue"></i>
-                    </button>
-                </div>
-                <!-- /ko -->
-                <!-- ko ifnot: ytpage -->
-                <div class="btn-group" role="group">
-                    <button class="btn btn-default btn-lg" type="submit" data-bind="click:goYT">
-                        <i class="fab fa-youtube" style="color: dodgerblue"></i>
-                    </button>
-                </div>                        
-                <!-- /ko -->
-                <!-- ko ifnot: carpage -->
-                <div class="btn-group" role="group">
-                    <button class="btn btn-default btn-lg" type="submit" data-bind="click:goCar">
-                        <i class="fas fa-car" style="color: dodgerblue"></i>
-                    </button>                   
-                </div>
-                <!-- /ko -->
+                       
+                        <div class="row">
+                            <div class="col-xs-12">DEBUG ------</div>
+                        </div>
+                        <!-- DEBUG -->
+                    </div>
+                <!-- chiamate rapide-->
             </div>
         </div>
-    </div> <!-- menu orizzontale-->
-    
+        <!-- /ko -->
+            
+        <!-- /ko-->
+        <!-- *** HOMEPAGE *** -->
+
+        <!-- *** OMX *** -->
+        <!-- ko if: page() == $root.omxpage() -->
+        <br />
+        <!-- ko if: $root.loaded-->
+        <div id="omxpage" class="row">
+            <div class="col-xs-12">
+                <!-- FASCIA ALTA-->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <ul class="nav nav-tabs">
+                            <!-- ko if: showDrives -->
+                            <li role="presentation" class="active"><a href="#">Drives</a></li>
+                            <!-- /ko -->
+                            <!-- ko ifnot: showDrives -->
+                            <li role="presentation" data-bind="click:changeDrivePlaylists"><a href="#">Drives</a></li>
+                            <!-- /ko -->
+                            <!-- ko if: showPlaylists -->
+                            <li role="presentation" class="active"><a href="#">Playlists</a></li>
+                            <!-- /ko -->
+                            <!-- ko ifnot: showPlaylists -->
+                            <li role="presentation" data-bind="click:changeDrivePlaylists"><a href="#">Playlists</a></li>
+                            <!-- /ko -->
+
+                            <!-- COMANDI AUDIO-->
+                            <div class="col-xs-9">
+                                <div class="row">
+                                        <div class="col-xs-1 col-xs-offset-5" style="color: green;"><i class="fas fa-play fa-lg"></i></div>
+                                        <div class="col-xs-1" style="color: red;"><i class="fas fa-stop fa-lg"></i></div>
+                                        <div class="col-xs-1" style="color: grey;"><i class="fas fa-pause fa-lg"></i></div>
+                                        <div class="col-xs-1" style="color: grey;"><i class="fas fa-step-forward fa-lg"></i></div>
+                                        <div class="col-xs-1"></div>
+                                        <div class="col-xs-1" style="color: grey;"><i class="fas fa-volume-down fa-lg"></i></div>
+                                        <div class="col-xs-1" style="color: grey;"><i class="fas fa-volume-up fa-lg"></i></div>
+                                </div>
+                            </div>            
+                        </ul>
+                    </div>    
+                </div>
+                <!-- FASCIA ALTA-->
+            </div>
+        </div>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- *** OMX *** -->
+
+
+
+
+        <!-- ko ifnot: $root.loaded -->
+        <br /><br /><br />
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-9 col-xs-offset-2">
+                    Accendere il sistema di tethering o avviare l'applicazione sul dispositivo mobile
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-xs-2 col-xs-offset-5" style="color: rgba(30, 144, 255, 1)">
+                    <i class="fas fa-spinner fa-5x fa-pulse"></i>
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+    <!-- Page Container -->
+
+    <!-- inizio barra -->
+    <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" id="label" data-bind="click:changeBrightness">Infotainment</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbar-buttons" style="text-align: center">
+                <ul class="nav navbar-nav">
+                    <li data-bind="css: {active: model().page() == homepage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('home') }"><i class="fas fa-phone" data-bind="style: { color: model().page() == homepage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == mapspage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('map') }"><i class="fas fa-map-marker-alt" data-bind="style: { color: model().page() == mapspage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == omxpage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('omx') }"><i class="fas fa-compact-disc" data-bind="style: { color: model().page() == omxpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == ytpage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('yt') }"><i class="fab fa-youtube" data-bind="style: { color: model().page() == ytpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == carpage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('car') }"><i class="fas fa-car" data-bind="style: { color: model().page() == carpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <span class="navbar-text" id="status">
+                        <!-- ko if: status.navbar.bluetooth -->
+                            <i class="fab fa-bluetooth-b fa-lg" style="color: rgba(30, 144, 255, 1)"></i>
+                        <!-- /ko -->
+                        <!-- ko ifnot: status.navbar.bluetooth -->
+                        <i class="fab fa-bluetooth-b fa-lg"></i>
+                        <!-- /ko -->
+                        <!-- ko if: status.navbar.wifi -->
+                        <i class="fas fa-wifi fa-lg" data-bind="click: openwifi" style="color:rgba(30, 144, 255, 1)"></i>
+                        <!-- /ko -->
+                        <!-- ko ifnot: status.navbar.wifi -->
+                        <i class="fas fa-wifi fa-lg" data-bind="click: openwifi"></i>
+                        <!-- /ko -->
+                        <span id="batt" data-bind="text: status.navbar.batt" style="color:rgba(30, 144, 255, 1)"></span>
+                        <!-- ko if: status.navbar.battInt() <= 10 -->
+                        <i class="fas fa-battery-empty" style="color:crimson"></i>
+                        <!-- /ko -->
+                        <!-- ko if: (status.navbar.battInt() > 10 && status.navbar.battInt() <= 50) -->
+                        <i class="fas fa-battery-quarter fa-lg fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                        <!-- /ko -->
+                        <!-- ko if: status.navbar.battInt() > 50 && status.navbar.battInt() <= 75 -->
+                        <i class="fas fa-battery-half fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                        <!-- /ko -->
+                        <!-- ko if: status.navbar.battInt() > 75 && status.navbar.battInt() <= 90 -->
+                        <i class="fas fa-battery-three-quarters fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                        <!-- /ko -->
+                        <!-- ko if: status.navbar.battInt() > 90 && status.navbar.battInt() <= 100 -->
+                        <i class="fas fa-battery-full fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                        <!-- /ko -->
+                    </span>
+                    <p class="navbar-text" id="hour" data-bind="text: status.navbar.hour" style="color:rgba(30, 144, 255, 1)"></p>
+                    <p class="navbar-text" id="off" data-bind="click: turnoff"><i class="fas fa-power-off fa-lg" style="color:crimson"></i></p>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
 
     <!-- Scripts -->
         <script src="/js/jquery/jquery.min.js"></script>
@@ -123,6 +235,12 @@
         <script src="/js/models/callsModel.js"></script>
         <script src="/js/models/fileModel.js"></script>
         <script src="/js/models/playlistModel.js"></script>
+        <script src="/js/models/phonePageModel.js"></script>
+        <script src="/js/models/mapPageModel.js"></script>
+        <script src="/js/models/omxPageModel.js"></script>
+        <script src="/js/models/ytPageModel.js"></script>
+        <script src="/js/models/ytplayPageModel.js"></script>
+        <script src="/js/models/carPageModel.js"></script>
         <script src="/js/application.js"></script>
 
 </body>

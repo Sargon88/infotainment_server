@@ -34,11 +34,12 @@ var commands = {
 
 /** PAGE MANAGER */
 app.use(express.static('public'));
-app.use(express.static(path.join(__dirname, "dist/infotainment")));
+//app.use(express.static(path.join(__dirname, "dist/infotainment")));
+
 app.get('/monitor', function(req, res){
 	res.sendFile(__dirname + '/public/monitor.html');
 });
-//versione con knockout
+//versione 1.0 con knockout
 app.get('/interface', function(req, res){
 	res.sendFile(__dirname + '/public/interface.html');
 });
@@ -146,32 +147,24 @@ function shell(cmd, lvl, f){
 io.on('connection', function(socket){
 	Socket = socket;
 	log("---------------------------- CONNECTED! --------------------------------------");
-
 	/** --------- GENERIC --------------- */
 	Socket.on('phone status', function(msg){	
 		GenericService.phoneStatus(msg);
-
 	}).on('disconnetc', function(msg){
-		log("---------------------------- DISCONNECTED! --------------------------------------");
-		
+		log("---------------------------- DISCONNECTED! --------------------------------------");		
 	}).on('DEBUG', function(msg){
-		GenericService.debug(msg);
-		
+		GenericService.debug(msg);		
 	}).on('reboot', function(){
 		//reboot command
-		GenericService.reboot();
-		
+		GenericService.reboot();		
 	}).on('change page', function(msg){
 		//cambio pagina
 		log("changepage", msg);
 		GenericService.changePage(msg);
-
 	}).on('getPage', function(msg){
 		GenericService.getPage(msg);
-
 	}).on('getStatus', function(msg){
 		emit('getStatus', "");
-
 	}).on('brightness', function(){
 		log("brightness", "now: " + InfotainmentStatus.brightness);
 		GenericService.changeBrightness();		
@@ -180,29 +173,21 @@ io.on('connection', function(socket){
 
 	/** ----------- CHIAMATE ------------ */
 	Socket.on('incoming calling', function(msg){
-		CallService.incomingCall(msg);
-		
+		CallService.incomingCall(msg);		
 	}).on('call end', function(msg){
-		CallService.callEnd(msg);
-		
+		CallService.callEnd(msg);	
 	}).on('getCall', function(msg){
-		CallService.getCall();
-		
+		CallService.getCall();	
 	}).on('call answer', function(msg){
 		CallService.callAnswer(msg);
-		
 	}).on('answer call', function(msg){
 		CallService.answerCall(msg);
-
 	}).on('end call', function(msg){
 		CallService.endCall(msg);
-
 	}).on('start phone call', function(msg){
 		CallService.startPhoneCall(msg);
-
 	}).on('outgoing calling', function(msg){
 		CallService.outgoingCall(msg);
-
 	});
 
 	/** ----------- OMX ------------ */
@@ -260,17 +245,14 @@ GenericService = {
 			shell(cmd);
 		}
 	},
-
 	debug: function(msg){
 		emit("DEBUG", msg);
 		log(msg);
 	},
-
 	reboot: function(){
 		log("REBOOT");
 		shell(cmd_reboot," stdout");
 	},
-
 	changePage: function(msg, extra){
 		
 		InfotainmentStatus.newPage = msg;
@@ -312,12 +294,10 @@ GenericService = {
 			emit("set page", msg);
 		}	
 	},
-
 	getPage: function(msg){
 		console.log("SET PAGE: " + InfotainmentStatus.page);
 		emit("set page", InfotainmentStatus.page);
 	},
-
 	changeBrightness: function(){
 		if(InfotainmentStatus.brightness == 255){
 			InfotainmentStatus.brightness = 26
@@ -340,7 +320,6 @@ CallService = {
 
 		emit("incoming calling", msg);
 	},
-
 	callEnd: function(msg){
 		log('----- Call end -----');
 		log('Caller Number: ' + msg);
@@ -350,7 +329,6 @@ CallService = {
 
 		emit("call end", msg);
 	},
-
 	getCall: function(){
 
 		if(InfotainmentStatus.calling || InfotainmentStatus.inCall){
@@ -361,7 +339,6 @@ CallService = {
 
 		}		
 	},
-
 	callAnswer: function(msg){
 
 		if(InfotainmentStatus.calling){
@@ -373,7 +350,6 @@ CallService = {
 
 		}
 	},
-
 	answerCall: function(msg){
 
 		if(InfotainmentStatus.calling){
@@ -385,7 +361,6 @@ CallService = {
 
 		}
 	},
-
 	endCall: function(msg){
 
 		if(InfotainmentStatus.calling || InfotainmentStatus.inCall){
@@ -398,7 +373,6 @@ CallService = {
 
 		}
 	},
-
 	startPhoneCall: function(msg){
 		if(!InfotainmentStatus.inCall && ! InfotainmentStatus.calling){
 			log("----- start outgoing call ------ ");
@@ -412,7 +386,6 @@ CallService = {
 
 		}		
 	},
-
 	outgoingCall: function(msg){
 		log("----- outgoing calling ------ ");
 		log("Number outgoing calling: " + msg);
@@ -426,7 +399,6 @@ CallService = {
 };
 
 OmxService = {
-	/****************************************************************************************** */
 	loadOmxPage: function(msg){
 		log("loadOmxPage function: " + commands.omx.getPlaylistList);
 
@@ -482,7 +454,6 @@ OmxService = {
 	
 		})	
 	},
-
 	exploreDirectory: function(msg){
 		log("--------- explore directory: " + msg + " ---------");
 		
@@ -503,7 +474,6 @@ OmxService = {
 			emit("explore response", rsp);
 		});
 	},
-
 	playFile: function(msg){
 		log("--------- play file: " + msg + " ---------");
 
@@ -523,7 +493,6 @@ OmxService = {
 			emit("started playing", "");
 		});
 	},
-
 	stopFile: function(msg){
 		log("--------- play file: " + msg + " ---------");
 
@@ -537,7 +506,6 @@ OmxService = {
 			
 		});	
 	},
-
 	omxCommand: function(msg){
 		log("omx command: " + msg);
 
@@ -562,7 +530,6 @@ OmxService = {
 
 		log("END");
 	},
-
 	savePlaylist: function(msg){
 		log("--------- save playlst: " + msg + " ---------");
 
@@ -580,7 +547,6 @@ OmxService = {
 
 		});
 	},
-
 	loadPlaylist: function(msg){
 		log("--------- load playlst: " + msg + " ---------");
 
@@ -614,7 +580,6 @@ OmxService = {
 };
 
 YoutubeService = {
-
 	openVideo: function(msg){
 		log("--------- Open Youtube Video: " + msg + " ---------");
 
@@ -625,7 +590,6 @@ YoutubeService = {
 
 		GenericService.changePage("ytPlay");
 	},
-
 	loadYoutube: function(msg){
 		log("--------- Load Youtube: " + InfotainmentStatus.yturl + " ---------");
 		emit('youtube url', InfotainmentStatus.yturl);
