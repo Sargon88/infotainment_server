@@ -54,14 +54,16 @@ body {
     border: 1px solid rgba(30, 144, 255, 1);
     border-radius: 0px;
     border-bottom-color: transparent;
+    box-shadow: 0 0 5px rgba(30, 144, 255, 1);
 }
 
 .nav-tabs>li>a:hover {
 	color: rgba(30, 144, 255, 1);
-	background-color: rgba(30, 144, 255, 0.05);
-    border: 1px solid rgba(30, 144, 255, 1);
+	background-color: rgba(30, 144, 255, 0.08);
+    border: 1px solid #222;
     border-radius: 0px;
     border-bottom-color: transparent;
+    box-shadow: 0 0 5px rgba(30, 144, 255, 1);
 }
 
 .nav-tabs {

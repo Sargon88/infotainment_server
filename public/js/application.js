@@ -26,6 +26,7 @@ var infoViewModel = function(){
         brightness: ko.observable(),
         lastCalls: ko.observableArray(),
         starredContacts: ko.observableArray(),
+        lastUpdate: ko.observable(new Date()),
 
         //CHIAMATE
         calling: ko.observable(false),
@@ -38,7 +39,6 @@ var infoViewModel = function(){
             batt: ko.observable("--"),
             bluetooth: ko.observable(false),
             wifi: ko.observable(false),
-            lastUpdate: ko.observable(new Date()),
             signal: ko.observable(0)
         }
     };
@@ -254,9 +254,9 @@ var infoViewModel = function(){
     self.checkConnection = function(){
 
         setInterval(function(){
-            console.log("RESET? " + ((new Date() - self.lastUpdate()) / 1000));
+            console.log("RESET? " + ((new Date() - self.status.lastUpdate()) / 1000));
             
-            if(((new Date() - self.lastUpdate()) / 1000) > 60){
+            if(((new Date() - self.status.lastUpdate()) / 1000) > 60){
                 self.loaded(false);
                 self.resetInterface();
             }
@@ -269,8 +269,8 @@ var infoViewModel = function(){
         self.status.navbar.batt("--");
         self.status.navbar.bluetooth(false);
         self.status.navbar.wifi(false);
-        self.status.navbar.starredContacts.removeAll();
-        self.status.navbar.lastCalls.removeAll();
+        self.status.starredContacts.removeAll();
+        self.status.lastCalls.removeAll();
     }
 
     //LAST
