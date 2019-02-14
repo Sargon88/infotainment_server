@@ -113,7 +113,7 @@ var infoViewModel = function(){
             var url = "https://embed.waze.com/it/iframe?zoom=16&lat="+stat.latitude+"&lon="+stat.longitude+"&pin=1";
             self.wazeurl(url);  
 
-            self.status.navbar.lastUpdate(new Date());
+            self.status.lastUpdate(new Date());
         }).on('coordinates', function(msg){
 
             var stat = JSON.parse(msg);
@@ -121,7 +121,7 @@ var infoViewModel = function(){
             self.lat(stat.latitude);
             self.long(stat.longitude);
 
-            self.status.navbar.lastUpdate(new Date());
+            self.status.lastUpdate(new Date());
         }).on('DEBUG', function(msg){
             console.log(msg);
         }).on('set page', function(msg){
@@ -131,6 +131,8 @@ var infoViewModel = function(){
         }).on('incoming calling', function(msg){
             self.openCallInterface();
         }).on('outgoing calling', function(msg){
+            self.openCallInterface();
+        }).on('start phone call', function(msg){
             self.openCallInterface();
         }).on('end call', function(msg){
            setTimeout(self.closeCallInterface, 2000);
