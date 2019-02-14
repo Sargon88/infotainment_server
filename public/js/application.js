@@ -132,8 +132,6 @@ var infoViewModel = function(){
             self.openCallInterface();
         }).on('outgoing calling', function(msg){
             self.openCallInterface();
-        }).on('start phone call', function(msg){
-            self.openCallInterface();
         }).on('end call', function(msg){
            setTimeout(self.closeCallInterface, 2000);
         }).on('open yt video', function(msg){
@@ -207,7 +205,9 @@ var infoViewModel = function(){
     /** Calls */
     self.openCallInterface = function(){
         console.log("toggleCallInterface");
-        self.callingUI(window.open(self.params.server + self.params.callingendpoint , "_blank", "toolbar=no,scrollbars=no,resizable=no,top=20,left=200,width=400,height=400"));   
+        var endpoint = self.params.server + self.params.callingendpoint;
+        self.callingUI(window.open(endpoint, "_blank", "toolbar=no,scrollbars=no,resizable=no,top=20,left=200,width=400,height=400"));   
+        console.log("ok");
     }
 
     self.closeCallInterface = function(){

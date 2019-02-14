@@ -6,7 +6,8 @@
 
     <title>Calling...</title>
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/fontawesome/fontawesome-all.css">
+    <link rel="stylesheet" href="/css/fontawesome/all.min.css">
+    <link rel="stylesheet" href="/css/custom/infotainment.css">
 
 
 </head>
@@ -49,12 +50,12 @@
         <!-- ko ifnot: answered  -->
             <!-- ko ifnot: ended -->
             <div class="col-xs-6">
-                    <button class="btn btn-success btn-lg btn-block" data-bind="click:answerCall, disable:ended">Rispondi</button>
+                <button class="btn-block btn-infotainment-border btn-infotainment-glow" data-bind="click:answerCall, disable:ended">Rispondi</button>
             </div>
 
             <!-- reject -->
             <div class="col-xs-6">
-                    <button class="btn btn-danger btn-lg btn-block" data-bind="click:endCall, disable:ended">Rifiuta</button>
+                <button class="btn-block btn-infotainment-border btn-infotainment-glow" data-bind="click:endCall, disable:ended">Rifiuta</button>
             </div>
             <!-- /ko -->
         <!-- /ko -->
@@ -62,13 +63,13 @@
         <!-- ko if: answered  -->
             <!-- ko if: calling  -->
             <div class="col-xs-12">
-                    <button class="btn btn-danger btn-lg btn-block" data-bind="click:endCall">Aggancia</button>
+                <button class="btn-block btn-infotainment-border btn-infotainment-glow" data-bind="click:endCall">Aggancia</button>
             </div>
             <!-- /ko -->
 
             <!-- ko if: ended -->
             <div class="col-xs-12">
-                    <button class="btn btn-danger btn-lg btn-block" disabled="disabled">Aggancia</button>
+                <button class="btn-block btn-infotainment-border btn-infotainment-glow" disabled="disabled">Aggancia</button>
             </div>
             <!-- /ko -->
         <!-- /ko -->

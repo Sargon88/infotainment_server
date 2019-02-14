@@ -28,7 +28,7 @@ body {
 
 
 /** HOME **/
-.btn-infotainment-starredC {
+.btn-infotainment-border {
 	border: 1.5px solid rgba(30, 144, 255, 1);
 	border-radius: 0px;
 	background-color: #222;
@@ -44,6 +44,11 @@ body {
 .infotainment-lastCallLabel {
 	font-weight: bold;
 	color: rgba(30, 144, 255, 1);
+}
+
+/** CALL **/
+.btn-infotainment-border-action {
+	box-shadow: 0 0 5px rgba(30, 144, 255, 1);
 }
 
 /** OMX **/
