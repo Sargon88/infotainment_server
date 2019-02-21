@@ -38,6 +38,7 @@ body {
 	border-bottom: 0.2px solid rgba(30, 144, 255, 1);
 	border-right: 0.2px solid rgba(30, 144, 255, 1);
 	margin-bottom: 15px;
+	padding: 5px 5px 0px 0px;
 	background-color: rgba(30, 144, 255, 0.05);
 }
 
@@ -47,7 +48,7 @@ body {
 }
 
 /** CALL **/
-.btn-infotainment-border-action {
+.btn-infotainment-border .btn-infotainment-glow {
 	box-shadow: 0 0 5px rgba(30, 144, 255, 1);
 }
 

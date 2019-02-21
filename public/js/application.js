@@ -84,36 +84,24 @@ var infoViewModel = function(){
         self.checkConnection();
 
         self.params.socket.on('phone status', function(msg){
-            var msgObj = JSON.parse(msg);
+            var stat = JSON.parse(msg);
 
-            var stat = msgObj;
+            self.lat(stat.latitude);
+            self.long(stat.longitude);
+            self.status.latitude(stat.latitude);
+            self.status.longitude(stat.longitude);
 
-            if(stat.phonestat != null){
-                //retrocompatibilità con infotainment 1
-                stat = stat.phonestat;
+            self.status.navbar.battInt(parseInt(stat.navbar.batt));
+            self.status.navbar.batt(stat.navbar.batt + "%");
+            self.status.navbar.bluetooth(stat.navbar.bluetooth == 'true');
+            self.status.navbar.wifi(stat.navbar.wifi == 'true');
+            self.status.starredContacts(stat.starredContacts.slice(0, 7));
+            self.status.navbar.signal(parseInt(stat.navbar.signal));
 
-                self.lat(stat.latitude);
-                self.long(stat.longitude);
-            }
-
-            var sContacts = stat.starredcontacts;
-            var lastCalls = stat.lastcalls;
-
-            self.status.navbar.battInt(parseInt(stat.batt));
-            self.status.navbar.batt(stat.batt + "%");
-            self.status.navbar.bluetooth(stat.bluetooth == 'true');
-            self.status.navbar.wifi(stat.wifi == 'true');
-            self.status.starredContacts(sContacts.slice(0, 8));
-            self.loaded(true);
-            self.status.navbar.signal(parseInt(stat.signal));
-
-            self.buildLastCall(lastCalls);
+            self.buildLastCall(stat.lastCalls);
             
-
-            var url = "https://embed.waze.com/it/iframe?zoom=16&lat="+stat.latitude+"&lon="+stat.longitude+"&pin=1";
-            self.wazeurl(url);  
-
             self.status.lastUpdate(new Date());
+            self.loaded(true);
         }).on('coordinates', function(msg){
 
             var stat = JSON.parse(msg);

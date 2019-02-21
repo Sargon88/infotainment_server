@@ -148,9 +148,10 @@ io.on('connection', function(socket){
 	Socket = socket;
 	log("---------------------------- CONNECTED! --------------------------------------");
 	/** --------- GENERIC --------------- */
-	Socket.on('phone status', function(msg){	
+	Socket.on('phone status', function(msg){
+	log("Phone status");
 		GenericService.phoneStatus(msg);
-	}).on('disconnetc', function(msg){
+	}).on('disconnect', function(msg){
 		log("---------------------------- DISCONNECTED! --------------------------------------");		
 	}).on('DEBUG', function(msg){
 		GenericService.debug(msg);		
@@ -664,10 +665,13 @@ function startFullscreenChromium(){
 	});
 };
 
+var topBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &";
+var bootomBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &";
+
 function startBarChromium(){
 	log("START BAR CHROMIUM");
 
-	exec("./../info_scripts/keepAliveChromium.sh 1920 120 0 0 >> /home/pi/infotainment_logs/chromium.log &", function(err, stdout, stderr) {
+	exec(topBar, function(err, stdout, stderr) {
 		if(stderr != ""){
 			log("---- stderr --- ");
 			log(stderr);
