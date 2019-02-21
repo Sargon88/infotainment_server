@@ -665,9 +665,14 @@ function startFullscreenChromium(){
 	});
 };
 
+<<<<<<< HEAD
 var topBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &";
 var bottomBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &";
 
+=======
+var topBar = "./../info_scripts/keepAliveChromium.sh 1920 120 0 0 >> /home/pi/infotainment_logs/chromium.log &";
+var bottomBar = "./../info_scripts/keepAliveChromium.sh 1920 60 0 1020 >> /home/pi/infotainment_logs/chromium.log &";
+>>>>>>> master
 function startBarChromium(){
 	log("START BAR CHROMIUM");
 
