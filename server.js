@@ -666,12 +666,12 @@ function startFullscreenChromium(){
 };
 
 var topBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &";
-var bootomBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &";
+var bottomBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &";
 
 function startBarChromium(){
 	log("START BAR CHROMIUM");
 
-	exec(topBar, function(err, stdout, stderr) {
+	exec(bottomBar, function(err, stdout, stderr) {
 		if(stderr != ""){
 			log("---- stderr --- ");
 			log(stderr);
