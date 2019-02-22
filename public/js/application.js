@@ -95,7 +95,7 @@ var infoViewModel = function(){
             self.status.navbar.batt(stat.navbar.batt + "%");
             self.status.navbar.bluetooth(stat.navbar.bluetooth == 'true');
             self.status.navbar.wifi(stat.navbar.wifi == 'true');
-            self.status.starredContacts(stat.starredContacts.slice(0, 7));
+            self.status.starredContacts(stat.starredContacts.slice(0, 5));
             self.status.navbar.signal(parseInt(stat.navbar.signal));
 
             self.buildLastCall(stat.lastCalls);
