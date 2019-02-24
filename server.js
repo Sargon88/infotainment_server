@@ -375,7 +375,7 @@ CallService = {
 		}
 	},
 	startPhoneCall: function(msg){
-		if(!InfotainmentStatus.inCall && ! InfotainmentStatus.calling){
+		if(!InfotainmentStatus.inCall && !InfotainmentStatus.calling){
 			log("----- start outgoing call ------ ");
 			log("Number outgoing call: " + msg);
 			log("----- start outgoing call ------ ");

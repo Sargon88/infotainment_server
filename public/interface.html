@@ -17,33 +17,41 @@
    
     <!-- Page Container -->
     <div class="row" data-bind="with: model">
-
         <!-- *** HOMEPAGE *** -->
         <!-- ko if: page() == $root.homepage() -->
         <br />
         <!-- ko ifnot: $root.loaded -->
         <br /><br /><br />
         <center>
-            <div class="col-xs-4 col-xs-offset-4 conn-waiting-square">
-                <br />
-                <div class="row">
-                    <div class="col-xs-12">
-                        <i class="fas fa-wifi fa-5x" style="color: rgba(30, 144, 255, 1)"></i>
+            <div class="box-outer">
+                <div class="col-xs-4 col-xs-offset-4 main_box">
+                    <div class="bar right"></div>
+                    <div class="bar left "></div>
+                    
+                    <div content>
+                        <br />
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <i class="fas fa-wifi fa-5x" style="color: rgba(30, 144, 255, 1)"></i>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                Accendere il sistema di tethering o avviare l'applicazione
+                            </div>
+                        </div>
+        <!--                <div class="row">
+                            <div class="col-xs-12" style="color: rgba(30, 144, 255, 1)">
+                                <i class="fas fa-spinner fa-5x fa-pulse"></i>
+                            </div>
+                        </div>
+        -->               
+                        <br />
                     </div>
+
+
                 </div>
-                <br/>
-                <div class="row">
-                    <div class="col-xs-12">
-                        Accendere il sistema di tethering o avviare l'applicazione
-                    </div>
-                </div>
-<!--                <div class="row">
-                    <div class="col-xs-12" style="color: rgba(30, 144, 255, 1)">
-                        <i class="fas fa-spinner fa-5x fa-pulse"></i>
-                    </div>
-                </div>
--->               
-                <br />
             </div>
         </center>
         <!-- /ko -->

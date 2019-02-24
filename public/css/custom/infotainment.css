@@ -33,18 +33,60 @@ body {
 
 
 /** HOME **/
-.conn-waiting-square{
-	padding: 1rem;
-	color: white;
+.box-outer {
+	overflow: hidden;
+}
+.main_box {
+	position: relative;
+	background: #222;
 	border-width: 3px;
 	border-style: solid;
 	border-image: 
 		linear-gradient(
-			to bottom, 
+			to top, 
 			rgba(30, 144, 255, 0.7),
 			#222
 		) 1 100%;
 }
+.bar {
+	position: absolute;
+	width: 50px;
+	height: 5px;
+	background: #222;
+	transition: all 1s linear;
+	-webkit-animation-duration: 1s;
+	animation-duration: 1s;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+	-webkit-animation-iteration-count: infinite;
+	animation-iteration-count: infinite;
+}
+
+.right, .left {
+	top: 18px;
+	right: -28px;
+	transform: rotate(90deg);
+}
+
+.left {
+	top: 18px;
+	left: -28px;
+	transform: rotate(90deg);
+}
+
+@keyframes v-move {
+	0% {
+		top: -5px;
+	}
+	100% {
+		top:228px;
+	}
+}
+.right, .left {
+	-webkit-animation-name: v-move;
+	animation-name: v-move;
+}
+
 
 .btn-infotainment-border {
 	padding: 1rem;
