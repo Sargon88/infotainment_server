@@ -53,9 +53,9 @@ body {
 	width: 50px;
 	height: 5px;
 	background: #222;
-	transition: all 1s linear;
-	-webkit-animation-duration: 1s;
-	animation-duration: 1s;
+	transition: all 1.5s linear;
+	-webkit-animation-duration: 1.5s;
+	animation-duration: 1.5s;
 	-webkit-animation-fill-mode: both;
 	animation-fill-mode: both;
 	-webkit-animation-iteration-count: infinite;
@@ -82,9 +82,29 @@ body {
 		top:228px;
 	}
 }
-.right, .left {
+
+@keyframes v-move_top {
+	0% {
+		top: 228px;
+	}
+	100% {
+		top:-5px;
+	}
+}
+
+.right {
 	-webkit-animation-name: v-move;
 	animation-name: v-move;
+}
+
+.left {
+	-webkit-animation-name: v-move_top;
+	animation-name: v-move_top;
+}
+
+.bar.delay {
+	animation-delay: 1s;
+	-webkit-animation-delay: 1s;
 }
 
 
