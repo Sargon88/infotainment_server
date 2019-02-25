@@ -194,14 +194,15 @@ var infoViewModel = function(){
     self.openCallInterface = function(){
         console.log("toggleCallInterface");
         var endpoint = self.params.server + self.params.callingendpoint;
-        self.callingUI(window.open(endpoint, "_blank", "toolbar=no,scrollbars=no,resizable=no,top=20,left=200,width=400,height=400"));   
+        self.callingUI(new callViewModel());   
+        $('#callModal').modal('toggle');
         console.log("ok");
     }
 
     self.closeCallInterface = function(){
         console.log("toggleCallInterface");
         if(self.callingUI() != null){
-            self.callingUI().close();
+            $('#callModal').modal('toggle');
             self.callingUI(null);
         }        
     }

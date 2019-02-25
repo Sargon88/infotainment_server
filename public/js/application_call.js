@@ -108,5 +108,7 @@ var callViewModel = function(){
     self.startApp();
 }
 
+/*
 var callViewModel = new callViewModel();
 ko.applyBindings(callViewModel);
+*/

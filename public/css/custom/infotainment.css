@@ -36,6 +36,7 @@ body {
 .box-outer {
 	overflow: hidden;
 }
+
 .main_box {
 	position: relative;
 	background: #222;
@@ -120,15 +121,6 @@ body {
 		) 1 100%; 
 }
 
-/*
-.btn-infotainment-lastC {
-	border-bottom: 0.2px solid rgba(30, 144, 255, 1);
-	border-right: 0.2px solid rgba(30, 144, 255, 1);
-	margin-bottom: 15px;
-	padding: 5px 5px 0px 0px;
-	background-color: rgba(30, 144, 255, 0.05);
-}
-*/
 .infotainment-lastCallLabel {
 	font-weight: bold;
 	color: rgba(30, 144, 255, 1);

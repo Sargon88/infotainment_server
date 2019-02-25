@@ -9,9 +9,76 @@
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/css/fontawesome/all.min.css">
     <link rel="stylesheet" href="/css/custom/infotainment.css">
+    <link rel="stylesheet" href="/css/custom/call.css">
 
 
 </head>
+
+<!-- *** CALL MODAL *** -->
+<div class="modal fade" id="callModal" tabindex="-1" role="dialog" data-bind="with:callingUI">
+    <div class="bb">
+  <div class="modal-dialog call-modal-dialog" role="document">
+    <div class="modal-content call-modal-content container-fluid">
+      <div class="modal-body call-modal-body" data-bind="if: callerNumber">
+
+        <br />
+        <!-- info -->
+        <div class="row">
+            <div class="col-xs-12" data-bind="text: message"></div>
+        </div>
+        
+        <div class="row">
+
+            <!-- ko ifnot: callerName() == "" -->
+            <div class="col-xs-12 text-center"><h1 data-bind="text: callerName"></h1></div>
+            <div class="col-xs-12 text-center"><h1><small data-bind="text: callerNumber"></small></h1></div>
+            <!-- /ko -->
+
+            <!-- ko if: callerName() == "" -->
+            <div class="col-xs-12 text-center"><h1 data-bind="text: callerNumber"></h1></div>
+            <div class="col-xs-12" style="height: 140px;"></div>
+            <!-- /ko -->
+        </div>
+        <!-- fine info -->
+      </div>
+      <div class="modal-footer">
+        <!-- tasti -->
+        <div class="row">
+            <!-- answer -->
+            <!-- ko ifnot: answered()  -->
+                <!-- ko ifnot: ended() -->
+                <div class="col-xs-6">
+                    <div class="btn-infotainment-border" data-bind="click:answerCall, disable:ended"><center>Rispondi</center></div>
+                </div>
+
+                <!-- reject -->
+                <div class="col-xs-6">
+                    <div class="btn-infotainment-border" data-bind="click:endCall, disable:ended"><center>Rifiuta</center></div>
+                </div>
+                <!-- /ko -->
+            <!-- /ko -->
+
+            <!-- ko if: answered()  -->
+                <!-- ko if: calling()  -->
+                <div class="col-xs-12">
+                    <div class="btn-infotainment-border" data-bind="click:endCall"><center>Aggancia</center></div>
+                </div>
+                <!-- /ko -->
+
+                <!-- ko if: ended() -->
+                <div class="col-xs-12">
+                    <div class="btn-infotainment-border" disabled="disabled"><center>Aggancia</center></div>
+                </div>
+                <!-- /ko -->
+            <!-- /ko -->
+        </div>
+        <!-- fine tasti -->
+      </div>
+  </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- *** CALL MODAL *** -->
 
 <body class="container-fluid">
    
@@ -253,6 +320,7 @@
         <script src="/js/models/ytPageModel.js"></script>
         <script src="/js/models/ytplayPageModel.js"></script>
         <script src="/js/models/carPageModel.js"></script>
+        <script src="/js/application_call.js"></script>
         <script src="/js/application.js"></script>
 
 </body>

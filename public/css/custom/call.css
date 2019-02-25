@@ -1,0 +1,62 @@
+.call-modal-dialog{
+  margin-right: 0px;
+  margin-left: -125px;
+  margin-top: 0px;
+}
+
+.call-modal-content {
+    border-radius: 0px;
+    height: 350px;
+    width: 350px;
+    background-color: #222;
+    border-width: 2px;
+    border-image: linear-gradient(
+      to bottom, 
+      rgba(30, 144, 255, 0.7),
+      #222
+    ) 1 100%; 
+}
+
+.call-modal-body{
+  color: rgba(204, 204, 204, 1);
+}
+
+.bb, .bb::before, .bb::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.bb {
+  width: 350px;
+  height: 350px;
+  margin: auto;
+  color: rgba(30, 144, 255, 0.7);
+}
+.bb::before, .bb::after {
+  content: '';
+  z-index: -1;
+  margin: -5%;
+  box-shadow: inset 0 0 0 2px;
+  animation: clipMe 4s linear infinite;
+}
+.bb::before {
+  animation-delay: -2s;
+}
+
+@keyframes clipMe {
+  0%, 100% {
+    clip: rect(0px, 385px, 2px, 0px);
+  }
+  25% {
+    clip: rect(0px, 2px, 385px, 0px);
+  }
+  50% {
+    clip: rect(383px, 385px, 385px, 0px);
+  }
+  75% {
+    clip: rect(0px, 385px, 385px, 383px);
+  }
+}
