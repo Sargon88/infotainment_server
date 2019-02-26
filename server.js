@@ -29,6 +29,9 @@ var commands = {
 	omx: {
 		getPlaylistList: "ls -F " + playlistDir + " | grep playlist_",
 	},
+	car: {
+		startObdService: "/home/pi/info_scripts/obd_interface.py"
+	}
 }
 
 
@@ -625,7 +628,18 @@ GPSService = {
 
 CarService = {
 	connect: function(){
-		
+		exec(commands.car.startObdService, function(err, stdout, stderr) {
+
+			if(stdout != ""){
+				log(stdout);
+
+				emit('test obd', stdout);
+	
+			} else if(stderr != ""){
+				rsp = stderr;
+				log(rsp);	
+			}
+		});
 	}
 }
 

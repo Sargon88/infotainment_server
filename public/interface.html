@@ -108,16 +108,8 @@
                                 Accendere il sistema di tethering o avviare l'applicazione
                             </div>
                         </div>
-        <!--                <div class="row">
-                            <div class="col-xs-12" style="color: rgba(30, 144, 255, 1)">
-                                <i class="fas fa-spinner fa-5x fa-pulse"></i>
-                            </div>
-                        </div>
-        -->               
                         <br />
                     </div>
-
-
                 </div>
             </div>
         </center>
@@ -202,8 +194,6 @@
                                     <td data-bind="text: $root.status.lastUpdate"></td>
                                 </tr>
                             </table>
-
-                           
                             <div class="row">
                                 <div class="col-xs-12">DEBUG ------</div>
                             </div>
@@ -245,6 +235,35 @@
         </div>
         <!-- /ko -->
         <!-- *** OMX *** -->
+
+        <!-- *** CAR *** -->
+        <!-- ko if: page() == $root.carpage() -->
+        <br />
+        <div id="carpage" class="col-xs-12">
+            <!-- DEBUG -->
+            <div class="col-xs-offset-1">
+                <br/>
+                <div class="row">
+                    <div class="col-xs-12">DEBUG ------</div>
+                </div>
+                <table>
+                    <tr>
+                        <td>Received: </td>
+                        <td data-bind="text: test"></td>
+                    </tr>
+                    <tr>
+                        <td>Update:</td>
+                        <td data-bind="text: lastUpdate"></td>
+                    </tr>
+                </table>               
+                <div class="row">
+                    <div class="col-xs-12">DEBUG ------</div>
+                </div>
+            </div>
+            <!-- DEBUG -->
+        </div>
+        <!-- /ko -->
+        <!-- *** CAR *** -->
     </div>
     <!-- Page Container -->
 
