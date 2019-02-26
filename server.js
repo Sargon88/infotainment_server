@@ -623,6 +623,12 @@ GPSService = {
 	}
 };
 
+CarService = {
+	connect: function(){
+		
+	}
+}
+
 /** GENERIC FUNCTIONS */
 function changeToMapYtPage(){	
 	log("------ KILLED KEEP ALIVE ------");
