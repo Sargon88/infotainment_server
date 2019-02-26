@@ -146,7 +146,7 @@ function sendChangePageHome(){
 
 function sendChangePageMaps(){
   var a = 'change page';
-  var m = 'maps';
+  var m = 'map';
 
   $('#a').val(a);
   $('#m').val(m);
