@@ -1,11 +1,16 @@
 import obd
+import time
 
-#Callbacks
+connection = obd.Async()
+
+# a callback that prints every new value to the console
 def new_rpm(r):
     print r.value
 
-connection = obd.Async() # same constructor as 'obd.OBD()'
+connection.watch(obd.commands.RPM, callback=new_rpm)
+connection.start()
 
-connection.watch(obd.commands.RPM, cllback=new_rpm) # keep track of the RPM
+# the callback will now be fired upon receipt of new values
 
-connection.start() # start the async update loop
+time.sleep(60)
+connection.stop()
