@@ -4,7 +4,7 @@ var app = express();
 var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var sys = require('sys')
+var sys = require('sys');
 var exec = require('child_process').exec;
 var request = require('request');
 var fs = require('fs');
@@ -149,10 +149,11 @@ function shell(cmd, lvl, f){
 /** EVENT MANAGER */
 io.on('connection', function(socket){
 	Socket = socket;
-	log("---------------------------- CONNECTED! --------------------------------------");
 	/** --------- GENERIC --------------- */
-	Socket.on('phone status', function(msg){
-	log("Phone status");
+	Socket.on('identify', function(msg){
+		log("---------------------------- " + msg + " CONNECTED! --------------------------------------");
+	}).on('phone status', function(msg){
+		//log("Phone status");
 		GenericService.phoneStatus(msg);
 	}).on('disconnect', function(msg){
 		log("---------------------------- DISCONNECTED! --------------------------------------");		
@@ -326,10 +327,11 @@ CallService = {
 	},
 	callEnd: function(msg){
 		log('----- Call end -----');
-		log('Caller Number: ' + msg);
+		log('>>> Caller Number: ' + msg);
 		log('----- Call end -----');
 		InfotainmentStatus.callerNum = "";
 		InfotainmentStatus.calling = false;
+		InfotainmentStatus.inCall = false;
 
 		emit("call end", msg);
 	},
@@ -338,9 +340,12 @@ CallService = {
 		if(InfotainmentStatus.calling || InfotainmentStatus.inCall){
 			emit("call data", InfotainmentStatus.callerNum);
 
+			//put omxplayer on pause
+			OmxService.omxCommand("pause");
+
 		} else {
 			log("ERROR", "Get Call not in Calling");
-
+			emit("call end", "");
 		}		
 	},
 	callAnswer: function(msg){
@@ -351,7 +356,7 @@ CallService = {
 
 		} else {
 			log("ERROR", "Call Answer not in Calling");
-
+			emit("call end", "");
 		}
 	},
 	answerCall: function(msg){
@@ -362,7 +367,7 @@ CallService = {
 
 		} else {
 			log("ERROR", "Answer Call not in Calling");
-
+			emit("call end", "");
 		}
 	},
 	endCall: function(msg){
@@ -370,18 +375,22 @@ CallService = {
 		if(InfotainmentStatus.calling || InfotainmentStatus.inCall){
 			InfotainmentStatus.inCall = false;
 			InfotainmentStatus.calling = false;
+
+			//put omxplayer on pause
+			OmxService.omxCommand("pause");
+
 			emit("end call", msg);
 
 		} else {
-			log("ERROR", "Answer Call not in Calling");
-
+			log("ERROR", "End Call not in Calling");
+			emit("call end", "");
 		}
 	},
 	startPhoneCall: function(msg){
 		if(!InfotainmentStatus.inCall && !InfotainmentStatus.calling){
-			log("----- start outgoing call ------ ");
-			log("Number outgoing call: " + msg);
-			log("----- start outgoing call ------ ");
+			log("----- start phone call ------ ");
+			log(">>> Number outgoing call: " + msg);
+			log("----- start phone call ------ ");
 			InfotainmentStatus.calling = true;
 			emit("start phone call", msg);
 
@@ -392,7 +401,7 @@ CallService = {
 	},
 	outgoingCall: function(msg){
 		log("----- outgoing calling ------ ");
-		log("Number outgoing calling: " + msg);
+		log("<<< Number outgoing calling: " + msg);
 		log("----- start outgoing calling ------ ");
 
 		InfotainmentStatus.inCall = true;

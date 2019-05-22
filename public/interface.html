@@ -15,7 +15,7 @@
 </head>
 
 <!-- *** CALL MODAL *** -->
-<div class="modal fade" id="callModal" tabindex="-1" role="dialog" data-bind="with:callingUI">
+<div class="modal fade" id="callModal" tabindex="-1" role="dialog" data-bind="with:callingUI" data-backdrop="static">
     <div class="bb">
   <div class="modal-dialog call-modal-dialog" role="document">
     <div class="modal-content call-modal-content container-fluid">
@@ -61,7 +61,7 @@
             <!-- ko if: answered()  -->
                 <!-- ko if: calling()  -->
                 <div class="col-xs-12">
-                    <div class="btn-infotainment-border" data-bind="click:endCall"><center>Aggancia</center></div>
+                    <div class="btn-infotainment-border" data-bind="click:endCall, disable:ended"><center>Aggancia</center></div>
                 </div>
                 <!-- /ko -->
 

@@ -83,7 +83,9 @@ var infoViewModel = function(){
 
         self.checkConnection();
 
-        self.params.socket.on('phone status', function(msg){
+        self.params.socket.on('connect', function(){
+            self.params.socket.emit("identify", "Raspberry");
+        }).on('phone status', function(msg){
             var stat = JSON.parse(msg);
 
             self.lat(stat.latitude);
@@ -120,7 +122,7 @@ var infoViewModel = function(){
             self.openCallInterface();
         }).on('outgoing calling', function(msg){
             self.openCallInterface();
-        }).on('end call', function(msg){
+        }).on('call end', function(msg){
            setTimeout(self.closeCallInterface, 2000);
         }).on('open yt video', function(msg){
             console.log("OPEN YT Video: " + msg);

@@ -10,6 +10,7 @@ var callViewModel = function(){
     self.rejected = ko.observable(false);
     self.ended = ko.observable(false);
     self.calling = ko.computed(function(){
+        console.log("answered: " + self.answered() + " - ended: " + self.ended());
         if(self.answered() && !self.ended()){
             return true;
         } else {
@@ -30,16 +31,18 @@ var callViewModel = function(){
         
         self.message("Chiamata in arrivo");
         self.socket.emit("getCall", "");
-        self.socket.emit("omx command", "pause");
+        //  self.socket.emit("omx command", "pause");
 
         self.socket.on('call answer', function(msg){
             self.answered(true);
             
         });
 
-        self.socket.on('end call', function(msg){
+        self.socket.on('call end', function(msg){
             self.ended(true);
-            self.socket.emit("omx command", "pause");
+            //self.socket.emit("omx command", "pause");
+
+
             
         });
 
@@ -82,7 +85,6 @@ var callViewModel = function(){
         var number = self.callerNumber();
         self.socket.emit("end call", JSON.stringify(number));
         self.socket.emit("omx command", "pause");
-
     }
 
     self.endCall = function(){
@@ -90,14 +92,12 @@ var callViewModel = function(){
         var number = self.callerNumber();
         self.socket.emit("end call", JSON.stringify(number));
         self.socket.emit("omx command", "pause");
-
     }
 
     self.answerCall = function(){
 
         var number = self.callerNumber();
         self.socket.emit("answer call", JSON.stringify(number));
-
     }
 
 
