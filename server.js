@@ -787,8 +787,6 @@ function returnYoutubeHistory(){
 		if(err != null){
 			log(err);
 		} else {
-			log("STDOUT: " + stdout);
-
 			var msg = stdout.substr(0, stdout.length-2);
 
 			if(msg == ""){
@@ -802,8 +800,6 @@ function returnYoutubeHistory(){
 			rsp = '{"urls": [' + msg + ']}';
 			
 		}
-
-		log("MSG2: " + rsp);
 		
 		Socket.emit('url history', rsp);
 	});
