@@ -193,6 +193,11 @@ body {
 /*** YOUTUBE HISTORY ***/
 .table-history>tbody>tr>td {
 	border-image-source: linear-gradient(to right, rgba(30, 144, 255, 0.7), #222 ) 1 100% !important; 
-	background-image: radial-gradient(at top, rgba(30, 144, 255, 0.7), rgba(30, 144, 255, 0), #222);
-	border-top-color: rgba(30, 144, 255, 0) !important;
+	background-image: radial-gradient(at top, rgba(105, 141, 174, 0.7), rgba(105, 141, 174, 0), #222);
+	border-top-color: rgba(30, 144, 255, 0.7) !important;
+}
+
+.table-history > tbody > tr:nth-child(2n+1) > td, .table-history > tbody > tr:nth-child(2n+1) > th {
+   background-image: radial-gradient(at top, rgba(30, 144, 255, 0.7), rgba(30, 144, 255, 0), #222);
+	border-top-color: rgba(105, 141, 174, 0.7) !important;
 }

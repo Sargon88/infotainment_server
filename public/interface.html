@@ -84,127 +84,128 @@
    
     <!-- Page Container -->
     <div class="row" data-bind="with: model">
-        <!-- *** START HOMEPAGE *** -->
+        <!-- *** START HOMEPAGE *** -->        
         <!-- ko if: page() == $root.homepage() -->
-        <br />
-        <!-- ko ifnot: $root.loaded -->
-        <br /><br /><br />
-        <center>
-            <div class="box-outer">
-                <div class="col-xs-4 col-xs-offset-4 main_box">
-                    <div class="bar right delay"></div>
-                    <div class="bar left"></div>
-                    
-                    <div content>
-                        <br />
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <i class="fas fa-wifi fa-5x" style="color: rgba(30, 144, 255, 1)"></i>
-                            </div>
-                        </div>
-                        <br/>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                Accendere il sistema di tethering o avviare l'applicazione
-                            </div>
-                        </div>
-                        <br />
-                    </div>
-                </div>
-            </div>
-        </center>
-        <!-- /ko -->
-
-        <!-- ko if: $root.loaded-->
-        <div class="col-xs-12">
+        <div id="homepage">
             <br />
-            <div class="row">
-                <!-- lista chiamate-->
-                    <div class="col-xs-5">
-                        <!-- ko foreach: $root.status.lastCalls -->
-                        <div class="col-xs-12 bot-right" data-bind="click: $parent.makeCall, disable:$parent.inCall">
-                            
-                            <!-- ko if: $data.name -->
-                            <div class="col-xs-10 infotainment-lastCallLabel" data-bind="text: $data.name"></div>
-                            <!-- /ko -->
-                            <!-- ko ifnot: $data.name -->
-                            <div class="col-xs-10 infotainment-lastCallLabel" data-bind="text: $data.phNumber, style:{fontWeight: 'bold'}"></div>
-                            <!-- /ko -->
-                            <div class="col-xs-1">
-                                <!-- ko if: $data.callType() == 1 -->
-                                <span style="color: rgba(255, 51, 51, 1);"><i class="fas fa-angle-double-left"></i></span>
-                                <!-- /ko -->
-                                <!-- ko if: $data.callType() == 2 -->
-                                <span style="color: rgba(28, 255, 20, 1);"><i class="fas fa-angle-double-right"></i></span>
-                                <!-- /ko -->
-                                <!-- ko if: $data.callType() == 3 -->
-                                <span><i class="fas fa-phone-slash"></i></span>
-                                <!-- /ko -->
-                                <!-- ko if: $data.callType() == 5 -->
-                                <span><i class="fas fa-phone-slash"></i></span> 
-                                <!-- /ko -->
-                            </div>
-                            <div class="col-xs-12" data-bind="text: $data.callDayTime"></div>
-                        </div>
-                        <!-- /ko -->
-                    </div>
-                <!-- lista chiamate-->
-                <!-- chiamate rapide-->
-                    <div class="col-xs-6">
-                        <div class="row">
-                            <!-- ko foreach: $root.status.starredContacts-->
-                            <div class="col-xs-5 col-xs-offset-1">
-                                <div class="row" data-bind="click: $parent.makeCall, disable:$parent.inCall">
-                                    <div  class="btn-infotainment-border">
-                                        <div class="col-md-3"><img src="images/user-o.png"></div>
-                                        <div class="col-md-9">
-                                            <div class="row">
-                                                <div class="col-xs-12" data-bind="text: $data.name"></div> 
-                                                <div class="col-xs-12" data-bind="text: $data.number"></div>
-                                            </div>
-                                        </div>
-                                       <br />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12"><br/></div>
-                                </div>
-                            </div>
-                            <!-- /ko-->
-                        </div>
-
+            <!-- ko ifnot: $root.loaded -->
+            <br /><br /><br />
+            <center>
+                <div class="box-outer">
+                    <div class="col-xs-4 col-xs-offset-4 main_box">
+                        <div class="bar right delay"></div>
+                        <div class="bar left"></div>
                         
-                        <!-- DEBUG -->
-                        <div class="col-xs-offset-1">
+                        <div content>
+                            <br />
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <i class="fas fa-wifi fa-5x" style="color: rgba(30, 144, 255, 1)"></i>
+                                </div>
+                            </div>
                             <br/>
                             <div class="row">
-                                <div class="col-xs-12">DEBUG ------</div>
+                                <div class="col-xs-12">
+                                    Accendere il sistema di tethering o avviare l'applicazione
+                                </div>
                             </div>
-                            <table>
-                                <tr>
-                                    <td>Latitude:</td>
-                                    <td data-bind="text: $root.lat"></td>
-                                </tr>
-                                <tr>
-                                    <td>Longitude:</td>
-                                    <td data-bind="text: $root.long"></td>
-                                </tr>
-                                <tr>
-                                    <td>Update:</td>
-                                    <td data-bind="text: $root.status.lastUpdate"></td>
-                                </tr>
-                            </table>
-                            <div class="row">
-                                <div class="col-xs-12">DEBUG ------</div>
-                            </div>
+                            <br />
                         </div>
-                        <!-- DEBUG -->
                     </div>
-                <!-- chiamate rapide-->
+                </div>
+            </center>
+            <!-- /ko -->
+
+            <!-- ko if: $root.loaded-->
+            <div class="col-xs-12">
+                <br />
+                <div class="row">
+                    <!-- lista chiamate-->
+                        <div class="col-xs-5">
+                            <!-- ko foreach: $root.status.lastCalls -->
+                            <div class="col-xs-12 bot-right" data-bind="click: $parent.makeCall, disable:$parent.inCall">
+                                
+                                <!-- ko if: $data.name -->
+                                <div class="col-xs-10 infotainment-lastCallLabel" data-bind="text: $data.name"></div>
+                                <!-- /ko -->
+                                <!-- ko ifnot: $data.name -->
+                                <div class="col-xs-10 infotainment-lastCallLabel" data-bind="text: $data.phNumber, style:{fontWeight: 'bold'}"></div>
+                                <!-- /ko -->
+                                <div class="col-xs-1">
+                                    <!-- ko if: $data.callType() == 1 -->
+                                    <span style="color: rgba(255, 51, 51, 1);"><i class="fas fa-angle-double-left"></i></span>
+                                    <!-- /ko -->
+                                    <!-- ko if: $data.callType() == 2 -->
+                                    <span style="color: rgba(28, 255, 20, 1);"><i class="fas fa-angle-double-right"></i></span>
+                                    <!-- /ko -->
+                                    <!-- ko if: $data.callType() == 3 -->
+                                    <span><i class="fas fa-phone-slash"></i></span>
+                                    <!-- /ko -->
+                                    <!-- ko if: $data.callType() == 5 -->
+                                    <span><i class="fas fa-phone-slash"></i></span> 
+                                    <!-- /ko -->
+                                </div>
+                                <div class="col-xs-12" data-bind="text: $data.callDayTime"></div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    <!-- lista chiamate-->
+                    <!-- chiamate rapide-->
+                        <div class="col-xs-6">
+                            <div class="row">
+                                <!-- ko foreach: $root.status.starredContacts-->
+                                <div class="col-xs-5 col-xs-offset-1">
+                                    <div class="row" data-bind="click: $parent.makeCall, disable:$parent.inCall">
+                                        <div  class="btn-infotainment-border">
+                                            <div class="col-md-3"><img src="images/user-o.png"></div>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-xs-12" data-bind="text: $data.name"></div> 
+                                                    <div class="col-xs-12" data-bind="text: $data.number"></div>
+                                                </div>
+                                            </div>
+                                           <br />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12"><br/></div>
+                                    </div>
+                                </div>
+                                <!-- /ko-->
+                            </div>
+
+                            
+                            <!-- DEBUG -->
+                            <div class="col-xs-offset-1">
+                                <br/>
+                                <div class="row">
+                                    <div class="col-xs-12">DEBUG ------</div>
+                                </div>
+                                <table>
+                                    <tr>
+                                        <td>Latitude:</td>
+                                        <td data-bind="text: $root.lat"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Longitude:</td>
+                                        <td data-bind="text: $root.long"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Update:</td>
+                                        <td data-bind="text: $root.status.lastUpdate"></td>
+                                    </tr>
+                                </table>
+                                <div class="row">
+                                    <div class="col-xs-12">DEBUG ------</div>
+                                </div>
+                            </div>
+                            <!-- DEBUG -->
+                        </div>
+                    <!-- chiamate rapide-->
+                </div>
             </div>
-        </div>
-        <!-- /ko -->
-            
+            <!-- /ko -->
+        </div>    
         <!-- /ko-->
         <!-- *** END HOMEPAGE *** -->
 
