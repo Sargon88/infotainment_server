@@ -276,6 +276,137 @@
                 </div>    
             </div>
             <!-- FASCIA ALTA-->
+
+            <!-- AREA DATI -->
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <!-- ko if: showDrives -->
+                    <!-- ko if: selectedPlaylist-->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12"><br/></div>
+                                <div class="col-xs-10">Selected: <span data-bind="text: selectedPlaylist().screenName"></span></div>
+                                <div class="col-xs-1" data-bind="click: backPath"><i class="far fa-arrow-alt-circle-left fa-2x"></i></div>
+                                <div class="col-xs-12"><br/></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /ko-->
+                    
+                    
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <!-- ko if: drives().length == 0 -->
+                                    <div class="row">
+                                            <!-- ko if: message().length == 0 -->
+                                            <div class="col-xs-1"><i class="fas fa-spinner fa-pulse"></i></div>
+                                            <!-- /ko -->
+                                            <div class="col-xs-10" data-bind="text: message"></div>
+                                        </div>
+                                    <!-- /ko -->
+                                    <!-- ko foreach: drives -->
+                                    <div class="row" data-bind="click:$parent.openDrive">
+                                        <div class="col-xs-1"><i class="fab fa-usb fa-sm"></i></div>
+                                        <div class="col-xs-10" data-bind="text: $data.name"></div>
+                                    </div>
+                                    <!-- /ko-->
+                                </div>
+
+                                <div class="col-xs-9">
+                                    <!-- ko foreach: {data: directory, as: 'dir'} -->
+                                    <div class="row">
+                                        <!-- ko if: $data.type() == "dir" -->
+                                        <div class="col-xs-1"><i class="fas fa-folder-open fa-sm"></i></div>
+                                        <div class="col-xs-9" data-bind="text: $data.name, click:$parent.exploreDirectory"></div>   
+                                        <!-- /ko -->
+                                        <!-- ko ifnot: $data.type() == "dir" -->
+                                            <div class="col-xs-9" data-bind="text: $data.name"></div>
+                                            <!-- ko ifnot: $data.playing() -->   
+                                            <div class="col-xs-1" style="color: green;" data-bind="click: $parent.playFile"><i class="fas fa-play fa-lg"></i></div>
+                                            <!-- /ko -->
+                                            <!-- ko if: $data.playing() -->   
+                                            <div class="col-xs-1" style="color: red;" data-bind="click: $parent.stopFile"><i class="fas fa-stop fa-lg"></i></div>
+                                            <!-- /ko -->
+                                            <!-- ko ifnot: $data.inPlaylist -->
+                                            <div class="col-xs-1" style="color: green;" data-bind="click: $parent.addtoPlaylist"><i class="fas fa-plus fa-lg"></i></div>
+                                            <!-- /ko -->
+                                            <!-- ko if: $data.inPlaylist -->
+                                            <div class="col-xs-1" style="color: red;" data-bind="click: $parent.removeFromPlaylist"><i class="fas fa-minus"></i></div>
+                                            <!-- /ko -->
+                                        <!-- /ko -->
+                                    
+                                        <div class="col-xs-12"><br /></div>
+                                    </div>
+                                    <!-- /ko -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+
+                    <!-- ko if: showPlaylists -->
+                    <!-- ko if: selectedPlaylist-->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12"><br/></div>
+                                <div class="col-xs-10">Selected: <span data-bind="text: selectedPlaylist().screenName"></span></div>
+                                <div class="col-xs-12"><br/></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /ko-->
+
+                    <div class="row">
+                        
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12"><br /></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <!-- ko foreach: playlistsList -->
+                                    <div class="row" data-bind="click: $parent.selectPlaylist">
+                                        <div class="col-xs-7" data-bind="text: $data.screenName"></div>
+                                        <!-- ko if: $parent.selectedPlaylist() == $data-->
+                                        <div class="col-xs-1" data-bind="click: $parent.loadPlaylistFiles"><i class="fas fa-sync-alt fa-lg"></i>   </div>
+                                        <div class="col-xs-1" data-bind="click: $parent.deletePlaylist"><i class="fas fa-trash-alt fa-lg"></i>   </div>
+                                        <div class="col-xs-1" data-bind="click: $parent.savePlaylist"><i class="far fa-save fa-lg"></i></div>   
+                                        <!-- /ko -->
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-8"><br /></div>
+                                    </div>
+                                    <!-- /ko-->
+                                </div>
+                
+                                <div class="col-xs-8">
+                                    <!-- ko if: selectedPlaylist -->    
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <!-- ko foreach: selectedPlaylist().files -->
+                                            <div class="row">
+                                                <div class="col-xs-11 col-xs-offset-1" data-bind="text: $data"></div>
+                                            </div>
+                                            <!-- /ko -->
+                                        </div>
+                                    </div>
+                                    <!-- /ko -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                    
+                </div>
+            </div>
+            <!-- AREA DATI -->
+
         </div>
         <!-- /ko -->
         <!-- *** END OMX *** -->

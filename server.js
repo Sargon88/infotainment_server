@@ -11,7 +11,7 @@ var fs = require('fs');
 
 /** CONSTANTS */
 var Socket;
-var mediaDocRoot = "/media/pi/";
+var mediaDocRoot = "/media/usb/";
 var playlistDir = "/home/pi/omx_playlists/";
 var omxCommandFile = "/tmp/omx_control"
 var yt_playlist = "yt_playlist";
@@ -431,13 +431,11 @@ OmxService = {
 				log(rsp);	
 			}
 
+			console.log("OMX RSP: " + rsp);
 			emit("loaded playlist dir", rsp);
 	
-			//qualunque periferica venga collegata viene automaticamente montata sotto /media/pi
-			console.log("OK");
+			//qualunque periferica venga collegata viene automaticamente montata sotto /media/pi -> non è più vero
 			setInterval(function(){
-
-				console.log("OK INTERVAL");
 
 				exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
 					var rsp = "";
@@ -452,16 +450,14 @@ OmxService = {
 						rsp = stderr;
 						log(rsp);	
 					}
-	
-					console.log("status: " + InfotainmentStatus.lastUsbStatus);
-					console.log("rsp: " + rsp);
 
-					if(InfotainmentStatus.lastUsbStatus != rsp){
-						console.log("OK INTERVAL1");
+					//console.log("rsp: " + rsp);
+
+/*					if(InfotainmentStatus.lastUsbStatus != rsp){
 						InfotainmentStatus.lastUsbStatus = rsp;
-	
+*/	
 						emit("loaded omx page", rsp);
-					}
+//					}
 					
 				})
 			}, 2000);
@@ -471,6 +467,9 @@ OmxService = {
 	exploreDirectory: function(msg){
 		log("--------- explore directory: " + msg + " ---------");
 		
+		msg = msg.replace(/([ ])/g, '\\$1');
+		log("--------- explore directory2: " + msg + " ---------");
+
 		var path = mediaDocRoot + msg;
 
 		exec("ls -F " + path, function(err, stdout, stderr) {

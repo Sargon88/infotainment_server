@@ -51,6 +51,18 @@ var OmxPageModel = function(params, status){
         var index = self.playlistsList.indexOf(playlistObj);
 
         self.playlistsList()[index].files(msg.files);
+    }).on('loaded omx page', function(msg){
+        if(msg != ""){
+            var driveArray = JSON.parse(msg);
+
+            self.drives(self.loadDrive(driveArray));
+            self.message("");
+
+        } else {
+            self.drives([]);
+            self.message("Nessuna periferica connessa");
+        }               
+
     });
 
     /** FUNCTIONS **/
@@ -62,20 +74,6 @@ var OmxPageModel = function(params, status){
 
         } else {
             self.params.socket.emit("load omx", "");
-
-            self.params.socket.on('loaded omx page', function(msg){
-                if(msg != ""){
-                    var driveArray = JSON.parse(msg);
-
-                    self.drives(self.loadDrive(driveArray));
-                    self.message("");
-
-                } else {
-                    self.drives([]);
-                    self.message("Nessuna periferica connessa");
-                }               
-
-            });
         }
     }
 
@@ -114,7 +112,7 @@ var OmxPageModel = function(params, status){
 
     self.stringPath = ko.computed(function(){
         var path = self.path().join();
-        path = path.replace(/[, ]+/g, "").trim()
+        path = path.replace(/[,]+/g, "").trim()
 
         return path;
     });
@@ -176,4 +174,5 @@ var OmxPageModel = function(params, status){
         self.params.socket.emit('load playlist', data.name());
     }
     
+    self.loadOmxPage();
 }
