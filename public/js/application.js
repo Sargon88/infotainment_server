@@ -218,7 +218,7 @@ var infoViewModel = function(){
         var dataObj = JSON.parse(data);
         var urls = dataObj.urls;
 
-        self.ytUrlHistory(urls);
+        self.model().ytUrlHistory(urls);
     }
 
     self.playYoutubeVideo = function(data){

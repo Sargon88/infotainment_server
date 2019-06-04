@@ -26,7 +26,8 @@ while true ; do
         pos="--kiosk --kiosk-printing"
     fi
         
-    killall chromium-browser 
+    killall chromium-browser-v7
+    echo killall chromium-browser-v7
     chromium-browser $pos --no-first-run --disable-translate --no-default-browser-check --no-touch-pinch --overscroll-history-navigation='0' --incognito --disable-pinch --process-per-site --app=http://$host:$port/interface & $kapid=$!
 
 

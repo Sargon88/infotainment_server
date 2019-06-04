@@ -22,7 +22,8 @@ var cmd_reboot = "sudo reboot";
 var cmd_killKeepAlive = "sudo killall keepAliveChromium.sh omxplayer.bin keepAliveNavit.sh navit";
 var cmd_startNavit = "/home/pi/info_scripts/keepAliveNavit.sh >> /home/pi/infotainment_logs/navit.log &";
 var cmd_tailCommandFile = "tail -f /dev/null > " + omxCommandFile;
-var cmd_startYTOmx = 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,152,800,500 $(youtube-dl -g -f mp4 "%yturl%")';
+//var cmd_startYTOmx = 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,152,800,500 $(youtube-dl -g -f mp4 "%yturl%")';
+var cmd_startYTOmx = 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,0,800,400 $(youtube-dl -g -f mp4 "%yturl%")';
 var cmd_setBrightness = 'sudo bash -c "echo %br% > /sys/class/backlight/rpi_backlight/brightness"';
 
 var commands = {
@@ -695,7 +696,7 @@ function startFullscreenChromium(){
 };
 
 var topBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &";
-var bottomBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &";
+var bottomBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 980 >> /home/pi/infotainment_logs/chromium.log &";
 
 function startBarChromium(){
 	log("START BAR CHROMIUM");
