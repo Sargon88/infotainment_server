@@ -29,15 +29,21 @@
         
         <div class="row">
 
-            <!-- ko ifnot: callerName() == "" -->
+            <!-- ko if: callerName() != "" -->
             <div class="col-xs-12 text-center"><h1 data-bind="text: callerName"></h1></div>
             <div class="col-xs-12 text-center"><h1><small data-bind="text: callerNumber"></small></h1></div>
             <!-- /ko -->
 
             <!-- ko if: callerName() == "" -->
+            <!-- ko if: callerNumber() == "Unknown Number" -->
+            <div class="col-xs-12 text-center"><h3 data-bind="text: callerNumber"></h3></div>
+            <!-- /ko -->
+            <!-- ko if: callerNumber() != "Unknown Number" -->
             <div class="col-xs-12 text-center"><h1 data-bind="text: callerNumber"></h1></div>
+            <!-- /ko -->
             <div class="col-xs-12" style="height: 140px;"></div>
             <!-- /ko -->
+
         </div>
         <!-- fine info -->
       </div>
