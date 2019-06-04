@@ -211,10 +211,10 @@
         <!-- *** START YOUTUBE *** -->
         <!-- ko if: page() == $root.ytpage() -->
         <br />
-        <div id="ytpage" class="row">
-          <div class="col-xs-12">
+        <div id="ytpage">
+            <div class="col-xs-12">
                 <div class="row">
-                    <div class="col-xs-12"><h3>Youtube History</h3></div>
+                    <div class="col-xs-11" style><h3>Youtube History</h3></div>
                     <div class="col-xs-12"><br /></div>
                 </div>
 
@@ -228,12 +228,12 @@
 
                 <!-- ko if: ytUrlHistory().length > 0 -->
                 <div class="row">
-                    <div class="col-xs-12">
-                        <table class="table table-responsive">
+                    <div class="col-xs-10 col-xs-offset-1">
+                        <table class="table table-responsive table-history">
                             <tbody data-bind="foreach: ytUrlHistory">
                                 <tr>
                                     <td data-bind="text: $data.description, click: $parent.playYoutubeVideo"></td>
-                                    <td data-bind="text: $data.url"></td>
+                                    <!-- <td data-bind="text: $data.url"></td> -->
                                 </tr>
                             </tbody>
                         </table>
