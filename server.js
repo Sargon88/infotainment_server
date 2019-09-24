@@ -468,8 +468,6 @@ OmxService = {
 		log("--------- explore directory: " + msg + " ---------");
 		
 		msg = msg.replace(/([ ])/g, '\\$1');
-		log("--------- explore directory2: " + msg + " ---------");
-
 		var path = mediaDocRoot + msg;
 
 		exec("ls -F " + path, function(err, stdout, stderr) {
@@ -495,8 +493,8 @@ OmxService = {
 		log(cmd);
 		exec(cmd, function(err, stdout, stderr) {});
 
-		var cmd = 'cat ' + omxCommandFile + " | omxplayer " + docRoot+'\"' + msg + '\" ';
-		log(cmd);_PAGE
+		var cmd = 'cat ' + omxCommandFile + " | omxplayer " + mediaDocRoot+'\"' + msg + '\" ';
+		log(cmd);
 		exec(cmd, function(err, stdout, stderr) {
 		
 			if(stderr != ""){
