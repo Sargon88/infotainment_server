@@ -18,7 +18,8 @@ var OmxPageModel = function(params, status){
     self.playlistsList = ko.observableArray([]);
     
     /** EVENTS **/
-	self.params.socket.on('explore response', function(msg){
+	/*
+    self.params.socket.on('explore response', function(msg){
         console.log('explore response: ' + msg);
 
         if(msg != ""){
@@ -62,12 +63,12 @@ var OmxPageModel = function(params, status){
             self.drives([]);
             self.message("Nessuna periferica connessa");
         }               
-
     });
+    */
 
     /** FUNCTIONS **/
     self.loadOmxPage = function(){
-
+        /*
         if(self.path.lenght > 0){
 
             self.params.socket.emit("explore directory", self.stringPath());
@@ -75,6 +76,41 @@ var OmxPageModel = function(params, status){
         } else {
             self.params.socket.emit("load omx", "");
         }
+        */
+
+        //NEW https://demos.shieldui.com/web/treeview/api     
+        setTimeout(function(){
+                $("#treeview").shieldTreeView({                
+                    dataSource: dataSrc,
+                    events: {
+                        focus: function (e) {
+                            console.log("focus");
+                        },
+                        blur: function (e) {
+                            console.log("blur");
+                        },
+                        expand: function (e) {
+                            console.log("expanding node " + this.getPath(e.element));
+                        },
+                        collapse: function (e) {
+                            console.log("collapsing node " + this.getPath(e.element));
+                        },
+                        select: function (e) {
+                            console.log("selecting node " + this.getPath(e.element));
+                        },
+                        change: function (e) {
+                            console.log("changed selection to " + this.getPath(e.element));
+                        },
+                        check: function (e) {
+                            console.log((e.checked ? "" : "un") + "checked node " + this.getPath(e.element));
+                        },
+                        drop: function (e) {
+                            console.log("dropping node " + this.getPath(e.sourceNode) + " over node " + this.getPath(e.targetNode));
+                        }
+                    }
+                });
+        }, 500);
+
     }
 
     self.loadDrive = function(driveArray){
@@ -135,7 +171,6 @@ var OmxPageModel = function(params, status){
     		self.showDrives(!self.showDrives());
         	self.showPlaylists(!self.showPlaylists());	
     	}
-        
     }
 
     self.addtoPlaylist = function(data){
