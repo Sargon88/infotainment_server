@@ -693,9 +693,6 @@ function startBarChromium(){
 	});
 };
 
-
-
-
 /** ---------- INIZIO FUNZIONI OMX ---------- */
 function removeUselessElements(array){
 	var index = array.indexOf("");
@@ -830,18 +827,31 @@ function exploreDirectory(dir, item, array){
         iconUrl: "images/folder.png",
         items: [],
     };
-
     array.push(entry);
 
-	fs.readdir(mediaDocRoot + dir.split(' ').join('\\ '), function(err, items) {
+	fs.readdir(mediaDocRoot + dir, function(err, items) {
  
 	    for (var i=0; i<items.length; i++) {
 	        var c = items[i];
 
-            if(c.includes("/")){
-                exploreDirectory(dir + c, c, entry.items);
+	        try{
+	        	fs.stat(mediaDocRoot + dir + "/" + c, statsCallback(dir, c, entry)); 	
+	        
+	        } catch(e){
+	        	console.log(e);
+	        }
+	        
+	    }	
+	});
+}
+function statsCallback(dir, c, entry){
+	return function(err, stats) {
+		
+        if(stats.isDirectory()){
+        	exploreDirectory(dir + c, c, entry.items);
 
-            } else if(c.includes("mp3")){
+        } else {
+        	if(c.includes("mp3")){
                 var e = {
                     text: c,
                     iconUrl: "images/audio.png",
@@ -866,11 +876,12 @@ function exploreDirectory(dir, item, array){
                 entry.items.push(e);
 
             }
+        }
 
-	    }	
-	});
+        console.log(entry.items);
+        console.log("-------------");
+    }
 }
-
 /** ---------- FINE FUNZIONI OMX ---------- */
 
 /** ---------- INIZIO FUNZIONI YOUTUBE ---- */
