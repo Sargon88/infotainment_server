@@ -406,7 +406,6 @@ CallService = {
 
 var directoryTree = {data: []};
 var lastDirectoryTree = null;
-var array = [];
 var loadDeviceInterval = null;
 OmxService = {
 	loadOmxPage: function(msg){
@@ -423,11 +422,12 @@ OmxService = {
 			exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
 				var rsp = "";
 				if(stdout != ""){
-					array = stdout.split("\n");
+					var array = stdout.split("\n");
+					directoryTree.data = [];
 					
 					removeUselessElements(array);
 
-					buildFileTree();
+					buildFileTree(array);
 
 					rsp = JSON.stringify(directoryTree);
 
@@ -436,16 +436,17 @@ OmxService = {
 					log(rsp);	
 				}
 
-				if(!lastDirectoryTree || lastDirectoryTree !== rsp){ //return only if new tree is different
-					lastDirectoryTree = rsp;
-					emit("loaded omx page", rsp);	
-				}
+				console.log("last: " + lastDirectoryTree);
+				console.log("rsp: " + rsp);
 
-				
-				
+				if(lastDirectoryTree !== rsp && directoryTree.data.length > 0){ //return only if new tree is different
+					lastDirectoryTree = rsp;
+					console.log("EMIT");
+					emit("loaded omx page", rsp);	
+				}				
 			})
 
-		}, 2000);
+		}, 5000);
 
 	},
 	exploreDirectory: function(msg){
@@ -753,108 +754,123 @@ function saveFileInPlaylist(msg, fileName){
 
 	})
 };
-function buildFileTree(){
-	var tempTree = [];
-	for(var i=0; i < array.length; i++){
-		var item = array[i];
+function buildFileTree(array){
 
-		if(item.includes("/")){//directory
+	for(var i=0; i<array.length; i++){
+		var d = array[i];
 
-			exec("ls -F " + mediaDocRoot + "/" + item, function(err, stdout, stderr) {
-				var rsp = "";
-				var child = []
-				if(stdout != ""){
-					child = stdout.split("\n");
-					removeUselessElements(child);
-					var children = [];
-
-					for(var j=0; j<child.length; j++){
-						var c = child[j];
-
-						if(c.includes("/")){
-							var e = {
-				                text: c,
-				                expanded: false,
-				                iconUrl: "images/folder.png",
-				                items: [],
-				            };
-
-				            children.push(e);
-
-						} else if(c.includes("mp3")){
-							var e = {
-			                    text: c,
-			                    iconUrl: "images/audio.png",
-				            };
-
-							children.push(e);
-
-						} else if(c.includes("wma")){
-							var e = {
-			                    text: c,
-			                    iconUrl: "images/audio.png",
-				            };
-
-							children.push(e);
-
-						} else if(c.includes("wmv")){
-							var e = {
-			                    text: c,
-			                    iconUrl: "images/video.png",
-				            };
-
-							children.push(e);
-
-						}
-
-					}
-
-					var entry = {
-		                text: item,
-		                expanded: false,
-		                iconUrl: "images/folder.png",
-		                items: children,
-		            };
-
-					tempTree.push(entry);
-					directoryTree.data = tempTree;
-
-				} else if(stderr != ""){
-					rsp = stderr;
-					log(rsp);	
-				}
-				
-			})
-
-		} else if(item.includes("mp3")){
-			tempTree.push(
-				{
-                    text: item,
-                }
-			);
-			directoryTree.data = tempTree;
-
-		} else if(item.includes("wma")){
-			tempTree.push(
-				{
-                    text: item,
-                    iconUrl: "images/audio.png",
-                }
-			);
-			directoryTree.data = tempTree;
-
-		} else if(item.includes("wmv")){
-			tempTree.push(
-				{
-                    text: item,
-                    iconUrl: "images/video.png",
-                }
-			);
-			directoryTree.data = tempTree;
-
-		}
+		exploreDirectory("/"+d, d, directoryTree.data);
 	}
 }
+/*
+function exploreDirectory(dir, item, array){
+
+	exec("ls -F " + mediaDocRoot + dir.split(' ').join('\\ '), function(err, stdout, stderr) {
+		if(stdout != ""){
+			var child = stdout.split("\n");
+
+			removeUselessElements(child);
+
+            var entry = {
+                text: item,
+                expanded: false,
+                iconUrl: "images/folder.png",
+                items: [],
+            };
+
+            array.push(entry);
+
+            for(var j=0; j<child.length; j++){
+                var c = child[j];
+
+                if(c.includes("/")){
+                    exploreDirectory(dir + c, c, entry.items);
+
+                } else if(c.includes("mp3")){
+                    var e = {
+                        text: c,
+                        iconUrl: "images/audio.png",
+                    };
+
+                    entry.items.push(e);
+
+                } else if(c.includes("wma")){
+                    var e = {
+                        text: c,
+                        iconUrl: "images/audio.png",
+                    };
+
+                    entry.items.push(e);
+
+                } else if(c.includes("wmv")){
+                    var e = {
+                        text: c,
+                        iconUrl: "images/video.png",
+                    };
+
+                    entry.items.push(e);
+
+                }
+
+            }
+
+
+		} else if(stderr != ""){
+			//rsp = stderr;
+			log(stderr);	
+		}
+	})
+}
+*/
+function exploreDirectory(dir, item, array){
+
+	var entry = {
+        text: item,
+        expanded: false,
+        iconUrl: "images/folder.png",
+        items: [],
+    };
+
+    array.push(entry);
+
+	fs.readdir(mediaDocRoot + dir.split(' ').join('\\ '), function(err, items) {
+ 
+	    for (var i=0; i<items.length; i++) {
+	        var c = items[i];
+
+            if(c.includes("/")){
+                exploreDirectory(dir + c, c, entry.items);
+
+            } else if(c.includes("mp3")){
+                var e = {
+                    text: c,
+                    iconUrl: "images/audio.png",
+                };
+
+                entry.items.push(e);
+
+            } else if(c.includes("wma")){
+                var e = {
+                    text: c,
+                    iconUrl: "images/audio.png",
+                };
+
+                entry.items.push(e);
+
+            } else if(c.includes("wmv")){
+                var e = {
+                    text: c,
+                    iconUrl: "images/video.png",
+                };
+
+                entry.items.push(e);
+
+            }
+
+	    }	
+	});
+}
+
 /** ---------- FINE FUNZIONI OMX ---------- */
 
 /** ---------- INIZIO FUNZIONI YOUTUBE ---- */
