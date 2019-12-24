@@ -11,7 +11,7 @@ var fs = require('fs');
 
 /** CONSTANTS */
 var Socket;
-var mediaDocRoot = "/media/usb/";
+var mediaDocRoot = "/media";
 var playlistDir = "/home/pi/omx_playlists/";
 var omxCommandFile = "/tmp/omx_control"
 var yt_playlist = "yt_playlist";
@@ -91,8 +91,6 @@ var InfotainmentStatus = {
 		signal: 0
 	}
 };
-
-
 
 /** GENERIC FUNCTIONS */
 function log(tag, msg){
@@ -200,18 +198,12 @@ io.on('connection', function(socket){
 	Socket.on('load omx', function(msg){
 		log("load OMX page: " + msg);
 		OmxService.loadOmxPage(msg);
-	}).on('explore directory', function(msg){
-		OmxService.exploreDirectory(msg);
 	}).on('play file', function(msg){
 		OmxService.playFile(msg);
 	}).on('stop file', function(msg){
 		OmxService.stopFile(msg);
 	}).on('omx command', function(msg){
 		OmxService.omxCommand(msg);
-	}).on('save playlist', function(msg){
-		OmxService.savePlaylist(msg);
-	}).on('load playlist', function(msg){
-		OmxService.loadPlaylist(msg);
 	});
 
 	/** ----------- YOUTUBE ------------ */
@@ -412,57 +404,49 @@ CallService = {
 	}
 };
 
+var directoryTree = {data: []};
+var lastDirectoryTree = null;
+var array = [];
+var loadDeviceInterval = null;
 OmxService = {
 	loadOmxPage: function(msg){
-		log("loadOmxPage function: " + commands.omx.getPlaylistList);
+		log("loadOmxPage function");
 
-		//carica l'elenco delle playlist
-		exec(commands.omx.getPlaylistList, function(err, stdout, stderr) {
-			var rsp = "";
-			if(stdout != ""){
-				var array = stdout.split("\n");
-	
-				removeUselessElements(array);
-								
-				rsp = JSON.stringify(array);
-	
-			} else if(stderr != ""){
-				rsp = stderr;
-				log(rsp);	
-			}
+		if(loadDeviceInterval){
+			lastDirectoryTree = null;
+			clearInterval(loadDeviceInterval);
+		}
 
-			console.log("OMX RSP: " + rsp);
-			emit("loaded playlist dir", rsp);
-	
-			//qualunque periferica venga collegata viene automaticamente montata sotto /media/pi -> non è più vero
-			setInterval(function(){
+		//qualunque periferica venga collegata viene automaticamente montata sotto /media/usb*
+		loadDeviceInterval = setInterval(function(){
 
-				exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
-					var rsp = "";
-					if(stdout != ""){
-						var array = stdout.split("\n");
-	
-						removeUselessElements(array);
-										
-						rsp = JSON.stringify(array);
-	
-					} else if(stderr != ""){
-						rsp = stderr;
-						log(rsp);	
-					}
-
-					//console.log("rsp: " + rsp);
-
-/*					if(InfotainmentStatus.lastUsbStatus != rsp){
-						InfotainmentStatus.lastUsbStatus = rsp;
-*/	
-						emit("loaded omx page", rsp);
-//					}
+			exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
+				var rsp = "";
+				if(stdout != ""){
+					array = stdout.split("\n");
 					
-				})
-			}, 2000);
-	
-		})	
+					removeUselessElements(array);
+
+					buildFileTree();
+
+					rsp = JSON.stringify(directoryTree);
+
+				} else if(stderr != ""){
+					rsp = stderr;
+					log(rsp);	
+				}
+
+				if(!lastDirectoryTree || lastDirectoryTree !== rsp){ //return only if new tree is different
+					lastDirectoryTree = rsp;
+					emit("loaded omx page", rsp);	
+				}
+
+				
+				
+			})
+
+		}, 2000);
+
 	},
 	exploreDirectory: function(msg){
 		log("--------- explore directory: " + msg + " ---------");
@@ -769,6 +753,108 @@ function saveFileInPlaylist(msg, fileName){
 
 	})
 };
+function buildFileTree(){
+	var tempTree = [];
+	for(var i=0; i < array.length; i++){
+		var item = array[i];
+
+		if(item.includes("/")){//directory
+
+			exec("ls -F " + mediaDocRoot + "/" + item, function(err, stdout, stderr) {
+				var rsp = "";
+				var child = []
+				if(stdout != ""){
+					child = stdout.split("\n");
+					removeUselessElements(child);
+					var children = [];
+
+					for(var j=0; j<child.length; j++){
+						var c = child[j];
+
+						if(c.includes("/")){
+							var e = {
+				                text: c,
+				                expanded: false,
+				                iconUrl: "images/folder.png",
+				                items: [],
+				            };
+
+				            children.push(e);
+
+						} else if(c.includes("mp3")){
+							var e = {
+			                    text: c,
+			                    iconUrl: "images/audio.png",
+				            };
+
+							children.push(e);
+
+						} else if(c.includes("wma")){
+							var e = {
+			                    text: c,
+			                    iconUrl: "images/audio.png",
+				            };
+
+							children.push(e);
+
+						} else if(c.includes("wmv")){
+							var e = {
+			                    text: c,
+			                    iconUrl: "images/video.png",
+				            };
+
+							children.push(e);
+
+						}
+
+					}
+
+					var entry = {
+		                text: item,
+		                expanded: false,
+		                iconUrl: "images/folder.png",
+		                items: children,
+		            };
+
+					tempTree.push(entry);
+					directoryTree.data = tempTree;
+
+				} else if(stderr != ""){
+					rsp = stderr;
+					log(rsp);	
+				}
+				
+			})
+
+		} else if(item.includes("mp3")){
+			tempTree.push(
+				{
+                    text: item,
+                }
+			);
+			directoryTree.data = tempTree;
+
+		} else if(item.includes("wma")){
+			tempTree.push(
+				{
+                    text: item,
+                    iconUrl: "images/audio.png",
+                }
+			);
+			directoryTree.data = tempTree;
+
+		} else if(item.includes("wmv")){
+			tempTree.push(
+				{
+                    text: item,
+                    iconUrl: "images/video.png",
+                }
+			);
+			directoryTree.data = tempTree;
+
+		}
+	}
+}
 /** ---------- FINE FUNZIONI OMX ---------- */
 
 /** ---------- INIZIO FUNZIONI YOUTUBE ---- */
@@ -810,5 +896,4 @@ http.listen(8080, function(){
 	log("Start Chromium");
 
 	startFullscreenChromium();	
-
 });

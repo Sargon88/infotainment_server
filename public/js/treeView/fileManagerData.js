@@ -1,5 +1,5 @@
 var dataSrc = [
-    {
+	{
         "text": "Recent", 
         "iconCls": "fa fa-history"
     },
@@ -135,3 +135,4 @@ var folderData =
         "text": "vm.exe"
     },
 ];
+
