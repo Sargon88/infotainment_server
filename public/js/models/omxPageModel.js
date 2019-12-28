@@ -99,8 +99,10 @@ var OmxPageModel = function(params, status){
                     if(item.items){
                         //directory
                         self.selectedDirectory(item);
+
                     } else {
                         //file
+                        self.playFile(e.item);
                     }
                 }
             }
@@ -113,9 +115,10 @@ var OmxPageModel = function(params, status){
 
 
     self.playFile = function(data){
+        var path = data.parent + data.text;
         if(self.playingfile == null){
-            self.playingfile = data;
-            self.params.socket.emit("play file", self.stringPath()+data.name());
+            self.playingfile = path;
+            self.params.socket.emit("play file", self.playingfile);
         }
     }
 

@@ -8,6 +8,7 @@ var sys = require('sys');
 var exec = require('child_process').exec;
 var request = require('request');
 var fs = require('fs');
+//var omxPlayer = require('node-omxplayer');
 
 /** CONSTANTS */
 var Socket;
@@ -449,45 +450,10 @@ OmxService = {
 		}, 2000);
 
 	},
-	exploreDirectory: function(msg){
-		log("--------- explore directory: " + msg + " ---------");
-		
-		msg = msg.replace(/([ ])/g, '\\$1');
-		var path = mediaDocRoot + msg;
-
-		exec("ls -F " + path, function(err, stdout, stderr) {
-			var rsp = "";
-			if(stdout != ""){
-				var array = stdout.split("\n");
-				removeUselessElements(array);
-				rsp = JSON.stringify(array);
-				
-			} else if(stderr != ""){
-				rsp = stderr;
-				log(rsp);	
-			}
-
-			emit("explore response", rsp);
-		});
-	},
 	playFile: function(msg){
 		log("--------- play file: " + msg + " ---------");
 
-		//ripulisco il file dei comandi
-		var cmd = "tail -f /dev/null > " + omxCommandFile;
-		log(cmd);
-		exec(cmd, function(err, stdout, stderr) {});
-
-		var cmd = 'cat ' + omxCommandFile + " | omxplayer " + mediaDocRoot+'\"' + msg + '\" ';
-		log(cmd);
-		exec(cmd, function(err, stdout, stderr) {
 		
-			if(stderr != ""){
-				log(stderr);	
-			}
-			
-			emit("started playing", "");
-		});
 	},
 	stopFile: function(msg){
 		log("--------- play file: " + msg + " ---------");
@@ -756,86 +722,27 @@ function buildFileTree(array){
 	for(var i=0; i<array.length; i++){
 		var d = array[i];
 
-		exploreDirectory("/"+d, d, directoryTree.data);
+		exploreDirectory("/", d, directoryTree.data);
 	}
 }
-/*
-function exploreDirectory(dir, item, array){
-
-	exec("ls -F " + mediaDocRoot + dir.split(' ').join('\\ '), function(err, stdout, stderr) {
-		if(stdout != ""){
-			var child = stdout.split("\n");
-
-			removeUselessElements(child);
-
-            var entry = {
-                text: item,
-                expanded: false,
-                iconUrl: "images/folder.png",
-                items: [],
-            };
-
-            array.push(entry);
-
-            for(var j=0; j<child.length; j++){
-                var c = child[j];
-
-                if(c.includes("/")){
-                    exploreDirectory(dir + c, c, entry.items);
-
-                } else if(c.includes("mp3")){
-                    var e = {
-                        text: c,
-                        iconUrl: "images/audio.png",
-                    };
-
-                    entry.items.push(e);
-
-                } else if(c.includes("wma")){
-                    var e = {
-                        text: c,
-                        iconUrl: "images/audio.png",
-                    };
-
-                    entry.items.push(e);
-
-                } else if(c.includes("wmv")){
-                    var e = {
-                        text: c,
-                        iconUrl: "images/video.png",
-                    };
-
-                    entry.items.push(e);
-
-                }
-
-            }
-
-
-		} else if(stderr != ""){
-			//rsp = stderr;
-			log(stderr);	
-		}
-	})
-}
-*/
 function exploreDirectory(dir, item, array){
 
 	var entry = {
         text: item,
         expanded: false,
         iconUrl: "images/folder.png",
+        parent: dir,
         items: [],
     };
     array.push(entry);
 
-	fs.readdir(mediaDocRoot + dir, function(err, items) {
- 
+	fs.readdir(mediaDocRoot + dir + item, function(err, items) {
+
 	    for (var i=0; i<items.length; i++) {
 	        var c = items[i];
 
 	        try{
-	        	fs.stat(mediaDocRoot + dir + "/" + c, statsCallback(dir, c, entry)); 	
+	        	fs.stat(mediaDocRoot + dir + item + "/" + c, statsCallback(dir + item, c, entry)); 	
 	        
 	        } catch(e){
 	        	console.log(e);
@@ -846,14 +753,15 @@ function exploreDirectory(dir, item, array){
 }
 function statsCallback(dir, c, entry){
 	return function(err, stats) {
-		
-        if(stats.isDirectory()){
-        	exploreDirectory(dir + c, c, entry.items);
 
+        if(stats.isDirectory()){
+        	exploreDirectory(dir, c, entry.items);
+        	
         } else {
         	if(c.includes("mp3")){
                 var e = {
                     text: c,
+                    parent: dir,
                     iconUrl: "images/audio.png",
                 };
 
@@ -862,6 +770,7 @@ function statsCallback(dir, c, entry){
             } else if(c.includes("wma")){
                 var e = {
                     text: c,
+                    parent: dir,
                     iconUrl: "images/audio.png",
                 };
 
@@ -870,6 +779,7 @@ function statsCallback(dir, c, entry){
             } else if(c.includes("wmv")){
                 var e = {
                     text: c,
+                    parent: dir,
                     iconUrl: "images/video.png",
                 };
 
