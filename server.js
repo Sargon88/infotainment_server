@@ -407,6 +407,7 @@ CallService = {
 var directoryTree = {data: []};
 var lastDirectoryTree = null;
 var loadDeviceInterval = null;
+var rsp = "";
 OmxService = {
 	loadOmxPage: function(msg){
 		log("loadOmxPage function");
@@ -419,34 +420,33 @@ OmxService = {
 		//qualunque periferica venga collegata viene automaticamente montata sotto /media/usb*
 		loadDeviceInterval = setInterval(function(){
 
+			if(directoryTree.data.length != 0){
+				rsp = JSON.stringify(directoryTree);
+			}
+			
+			directoryTree.data = [];
+
 			exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
-				var rsp = "";
+				
 				if(stdout != ""){
 					var array = stdout.split("\n");
-					directoryTree.data = [];
 					
 					removeUselessElements(array);
 
 					buildFileTree(array);
-
-					rsp = JSON.stringify(directoryTree);
 
 				} else if(stderr != ""){
 					rsp = stderr;
 					log(rsp);	
 				}
 
-				console.log("last: " + lastDirectoryTree);
-				console.log("rsp: " + rsp);
-
-				if(lastDirectoryTree !== rsp && directoryTree.data.length > 0){ //return only if new tree is different
+				if(lastDirectoryTree !== rsp && rsp){ //return only if new tree is different
 					lastDirectoryTree = rsp;
-					console.log("EMIT");
 					emit("loaded omx page", rsp);	
 				}				
 			})
 
-		}, 5000);
+		}, 2000);
 
 	},
 	exploreDirectory: function(msg){
@@ -877,9 +877,7 @@ function statsCallback(dir, c, entry){
 
             }
         }
-
-        console.log(entry.items);
-        console.log("-------------");
+        
     }
 }
 /** ---------- FINE FUNZIONI OMX ---------- */

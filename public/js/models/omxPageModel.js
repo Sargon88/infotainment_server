@@ -16,6 +16,8 @@ var OmxPageModel = function(params, status){
     self.showPlaylists = ko.observable(false);
     self.selectedPlaylist = ko.observable();
     self.playlistsList = ko.observableArray([]);
+    self.loading = ko.observable(true);
+    self.selectedDirectory = ko.observable(null);
     
     var ds = null;
     
@@ -60,6 +62,7 @@ var OmxPageModel = function(params, status){
     self.loadOmxPage = function(){
         self.params.socket.off('loaded omx page');
 
+        self.loading(true);
         self.loadTreeDataSrc();
         
     }
@@ -74,13 +77,36 @@ var OmxPageModel = function(params, status){
             console.log(ds);
 
             //NEW https://demos.shieldui.com/web/treeview/api     
-            console.log("LOADING");
-
             $("#treeview").shieldTreeView({
                 readDataSource: false,
                 dataSource: ds,
+                events: {
+                focus: function (e) {
+                    console.log("focus");
+                },
+                change: function (e) {
+                    console.log("change: ");
+                },
+                expand: function (e) {
+                    console.log("expanding");
+                },
+                collapse: function (e) {
+                    console.log("collapsing");
+                },
+                select: function (e) {
+                    console.log("select");
+                    var item = e.item;
+                    if(item.items){
+                        //directory
+                        self.selectedDirectory(item);
+                    } else {
+                        //file
+                    }
+                }
+            }
             });
 
+            self.loading(false);
             ds.read();
         });
     }

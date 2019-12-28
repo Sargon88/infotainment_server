@@ -333,14 +333,24 @@
                                 </nav>
                                 <div class="panel panel-default">
                                     <div class="panel-body pb-filemng-panel-body">
+                                        <div class="row" data-bind="if:loading">
+                                            <div class="col-xs-12" style="color: dodgerblue">
+                                                <i class="fas fa-spinner fa-pulse"></i> Loading...
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-sm-3 col-md-4 pb-filemng-template-treeview">
                                                 <div class="collapse navbar-collapse" id="treeview-toggle">
-                                                    <div id="treeview">
-                                                    </div>
+                                                    <div id="treeview"></div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-9 col-md-8 pb-filemng-template-body">
+                                            <div class="col-sm-9 col-md-8 pb-filemng-template-body" data-bind="if: selectedDirectory">
+                                                <!-- ko foreach: selectedDirectory.items -->
+                                                <div class="col-xs-3">
+                                                    <div class="col-xs-2"><img data-bind="attr: {src: iconUrl}" /></div>
+                                                    <div class="col-xs-10" data-bind="text: text"></div>
+                                                </div>
+                                                <!-- /ko -->    
                                             </div>
                                         </div>
                                     </div>
