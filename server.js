@@ -420,11 +420,10 @@ OmxService = {
 
 		//qualunque periferica venga collegata viene automaticamente montata sotto /media/usb*
 		loadDeviceInterval = setInterval(function(){
-
 			if(directoryTree.data.length != 0){
 				rsp = JSON.stringify(directoryTree);
 			}
-			
+
 			directoryTree.data = [];
 
 			exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
@@ -433,7 +432,6 @@ OmxService = {
 					var array = stdout.split("\n");
 					
 					removeUselessElements(array);
-
 					buildFileTree(array);
 
 				} else if(stderr != ""){
@@ -737,23 +735,21 @@ function exploreDirectory(dir, item, array){
     array.push(entry);
 
 	fs.readdir(mediaDocRoot + dir + item, function(err, items) {
-
-	    for (var i=0; i<items.length; i++) {
-	        var c = items[i];
-
-	        try{
-	        	fs.stat(mediaDocRoot + dir + item + "/" + c, statsCallback(dir + item, c, entry)); 	
-	        
-	        } catch(e){
-	        	console.log(e);
-	        }
-	        
-	    }	
+		try{
+			for (var i=0; i<items.length; i++) {
+			        var c = items[i];
+			        
+		        	fs.stat(mediaDocRoot + dir + item + "/" + c, statsCallback(dir + item, c, entry)); 	
+    
+			    }
+	 	} catch(e){
+	        	//console.log(e);
+        }
+	    	
 	});
 }
 function statsCallback(dir, c, entry){
 	return function(err, stats) {
-
         if(stats.isDirectory()){
         	exploreDirectory(dir, c, entry.items);
         	

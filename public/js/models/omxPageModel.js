@@ -17,7 +17,7 @@ var OmxPageModel = function(params, status){
     self.selectedPlaylist = ko.observable();
     self.playlistsList = ko.observableArray([]);
     self.loading = ko.observable(true);
-    self.selectedDirectory = ko.observable(null);
+    self.playingTitle = ko.observable("");
     
     var ds = null;
     
@@ -82,7 +82,7 @@ var OmxPageModel = function(params, status){
                 dataSource: ds,
                 events: {
                 focus: function (e) {
-                    console.log("focus");
+                    console.log("focus");                    
                 },
                 change: function (e) {
                     console.log("change: ");
@@ -95,14 +95,15 @@ var OmxPageModel = function(params, status){
                 },
                 select: function (e) {
                     console.log("select");
-                    var item = e.item;
-                    if(item.items){
-                        //directory
-                        self.selectedDirectory(item);
 
-                    } else {
-                        //file
-                        self.playFile(e.item);
+                    var item = e.item;
+                    if(item){
+                        if(item.items){
+                            //directory
+                        } else {
+                            //file
+                            self.playFile(e.item);
+                        }    
                     }
                 }
             }
@@ -119,6 +120,7 @@ var OmxPageModel = function(params, status){
         if(self.playingfile == null){
             self.playingfile = path;
             self.params.socket.emit("play file", self.playingfile);
+            self.playingTitle(data.text); //DEBUG
         }
     }
 

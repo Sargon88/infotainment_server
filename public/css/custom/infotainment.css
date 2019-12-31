@@ -5,6 +5,7 @@ body {
 
 .navbar-inverse {
 	background-image: radial-gradient(at top, rgba(30, 144, 255, 0.7), rgba(30, 144, 255, 0), #222); 
+	border-top-width: 0px;
 }
 
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:hover {
@@ -18,10 +19,6 @@ body {
 .navbar-inverse .navbar-collapse {
 	border-top: 1px solid rgba(30, 144, 255, 1);
 		
-}
-
-.navbar-inverse{
-	border-top-width: 0px;
 }
 
 .navbar-info-btn {
@@ -163,32 +160,51 @@ body {
 }
 
 /** OMX **/
-.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
-    color: rgba(30, 144, 255, 1);
-    cursor: default;
-    background-color: rgba(30, 144, 255, 0.05);
-    border: 1px solid rgba(30, 144, 255, 1);
-    border-radius: 0px;
-    border-bottom-color: transparent;
-    box-shadow: 0 0 5px rgba(30, 144, 255, 1);
+.omx-navbar-inverse {
+	background-color: rgba(30, 144, 255, 0.02);
+	background-image: radial-gradient(at bottom, rgba(30, 144, 255, 0.7), rgba(30, 144, 255, 0), #222); 
+	/** border-width: 0px;
+	border-bottom: 1px solid rgba(30, 144, 255, 1);	
+	*/
+	border: 1px solid rgba(30, 144, 255, 1);	
+	height: 500px;
+	position: fixed;
 }
 
-.nav-tabs>li>a:hover {
+.omx-navbar-button {
 	color: rgba(30, 144, 255, 1);
-	background-color: rgba(30, 144, 255, 0.08);
-    border: 1px solid #222;
-    border-radius: 0px;
-    border-bottom-color: transparent;
-    box-shadow: 0 0 5px rgba(30, 144, 255, 1);
+	margin-left: -11px;
 }
 
-.nav-tabs {
-    border-bottom: 1px solid rgba(30, 144, 255, 1);
+.omx-navbar-collapse {
+	height: auto;
+    border-top: 0;
+    max-height: none;
+    padding-left:0;
+    padding-right:0;
 }
 
-.btn-infotainment-omx-cmd {
-	color: rgba(30, 144, 255, 1);
+.omx-dir-tree-panel {
+	/**height: 483px;	*/
+	background-color: #222; 
 }
+
+.omx-dir-tree-panel .panel-body {
+	padding: 0px;
+}
+
+.sui-treeview {
+	background-color: #222 !important; 
+	height: 429px !important;
+	color: rgba(204, 204, 204, 1) !important;
+}
+
+.navbar-playing {
+	background-color: rgba(30, 144, 255, 0.02);
+	border-width: 0px;
+	border-bottom: 1px solid rgba(30, 144, 255, 1);	
+}
+
 
 /*** YOUTUBE HISTORY ***/
 .table-history>tbody>tr>td {
