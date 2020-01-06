@@ -43,7 +43,6 @@
             <!-- /ko -->
             <div class="col-xs-12" style="height: 140px;"></div>
             <!-- /ko -->
-
         </div>
         <!-- fine info -->
       </div>
@@ -256,110 +255,79 @@
         <!-- ko if: page() == $root.omxpage() -->
         <br />
         <div id="omxpage" class="col-xs-12">
-            <!-- FASCIA ALTA-->
-            <div class="row">
-                <div class="col-xs-12">
-                    <ul class="nav nav-tabs">
-                        <li role="presentation" data-bind="css: {active: showDrives}, click:function(){changeDrivePlaylists('drives')}"><a>Drives</a></li>
-                        <li role="presentation" data-bind="css: {active: showPlaylists}, click:function(){changeDrivePlaylists('playlists')}"><a>Playlists</a></li>
-
-                        <!-- AUDIO commands-->
-                        <div class="col-xs-6 col-xs-offset-3">
-                            <div class="col-xs-2 btn-infotainment-omx-cmd"><i class="fas fa-play"></i></div>
-                            <div class="col-xs-2 btn-infotainment-omx-cmd"><i class="fas fa-stop"></i></div>
-                            <div class="col-xs-2 btn-infotainment-omx-cmd"><i class="fas fa-pause"></i></div>
-                            <div class="col-xs-2 btn-infotainment-omx-cmd"><i class="fas fa-step-forward"></i></div>
-                            <div class="col-xs-2 btn-infotainment-omx-cmd"><i class="fas fa-volume-down"></i></div>
-                            <div class="col-xs-2 btn-infotainment-omx-cmd"><i class="fas fa-volume-up"></i></div>
-                        </div>
-                    </ul>
-                </div>    
-            </div>
-            <!-- FASCIA ALTA-->
 
             <!-- AREA DATI -->
             <div class="row">
                 <div class="col-xs-12">
 
-                    <!-- NEW -->
                     <div class="pb-filemng-template">
                         <div class="row">
                             <div class="col-md-8 col-md-offset-2">
-                                <nav class="navbar navbar-default pb-filemng-navbar">
-                                    <div class="container-fluid">
-                                        <!-- Navigation -->
-                                        <div class="navbar-header">
-                                            <button type="button" class="pull-left navbar-toggle collapsed treeview-toggle-btn" data-toggle="collapse" data-target="#treeview-toggle" aria-expanded="false">
-                                                <span class="sr-only">Toggle navigation</span>
-                                                <span class="icon-bar"></span>
-                                                <span class="icon-bar"></span>
-                                                <span class="icon-bar"></span>
-                                            </button>
-
-                                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#options" aria-expanded="false">
-                                                <span class="sr-only">Toggle navigation</span>
-                                                <span class="fa fa-gears"></span>
-                                            </button>
-
-                                            <!-- Search button -->
-                                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#pb-filemng-navigation" aria-expanded="false">
-                                                <span class="sr-only">Toggle navigation</span>
-                                                <span class="fa fa-share"></span>
-                                            </button>
-                                        </div>
-
-                                        <ul class="collapse navbar-collapse nav navbar-nav navbar-right" id="options">
-                                            <li><a href="#"><span class="fa fa-crosshairs fa-lg"></span></a></li>
-                                            <li><a href="#"><span class="fa fa-ellipsis-v fa-lg"></span></a></li>
-                                            <li><a href="#"><span class="fa fa-lg fa-server"></span></a></li>
-                                            <li><a href="#"><span class="fa fa-lg fa-minus"></span></a></li>
-                                            <li><a href="#"><span class="fa fa-lg fa-window-maximize"></span></a></li>
-                                            <li><a href="#"><span class="fa fa-lg fa-times"></span></a></li>
-                                        </ul>
-
-
-                                        <!-- Collect the nav links, forms, and other content for toggling -->
-                                        <div class="collapse navbar-collapse" id="pb-filemng-navigation">
-                                            <ul class="nav navbar-nav">
-                                                <li><a href="#"><span class="fa fa-chevron-left fa-lg"></span></a></li>
-                                                <li><a href="#"><span class="fa fa-chevron-right fa-lg"></span></a></li>
-                                                <li class="pb-filemng-active"><a href="#"><span class="fa fa-file fa-lg"></span></a></li>
-                                            </ul>
-                                        </div>
-                                        <!-- /.navbar-collapse -->
-
+                                <div class="row">
+                                    <!-- navbar -->
+                                    <div class="col-xs-1">
+                                        <nav class="navbar navbar-default omx-navbar-inverse">
+                                            <div class="container-fluid">
+                                                <div class="collapse navbar-collapse omx-navbar-collapse" id="omx-navbar-buttons">
+                                                    <ul class="nav flex-column">
+                                                        <li><a><i class="fas fa-play omx-navbar-button"></i></a></li>
+                                                        <li><a data-bind="click: stopFile"><i class="fas fa-stop omx-navbar-button"></i></a></li>
+                                                        <li><a><i class="fas fa-pause omx-navbar-button"></i></a></li>
+                                                        <li><a><i class="fas fa-step-forward omx-navbar-button"></i></a></li>
+                                                        <li><a data-bind="clinck: volDown"><i class="fas fa-volume-down omx-navbar-button"></i></a></li>
+                                                        <li><a data-bind="click: volUp"><i class="fas fa-volume-up omx-navbar-button "></i></a></li>
+                                                    </ul>
+                                                </div><!-- /.navbar-collapse -->
+                                            </div>
+                                        </nav>
                                     </div>
-                                    <!-- /.container-fluid -->
-                                </nav>
+                                    <!-- data area -->
+                                    <div class="col-xs-11">
+                                        <div class="panel panel-default omx-dir-tree-panel">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-xs-12" >
+                                                        <nav class="navbar navbar-default navbar-playing navbar-static-top">
+                                                            <div class="container-fluid">
+                                                                <div class="collapse navbar-collapse">
+                                                                    <!-- ko ifnot:loading -->
+                                                                    <ul class="nav navbar-nav">
+                                                                        <li data-bind="visible: playing"><a style="color: dodgerblue;">Now Playing:</a></li>
+                                                                        <li data-bind="visible: playing"><a style="color: dodgerblue;" data-bind="text: playingfile"></a></li> 
+                                                                    </ul>
+                                                                    <!-- /ko -->
+                                                                    <!-- ko if:loading -->
+                                                                    <ul class="nav navbar-nav">
+                                                                        <li><a style="color: dodgerblue;"><i class="fas fa-spinner fa-pulse"></i> Loading...</a></li>
+                                                                    </ul>
+                                                                    <!-- /ko -->
 
-                                <div class="panel panel-default">
-                                    <div class="panel-body pb-filemng-panel-body">
-                                        <div class="row" data-bind="if:loading">
-                                            <div class="col-xs-12" style="color: dodgerblue">
-                                                <i class="fas fa-spinner fa-pulse"></i> Loading...
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-3 col-md-4 pb-filemng-template-treeview">
-                                                <div class="collapse navbar-collapse" id="treeview-toggle">
-                                                    <div id="treeview"></div>
+                                                                </div><!-- /.navbar-collapse -->
+                                                            </div>
+                                                        </nav>
+                                                    </div>
+                                                    <div class="col-xs-12">
+                                                        <div id="treeview-toggle">
+                                                            <div id="treeview"></div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-sm-9 col-md-8 pb-filemng-template-body" data-bind="if: selectedDirectory">
-                                                <!-- ko foreach: selectedDirectory().items -->
-                                                <div class="col-xs-4">
-                                                    <div class="col-xs-2"><img data-bind="attr: {src: iconUrl}" /></div>
-                                                    <div class="col-xs-10" data-bind="text: text"></div>
-                                                </div>
-                                                <!-- /ko -->    
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!-- aesthetical row -->
+                                <div class="row">
+                                    <!-- navbar -->
+                                    <div class="col-xs-1">
+                                        <nav class="navbar navbar-default omx-navbar-inverse">
+                                        </nav>
+                                    </div>
+                                    <div class="col-xs-11"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- NEW -->
 
                 </div>
             </div>
