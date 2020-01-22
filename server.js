@@ -8,7 +8,7 @@ var sys = require('sys');
 var exec = require('child_process').exec;
 var request = require('request');
 var fs = require('fs');
-//var omxPlayer = require('node-omxplayer');
+var omx = require('node-omxplayer');
 
 /** CONSTANTS */
 var Socket;
@@ -409,6 +409,8 @@ var directoryTree = {data: []};
 var lastDirectoryTree = null;
 var loadDeviceInterval = null;
 var rsp = "";
+var omxPlayer = null;
+
 OmxService = {
 	loadOmxPage: function(msg){
 		log("loadOmxPage function");
@@ -445,46 +447,52 @@ OmxService = {
 				}				
 			})
 
-		}, 2000);
+		}, 3000);
 
 	},
 	playFile: function(msg){
 		log("--------- play file: " + msg + " ---------");
 
-		
+		if(omxPlayer){
+			console.log("OMX: " + omxPlayer);
+			console.log("Is running: " + omxPlayer.running);
+		} else {
+			console.log("E' null");
+		}
+
+		if(omxPlayer && omxPlayer.running){
+			console.log("IS Running: " + omxPlayer.running);
+			omxPlayer.quit();
+		}
+
+		omxPlayer = omx(mediaDocRoot + msg, false, 100);
+		omxPlayer.play();		
 	},
 	stopFile: function(msg){
-		log("--------- play file: " + msg + " ---------");
+		log("--------- stop file: " + msg + " ---------");
 
-		exec("killall omxplayer.bin", function(err, stdout, stderr) {
-			
-			if(stderr != ""){
-				log(stderr);	
-			}
-			
-			emit("stopped playing", "");
-			
-		});	
+		omxPlayer.quit();
+		emit("stopped playing", "");
 	},
 	omxCommand: function(msg){
 		log("omx command: " + msg);
 
 		switch(msg){
 			case "pause":
-				var cmd = 'echo -n p > ' + omxCommandFile;
-				log(cmd);
-				exec(cmd, function(err, stdout, stderr){
-
-					if(stderr != ""){
-						log(stderr);	
-					}
-
-					if(stdout != ""){
-						log(stdout);	
-					}
-
-				});
+				if(omxPlayer){
+					omxPlayer.pause();
+				}
 				break;
+			case "volUp":
+				if(omxPlayer){
+					omxPlayer.volUp();
+				}
+				break;
+			case "volDown":
+				if(omxPlayer){
+					omxPlayer.volDown();
+				}
+				break;	
 			default:
 		}
 

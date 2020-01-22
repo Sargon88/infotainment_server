@@ -9,7 +9,7 @@ var OmxPageModel = function(params, status){
     self.path = ko.observableArray([]);
     self.drives = ko.observableArray([]);
     self.directory = ko.observableArray([]);
-    self.playingfile = null;
+    self.playingfile = ko.observable("");
     self.message = ko.observable("");
 
     self.showDrives = ko.observable(true);
@@ -17,9 +17,12 @@ var OmxPageModel = function(params, status){
     self.selectedPlaylist = ko.observable();
     self.playlistsList = ko.observableArray([]);
     self.loading = ko.observable(true);
-    self.playingTitle = ko.observable("");
-    
+    self.selectedDirectory = ko.observable(null);
+    self.playing = ko.observable(false);
+    var treeView = null;
+
     var ds = null;
+    var lastTree = "";
     
 
     /** EVENTS **/
@@ -34,10 +37,11 @@ var OmxPageModel = function(params, status){
             self.drives(["La directory è vuota"]);
         }
     }).on('started playing', function(){
-        self.playingfile.playing(true);
+        self.playing(true);
+        console.log("PLAYING")
     }).on('stopped playing', function(){
-        self.playingfile.playing(false);
-        self.playingfile = null;
+        self.playing(false);
+        self.playingfile("");
     }).on('loaded playlist dir', function(msg){
 
         var listArray = JSON.parse(msg);
@@ -63,28 +67,35 @@ var OmxPageModel = function(params, status){
         self.params.socket.off('loaded omx page');
 
         self.loading(true);
-        self.loadTreeDataSrc();
-        
+        lastTree = "";
+        self.loadTreeDataSrc();       
     }
 
     var treeview = null;
     self.loadTreeDataSrc = function(){
         console.log("loadTreeDataSrc");
         self.params.socket.emit("load omx", "").on('loaded omx page', function(msg){
-            console.log(JSON.parse(msg));          
-            
-            ds = new shield.DataSource(JSON.parse(msg));
+            console.log("----- MSG -----");
+            console.log(msg);          
+            console.log("----- MSG -----");
 
-            console.log(ds);
+            if(msg !== lastTree){
+                console.log("----- TREE -----");
+                if(lastTree != ""){console.log(lastTree);}
+                console.log("----- TREE -----");
+                lastTree = msg;
 
-            if(!treeview){
+                ds = new shield.DataSource(JSON.parse(msg));
+
+                console.log(ds);
+
                 //NEW https://demos.shieldui.com/web/treeview/api     
-                treeview = $("#treeview").shieldTreeView({
+                treeView = $("#treeview").shieldTreeView({
                     readDataSource: false,
                     dataSource: ds,
                     events: {
                     focus: function (e) {
-                        console.log("focus");                    
+                        console.log("focus");
                     },
                     change: function (e) {
                         console.log("change: ");
@@ -97,42 +108,51 @@ var OmxPageModel = function(params, status){
                     },
                     select: function (e) {
                         console.log("select");
-
                         var item = e.item;
-                        if(item){
-                            if(item.items){
-                                //directory
-                            } else {
-                                //file
-                                self.playFile(e.item);
-                            }    
+                        if(item.items){
+                            //directory
+                            self.selectedDirectory(item);
+
+                            if(!e.item.expanded && e.item.items.length > 0){
+                                treeView.swidget().expanded(true, this.getPath(e.element));
+                                e.item.expanded = true;   
+                            }
+                            
+
+                        } else {
+                            //file
+                            self.playFile(e.item);
                         }
                     }
                 }
-                }).swidget();
+                });
 
-               
                 self.loading(false);
-                ds.read();        
+                ds.read();
 
-            } else {
-                treeview.refresh();
             }
+
         });
     }
 
 
     self.playFile = function(data){
         var path = data.parent + data.text;
-        if(self.playingfile == null){
-            self.playingfile = path;
-            self.params.socket.emit("play file", self.playingfile);
-            self.playingTitle(data.text); //DEBUG   
-        }
+        
+        self.playingfile(data.text);
+        self.params.socket.emit("play file", path);   
     }
 
     self.stopFile = function(data){     
-        self.params.socket.emit("stop file", self.stringPath()+data.name());
+        self.params.socket.emit("stop file");
+    }
+
+    self.volUp = function(){
+        self.params.socket.emit("omx command", "volUp");
+    }
+
+    self.volDown = function(){
+        self.params.socket.emit("omx command", "volDown");
     }
 
     self.loadOmxPage();

@@ -271,11 +271,11 @@
                                                 <div class="collapse navbar-collapse omx-navbar-collapse" id="omx-navbar-buttons">
                                                     <ul class="nav flex-column">
                                                         <li><a><i class="fas fa-play omx-navbar-button"></i></a></li>
-                                                        <li><a><i class="fas fa-stop omx-navbar-button"></i></a></li>
+                                                        <li><a data-bind="click: stopFile"><i class="fas fa-stop omx-navbar-button"></i></a></li>
                                                         <li><a><i class="fas fa-pause omx-navbar-button"></i></a></li>
                                                         <li><a><i class="fas fa-step-forward omx-navbar-button"></i></a></li>
-                                                        <li><a><i class="fas fa-volume-down omx-navbar-button"></i></a></li>
-                                                        <li><a><i class="fas fa-volume-up omx-navbar-button "></i></a></li>
+                                                        <li><a data-bind="clinck: volDown"><i class="fas fa-volume-down omx-navbar-button"></i></a></li>
+                                                        <li><a data-bind="click: volUp"><i class="fas fa-volume-up omx-navbar-button "></i></a></li>
                                                     </ul>
                                                 </div><!-- /.navbar-collapse -->
                                             </div>
@@ -292,8 +292,8 @@
                                                                 <div class="collapse navbar-collapse">
                                                                     <!-- ko ifnot:loading -->
                                                                     <ul class="nav navbar-nav">
-                                                                        <li><a style="color: dodgerblue;">Now Playing:</a></li>
-                                                                        <li><a style="color: dodgerblue;" data-bind="text: playingTitle"></a></li>                                                                        
+                                                                        <li data-bind="visible: playing"><a style="color: dodgerblue;">Now Playing:</a></li>
+                                                                        <li data-bind="visible: playing"><a style="color: dodgerblue;" data-bind="text: playingfile"></a></li> 
                                                                     </ul>
                                                                     <!-- /ko -->
                                                                     <!-- ko if:loading -->
@@ -316,7 +316,15 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <!-- aesthetical row -->
+                                <div class="row">
+                                    <!-- navbar -->
+                                    <div class="col-xs-1">
+                                        <nav class="navbar navbar-default omx-navbar-inverse">
+                                        </nav>
+                                    </div>
+                                    <div class="col-xs-11"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
