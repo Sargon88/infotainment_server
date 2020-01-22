@@ -834,5 +834,7 @@ http.listen(8080, function(){
 	log(" ");
 	log("Start Chromium");
 
+	//update version
+
 	startFullscreenChromium();	
 });
