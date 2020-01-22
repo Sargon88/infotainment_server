@@ -850,7 +850,7 @@ http.listen(8080, function(){
 
 	//update version
 	log("Try Updating");
-	shell(commands.updateSystem, null, function(){console.log("Up to date"); GenericService.reboot();});
+	shell(commands.updateSystem);
 
 	startFullscreenChromium();	
 });
