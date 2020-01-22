@@ -67,6 +67,7 @@ var OmxPageModel = function(params, status){
         
     }
 
+    var treeview = null;
     self.loadTreeDataSrc = function(){
         console.log("loadTreeDataSrc");
         self.params.socket.emit("load omx", "").on('loaded omx page', function(msg){
@@ -76,41 +77,47 @@ var OmxPageModel = function(params, status){
 
             console.log(ds);
 
-            //NEW https://demos.shieldui.com/web/treeview/api     
-            $("#treeview").shieldTreeView({
-                readDataSource: false,
-                dataSource: ds,
-                events: {
-                focus: function (e) {
-                    console.log("focus");                    
-                },
-                change: function (e) {
-                    console.log("change: ");
-                },
-                expand: function (e) {
-                    console.log("expanding");
-                },
-                collapse: function (e) {
-                    console.log("collapsing");
-                },
-                select: function (e) {
-                    console.log("select");
+            if(!treeview){
+                //NEW https://demos.shieldui.com/web/treeview/api     
+                treeview = $("#treeview").shieldTreeView({
+                    readDataSource: false,
+                    dataSource: ds,
+                    events: {
+                    focus: function (e) {
+                        console.log("focus");                    
+                    },
+                    change: function (e) {
+                        console.log("change: ");
+                    },
+                    expand: function (e) {
+                        console.log("expanding");
+                    },
+                    collapse: function (e) {
+                        console.log("collapsing");
+                    },
+                    select: function (e) {
+                        console.log("select");
 
-                    var item = e.item;
-                    if(item){
-                        if(item.items){
-                            //directory
-                        } else {
-                            //file
-                            self.playFile(e.item);
-                        }    
+                        var item = e.item;
+                        if(item){
+                            if(item.items){
+                                //directory
+                            } else {
+                                //file
+                                self.playFile(e.item);
+                            }    
+                        }
                     }
                 }
-            }
-            });
+                }).swidget();
 
-            self.loading(false);
-            ds.read();
+               
+                self.loading(false);
+                ds.read();        
+
+            } else {
+                treeview.refresh();
+            }
         });
     }
 
@@ -120,7 +127,7 @@ var OmxPageModel = function(params, status){
         if(self.playingfile == null){
             self.playingfile = path;
             self.params.socket.emit("play file", self.playingfile);
-            self.playingTitle(data.text); //DEBUG
+            self.playingTitle(data.text); //DEBUG   
         }
     }
 

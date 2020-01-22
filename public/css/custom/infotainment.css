@@ -163,12 +163,16 @@ body {
 .omx-navbar-inverse {
 	background-color: rgba(30, 144, 255, 0.02);
 	background-image: radial-gradient(at bottom, rgba(30, 144, 255, 0.7), rgba(30, 144, 255, 0), #222); 
-	/** border-width: 0px;
-	border-bottom: 1px solid rgba(30, 144, 255, 1);	
-	*/
+	border-width: 0px;
+	border-color: #222 !important;
 	border: 1px solid rgba(30, 144, 255, 1);	
 	height: 500px;
 	position: fixed;
+}
+
+.omx-navbar-inverse .container-fluid {
+	padding-left: 15px !important;
+	padding-right: 0px !important;
 }
 
 .omx-navbar-button {
@@ -185,8 +189,8 @@ body {
 }
 
 .omx-dir-tree-panel {
-	/**height: 483px;	*/
 	background-color: #222; 
+	border-color: #222 !important;
 }
 
 .omx-dir-tree-panel .panel-body {

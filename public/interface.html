@@ -285,20 +285,23 @@
                                     <div class="col-xs-11">
                                         <div class="panel panel-default omx-dir-tree-panel">
                                             <div class="panel-body">
-                                                <div class="row" data-bind="if:loading">
-                                                    <div class="col-xs-12" style="color: dodgerblue; padding-left: 16px;">
-                                                        <i class="fas fa-spinner fa-pulse"></i> Loading...
-                                                    </div>
-                                                </div>
                                                 <div class="row">
-                                                    <div class="col-xs-12" data-bind="ifnot:loading">
-                                                        <nav class="navbar navbar-default navbar-playing">
+                                                    <div class="col-xs-12" >
+                                                        <nav class="navbar navbar-default navbar-playing navbar-static-top">
                                                             <div class="container-fluid">
                                                                 <div class="collapse navbar-collapse">
+                                                                    <!-- ko ifnot:loading -->
                                                                     <ul class="nav navbar-nav">
                                                                         <li><a style="color: dodgerblue;">Now Playing:</a></li>
                                                                         <li><a style="color: dodgerblue;" data-bind="text: playingTitle"></a></li>                                                                        
                                                                     </ul>
+                                                                    <!-- /ko -->
+                                                                    <!-- ko if:loading -->
+                                                                    <ul class="nav navbar-nav">
+                                                                        <li><a style="color: dodgerblue;"><i class="fas fa-spinner fa-pulse"></i> Loading...</a></li>
+                                                                    </ul>
+                                                                    <!-- /ko -->
+
                                                                 </div><!-- /.navbar-collapse -->
                                                             </div>
                                                         </nav>
