@@ -33,7 +33,8 @@ var commands = {
 	},
 	car: {
 		startObdService: "/home/pi/info_scripts/obd_interface.py"
-	}
+	},
+	updateSystem: "cd infotainment; git pull",
 }
 
 
@@ -661,6 +662,19 @@ function startBarChromium(){
 			log(stderr);
 			log("START BAR CHROMIUM - DONE");
 			log("");	
+		}
+	});
+};
+
+function updateSystem(){
+	exec(commands.updateSystem, function(err, stdout, stderr){
+		if(stderr != ""){
+			log("---- stderr --- ");
+			log(stderr);
+			log("SYSTEM NOT UPDATE");
+			log("");	
+		} else {
+			GenericService.reboot();
 		}
 	});
 };
