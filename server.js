@@ -8,7 +8,13 @@ var sys = require('sys');
 var exec = require('child_process').exec;
 var request = require('request');
 var fs = require('fs');
-var omx = require('node-omxplayer');
+var omx = null;
+/*
+if(require('node-omxplayer')){
+	var omx = require('node-omxplayer');	
+}
+*/
+
 
 /** CONSTANTS */
 var Socket;

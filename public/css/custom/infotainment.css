@@ -166,8 +166,11 @@ body {
 	border-width: 0px;
 	border-color: #222 !important;
 	border: 1px solid rgba(30, 144, 255, 1);	
-	height: 500px;
+	height: 510px;
 	position: fixed;
+	border-radius: 60%;
+    display: flex;
+    align-items: center;
 }
 
 .omx-navbar-inverse .container-fluid {
@@ -178,6 +181,10 @@ body {
 .omx-navbar-button {
 	color: rgba(30, 144, 255, 1);
 	margin-left: -11px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 .omx-navbar-collapse {
@@ -186,6 +193,16 @@ body {
     max-height: none;
     padding-left:0;
     padding-right:0;
+}
+
+#deprecated
+.omx-navbar-footer {
+	position:absolute;
+	bottom:0px;
+	background-color: rgba(30, 144, 255, 0.02);
+	background-image: radial-gradient(at top, rgba(30, 144, 255, 0.7), rgba(30, 144, 255, 0), #222); 
+	width: 49.750px;
+	height: 20px;
 }
 
 .omx-dir-tree-panel {
