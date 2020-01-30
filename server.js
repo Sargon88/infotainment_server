@@ -599,6 +599,10 @@ GPSService = {
 var btOBDReader = new OBDReader();
 var dataReceivedMarker = {};
 
+/*
+// Use first device with 'obd' in the name
+	btOBDReader.autoconnect('obd');
+
 btOBDReader.on('connected', function () {
     //this.requestValueByName("vss"); //vss = vehicle speed sensor
 
@@ -616,6 +620,7 @@ btOBDReader.on('dataReceived', function (data) {
     dataReceivedMarker = data;
     CarService.updateUBDUi();
 });
+*/
 
 CarService = {
 	updateUBDUi: function(){
@@ -866,8 +871,6 @@ http.listen(8080, function(){
 	//update version
 	log("Try Updating");
 	shell(commands.updateSystem);
-	// Use first device with 'obd' in the name
-	btOBDReader.autoconnect('obd');
 
 	startFullscreenChromium();	
 });
