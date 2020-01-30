@@ -38,7 +38,7 @@ var commands = {
 	car: {
 		startObdService: "/home/pi/info_scripts/obd_interface.py"
 	},
-	updateSystem: "cd infotainment; git pull",
+	updateSystem: "git pull",
 }
 
 
