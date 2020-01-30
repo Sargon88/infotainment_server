@@ -8,9 +8,9 @@ var CarPageModel = function(params, status){
 	self.lastUpdate = ko.observable(new Date());
 	self.test = ko.observable("NULLA");
 
-	self.params.socket.on('test obd', function(msg){
+	self.params.socket.on('updateObdUI', function(msg){
 		self.lastUpdate(new Date());
-		self.test(msg);
+		self.test(JSON.tringify(msg));
 	});
 
 }

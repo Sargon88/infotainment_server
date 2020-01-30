@@ -9,11 +9,9 @@ var exec = require('child_process').exec;
 var request = require('request');
 var fs = require('fs');
 var omx = null;
-/*
-if(require('node-omxplayer')){
-	var omx = require('node-omxplayer');	
-}
-*/
+var OBDReader = require('bluetooth-obd');
+var omx = require('node-omxplayer');	
+
 
 
 /** CONSTANTS */
@@ -22,6 +20,7 @@ var mediaDocRoot = "/media";
 var playlistDir = "/home/pi/omx_playlists/";
 var omxCommandFile = "/tmp/omx_control"
 var yt_playlist = "yt_playlist";
+
 
 /** SHELL COMMANDS */
 var cmd_sendDbusCoordinate = "export DISPLAY=:0.0; dbus-send  --print-reply --session --dest=org.navit_project.navit /org/navit_project/navit/default_navit org.navit_project.navit.navit.set_center_by_string string:\"geo: %coordinates%\"";
@@ -597,20 +596,33 @@ GPSService = {
 	}
 };
 
+var btOBDReader = new OBDReader();
+var dataReceivedMarker = {};
+
+btOBDReader.on('connected', function () {
+    //this.requestValueByName("vss"); //vss = vehicle speed sensor
+
+    this.addPoller("vss");
+    this.addPoller("rpm");
+    this.addPoller("temp");
+    this.addPoller("load_pct");
+    this.addPoller("map");
+    this.addPoller("frp");
+
+    this.startPolling(1000); //Request all values each second.
+});
+
+btOBDReader.on('dataReceived', function (data) {
+    dataReceivedMarker = data;
+    CarService.updateUBDUi();
+});
+
+// Use first device with 'obd' in the name
+btOBDReader.autoconnect('obd');
+
 CarService = {
-	connect: function(){
-		exec(commands.car.startObdService, function(err, stdout, stderr) {
-
-			if(stdout != ""){
-				log(stdout);
-
-				emit('test obd', stdout);
-	
-			} else if(stderr != ""){
-				rsp = stderr;
-				log(rsp);	
-			}
-		});
+	updateUBDUi: function(){
+		emit("updateObdUI", dataReceivedMarker);
 	}
 }
 
