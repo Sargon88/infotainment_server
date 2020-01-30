@@ -10,6 +10,7 @@ var request = require('request');
 var fs = require('fs');
 var omx = null;
 var omx = require('node-omxplayer');	
+var OBDReader = require('bluetooth-obd');
 
 
 
@@ -595,6 +596,27 @@ GPSService = {
 	}
 };
 
+var btOBDReader = new OBDReader();
+var dataReceivedMarker = {};
+
+btOBDReader.on('connected', function () {
+    //this.requestValueByName("vss"); //vss = vehicle speed sensor
+
+    this.addPoller("vss");
+    this.addPoller("rpm");
+    this.addPoller("temp");
+    this.addPoller("load_pct");
+    this.addPoller("map");
+    this.addPoller("frp");
+
+    this.startPolling(1000); //Request all values each second.
+});
+
+btOBDReader.on('dataReceived', function (data) {
+    dataReceivedMarker = data;
+    CarService.updateUBDUi();
+});
+
 CarService = {
 	updateUBDUi: function(){
 		emit("updateObdUI", dataReceivedMarker);
@@ -844,6 +866,8 @@ http.listen(8080, function(){
 	//update version
 	log("Try Updating");
 	shell(commands.updateSystem);
+	// Use first device with 'obd' in the name
+	btOBDReader.autoconnect('obd');
 
 	startFullscreenChromium();	
 });
