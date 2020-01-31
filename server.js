@@ -598,10 +598,8 @@ GPSService = {
 
 var btOBDReader = new OBDReader();
 var dataReceivedMarker = {};
-
-
-// Use first device with 'obd' in the name
-btOBDReader.autoconnect('00:1D:A5:01:47:38');
+var obdError = [];
+var obdDebug = [];
 
 btOBDReader.on('error', function (err) {
    console.log("OBD ERROR",err);
@@ -631,9 +629,11 @@ CarService = {
 	},
 	errorMsg: function(msg){
 		emit("obdError", msg);
+		obdError.push(msg);
 	}, 
 	debugMsg: function(msg){
 		emit("obdDebug", msg);
+		obdDebug.push(msg);
 	}
 }
 
@@ -882,4 +882,7 @@ http.listen(8080, function(){
 	shell(commands.updateSystem);
 
 	startFullscreenChromium();	
+
+	// Use first device with 'obd' in the name
+	btOBDReader.autoconnect('00:1D:A5:01:47:38');
 });
