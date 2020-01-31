@@ -604,10 +604,10 @@ var dataReceivedMarker = {};
 btOBDReader.autoconnect('obd');
 
 btOBDReader.on('error', function (err) {
-   console.log("ERROR",err);
-});
+   console.log("OBD ERROR",err);
+   CarService.errorMsg(err);
 
-btOBDReader.on('connected', function () {
+}).on('connected', function () {
     //this.requestValueByName("vss"); //vss = vehicle speed sensor
 
     this.addPoller("vss");
@@ -618,16 +618,22 @@ btOBDReader.on('connected', function () {
     this.addPoller("frp");
 
     this.startPolling(1000); //Request all values each second.
-});
-
-btOBDReader.on('dataReceived', function (data) {
+}).on('debug', function(msg){
+	CarService.debugMsg(msg);
+}).on('dataReceived', function (data) {
     dataReceivedMarker = data;
-    CarService.updateUBDUi();
+    CarService.updateOBDUi();
 });
 
 CarService = {
-	updateUBDUi: function(){
+	updateOBDUi: function(){
 		emit("updateObdUI", dataReceivedMarker);
+	},
+	errorMsg: function(msg){
+		emit("obdError", msg);
+	}, 
+	debugMsg: function(msg){
+		emit("obdDebug", msg);
 	}
 }
 
