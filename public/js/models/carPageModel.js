@@ -21,7 +21,7 @@ var CarPageModel = function(params, status){
 		self.debugBkp.push(msg);
 		self.debug([]);
 
-		for(var i = self.debugBkp.length-1, i < 5, i-- ){
+		for(var i = self.debugBkp.length-1; i < 5; i-- ){
 			self.debug().push(self.debugBkp[i]);
 		}
 
@@ -30,7 +30,7 @@ var CarPageModel = function(params, status){
 		self.errorBkp.push(msg);
 		self.error([]);
 
-		for(var i = self.debugBkp.length-1, i < 5, i-- ){
+		for(var i = self.debugBkp.length-1; i < 5; i-- ){
 			self.error().push(self.debugBkp[i]);
 		}
 

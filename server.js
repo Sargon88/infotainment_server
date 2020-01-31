@@ -601,7 +601,7 @@ var dataReceivedMarker = {};
 
 
 // Use first device with 'obd' in the name
-btOBDReader.autoconnect('obd');
+btOBDReader.autoconnect('00:1D:A5:01:47:38');
 
 btOBDReader.on('error', function (err) {
    console.log("OBD ERROR",err);
