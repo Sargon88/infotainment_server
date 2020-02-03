@@ -1,4 +1,5 @@
 /** IMPORT **/
+var mode = "debug";
 var express = require('express');
 var app = express();
 var path = require('path');
@@ -9,8 +10,14 @@ var exec = require('child_process').exec;
 var request = require('request');
 var fs = require('fs');
 var omx = null;
-var omx = require('node-omxplayer');	
-var OBDReader = require('bluetooth-obd');
+var omx = null;	
+var OBDReader = null;
+
+if(mode !== "debug"){
+	omx = require('node-omxplayer');	
+	OBDReader = require('bluetooth-obd');	
+}
+
 
 
 
@@ -226,6 +233,9 @@ io.on('connection', function(socket){
 	Socket.on('coordinates', function(msg){
 		GPSService.coordinates(msg);
 	})
+
+	// Use first device with 'obd' in the name
+	CarService.startObdMonitorin();
 });
 
 /** EVENTS SERVICES */
@@ -596,36 +606,49 @@ GPSService = {
 	}
 };
 
-var btOBDReader = new OBDReader();
+var btOBDReader = null;
 var dataReceivedMarker = {};
 var obdError = [];
 var obdDebug = [];
 
-btOBDReader.on('error', function (err) {
-   console.log("OBD ERROR",err);
-   CarService.errorMsg(err);
-
-}).on('connected', function () {
-    //this.requestValueByName("vss"); //vss = vehicle speed sensor
-
-    this.addPoller("vss");
-    this.addPoller("rpm");
-    this.addPoller("temp");
-    this.addPoller("load_pct");
-    this.addPoller("map");
-    this.addPoller("frp");
-
-    this.startPolling(1000); //Request all values each second.
-}).on('debug', function(msg){
-	CarService.debugMsg(msg);
-}).on('dataReceived', function (data) {
-    dataReceivedMarker = data;
-    CarService.updateOBDUi();
-});
-
 CarService = {
+	startObdMonitorin: function(){
+		if(mode != "debug"){
+			btOBDReader = new OBDReader();	
+			btOBDReader.autoconnect('00:1D:A5:01:47:38');	
+		} else {
+			btOBDReader = Socket;
+
+		}
+
+		btOBDReader.on('error', function (err) {
+		   console.log("OBD ERROR",err);
+		   CarService.errorMsg(err);
+		}).on('connected', function () {
+		    //this.requestValueByName("vss"); //vss = vehicle speed sensor
+
+		    this.addPoller("vss");
+		    this.addPoller("rpm");
+		    this.addPoller("temp");
+		    this.addPoller("load_pct");
+		    this.addPoller("map");
+		    this.addPoller("frp");
+
+		    this.startPolling(1000); //Request all values each second.
+		}).on('debug', function(msg){
+			CarService.debugMsg(msg);
+		}).on('dataReceived', function (data) {
+			console.log("Event: dataReceived", data);
+			var data = JSON.parse(data);
+			if(data.value != "NO DATA"){
+				console.log()
+				dataReceivedMarker = data;
+		    	CarService.updateOBDUi();	
+			} 
+		});
+	},
 	updateOBDUi: function(){
-		emit("updateObdUI", dataReceivedMarker);
+		emit("updateObdUI", JSON.stringify(dataReceivedMarker));
 	},
 	errorMsg: function(msg){
 		emit("obdError", msg);
@@ -882,7 +905,5 @@ http.listen(8080, function(){
 	shell(commands.updateSystem);
 
 	startFullscreenChromium();	
-
-	// Use first device with 'obd' in the name
-	btOBDReader.autoconnect('00:1D:A5:01:47:38');
+	
 });

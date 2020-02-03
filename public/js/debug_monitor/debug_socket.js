@@ -14,6 +14,10 @@ $(function () {
     sendPhoneStatusMessage();
   }, 2000);
 
+  setInterval(function(){
+    sendOBDData();
+  }, 1000);
+
   function msgTime(){
     var today = new Date();
     var h = today.getHours();
@@ -28,83 +32,44 @@ $(function () {
   }
 
   /* EVENTS */
-
-/*
-  socket.on('phone status', function(msg){
-    $('#messages').append($('<li>').text(msgTime() + ' - phone status: ' + msg ));
-  });	
-*/
-
   socket.on('DEBUG', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - DEBUG: ' + msg ));
-  });	
-
-  socket.on('set page', function(msg){
+  }).on('set page', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - set page: ' + msg ));
-  });	
-
-  socket.on('getStatus', function(msg){
+  }).on('getStatus', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - getStatus: ' + msg ));
-  });	
-
-  socket.on('incoming calling', function(msg){
+  }).on('incoming calling', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - incoming calling: ' + msg ));
-  });	
-
-  socket.on('call end', function(msg){
+  }).on('call end', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - call end: ' + msg ));
-  });	
-
-  socket.on('call data', function(msg){
+  }).on('call data', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - call data: ' + msg ));
-  });	
-
-  socket.on('call answer', function(msg){
+  }).on('call answer', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - call answer: ' + msg ));
-  });	
-
-  socket.on('answer call', function(msg){
+  }).on('answer call', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - answer call: ' + msg ));
-  });
-
-  socket.on('end call', function(msg){
+  }).on('end call', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - end call: ' + msg ));
-  });
-
-  socket.on('start phone call', function(msg){
+  }).on('start phone call', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - start phone call: ' + msg ));
-  });
-
-  socket.on('outgoing calling', function(msg){
+  }).on('outgoing calling', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - outgoing calling: ' + msg ));
-  });
-
-  socket.on('explore response', function(msg){
+  }).on('explore response', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - explore response: ' + msg ));
-  });
-
-  socket.on('started playing', function(msg){
+  }).on('started playing', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - started playing: ' + msg ));
-  });
-
-  socket.on('stopped playing', function(msg){
+  }).on('stopped playing', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - stopped playing: ' + msg ));
-  });
-
-  socket.on('load playlist data', function(msg){
+  }).on('load playlist data', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - load playlist data: ' + msg ));
-  });
-
-  socket.on('youtube url', function(msg){
+  }).on('youtube url', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - youtube url: ' + msg ));
-  });
-
-  socket.on('loaded playlist dir', function(msg){
+  }).on('loaded playlist dir', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - loaded playlist dir: ' + msg ));
-  });
-
-  socket.on('loaded omx page', function(msg){
+  }).on('loaded omx page', function(msg){
     $('#messages').append($('<li>').text(msgTime() + ' - loaded omx page: ' + msg ));
+  }).on('dataReceived', function(msg){
+    $('#messages').append($('<li>').text(msgTime() + ' - OBD Data Received: ' + msg ));
   });
 
 });
@@ -124,6 +89,38 @@ function sendPhoneStatusMessage(){
 
   socket.emit(a, m);
   
+}
+
+var obdMsg = 0;
+function sendOBDData(){
+  obdMsg = obdMsg <=2? obdMsg++ : obdMsg = 0;
+    var a = 'dataReceived';
+    var m = "";
+
+    switch(obdMsg){
+      case 0:
+        m = '{"mode":"41","pid":"0B","name":"map","value":' + (Math.floor(Math.random() * (+1000 - +10) + +10)) +'}';
+        break;
+
+      case 1:
+        m = '{"mode":"41","pid":"0B","name":"temp","value":' + (Math.floor(Math.random() * (+1000 - +10) + +10)) +'}';
+        break;
+
+      case 2:
+        m = '{"value":"NO DATA"}';
+        break;
+
+      default:
+        break;
+    }
+
+    console.log("Message:", m);
+
+    if(m){
+      socket.emit(a, m);
+      obdMsg+=1;
+
+    }
 }
 
 function sendDEBUG(){
@@ -340,4 +337,28 @@ function sendOmxPplay(){
   $('#a').val(a);
   $('#m').val(m);
   
+}
+
+function sendOBDMap(){
+  var a = 'dataReceived';
+  var m = '{"mode":"41","pid":"0B","name":"map","value":25}';
+
+  $('#a').val(a);
+  $('#m').val(m);
+}
+
+function sendOBDTemp(){
+  var a = 'dataReceived';
+  var m = '{"mode":"41","pid":"0B","name":"temp","value":55}';
+
+  $('#a').val(a);
+  $('#m').val(m);
+}
+
+function sendOBDNodata(){
+  var a = 'dataReceived';
+  var m = '{"value":"NO DATA"}';
+
+  $('#a').val(a);
+  $('#m').val(m);
 }
