@@ -639,12 +639,14 @@ CarService = {
 			CarService.debugMsg(msg);
 		}).on('dataReceived', function (data) {
 			console.log("Event: dataReceived", data);
-			var data = JSON.parse(data);
-			if(data.value != "NO DATA"){
-				console.log()
-				dataReceivedMarker = data;
-		    	CarService.updateOBDUi();	
-			} 
+			if(data){
+				var d = JSON.parse(data);
+				if(d.value != "NO DATA"){
+					dataReceivedMarker = d;
+			    	CarService.updateOBDUi();	
+				}	
+			}
+			 
 		});
 	},
 	updateOBDUi: function(){
