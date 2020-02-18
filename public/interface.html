@@ -359,7 +359,6 @@
                 </div>
             </div>
             <!-- AREA DATI -->
-
         </div>
         <!-- /ko -->
         <!-- *** END OMX *** -->
@@ -374,14 +373,38 @@
                 <div class="row">
                     <div class="col-xs-12">Update: <span data-bind="text: lastUpdate" /></div>
                 </div>
+
                 <div class="row">
-                    <div class="col-xs-12">DATA</div>
-                    <div class="col-xs-12" data-bind="text: test"></div>
+                    <div class="col-xs-4">
+                        <div class="row">
+                            <div class="col-xs-12">DATA</div>
+                            <div class="col-xs-12" data-bind="text: test"></div>
+                        </div>
+                        <br />
+                        <div class="row" data-bind="foreach: OBDMessages">
+                            <div class="col-xs-12"><span data-bind="text: $data.name"></span> - <span data-bind="text: $data.value"></span></div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="row">
+                            <div class="col-xs-12">ERROR</div>
+                        </div>
+                        <br />
+                        <!-- ko foreach: error -->
+                            <div class="col-xs-12" data-bind="text: $data"></div>
+                        <!-- /ko -->
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="row">
+                            <div class="col-xs-12">DEBUG</div>
+                        </div>
+                        <br />
+                        <!-- ko foreach: debug -->
+                            <div class="col-xs-12" data-bind="text: $data"></div>
+                        <!-- /ko -->
+                    </div>
                 </div>
-                <br />
-                <div class="row" data-bind="foreach: OBDMessages">
-                    <div class="col-xs-12"><span data-bind="text: $data.name"></span> - <span data-bind="text: $data.value"></span></div>
-                </div>
+
             </div>
             <!-- DEBUG -->
         </div>

@@ -6,7 +6,7 @@ var CarPageModel = function(params, status){
 	self.params = params;
 
 	self.lastUpdate = ko.observable(new Date());
-	self.test = ko.observable();
+	self.test = ko.observable("TEST");
 	self.OBDMessages = ko.observableArray();
 	self.error = ko.observableArray();
 	self.errorBkp = [];
@@ -36,21 +36,45 @@ var CarPageModel = function(params, status){
 	}).on('obdDebug', function(msg){
 		self.lastUpdate(new Date());
 		self.debugBkp.push(msg);
-		self.debug([]);
 
-		for(var i = self.debugBkp.length-1; i < 5; i-- ){
-			self.debug().push(self.debugBkp[i]);
-		}
+		manageMessages(self.debug, self.debugBkp);
 
 	}).on('obdError', function(msg){
 		self.lastUpdate(new Date());
 		self.errorBkp.push(msg);
-		self.error([]);
+		
+		manageMessages(self.error, self.errorBkp);
 
-		for(var i = self.debugBkp.length-1; i < 5; i-- ){
-			self.error().push(self.debugBkp[i]);
+		console.log(self.error());
+
+	}).on('obdFullData', function(msg){
+		console.log(msg);
+
+		if(msg){
+			self.debugBkp = msg.debug;
+			self.errorBkp = msg.error;
+			self.lastUpdate(new Date());
 		}
 
+		manageMessages(self.debug, self.debugBkp);
+		manageMessages(self.error, self.errorBkp);
+		
+		console.log("DEBUG", self.debug());
+		console.log("ERROR", self.error());
+
+		self.test("LOADED");
 	});
+
+	self.params.socket.emit("refreshUI");
+
+	/** Private Functions **/
+	var manageMessages = function(msgArray, bkpArray){
+		msgArray([]);
+
+		for(var i = 0; i < 5; i++){
+			msgArray.push(bkpArray[bkpArray.length-(i+1)]);
+		}	
+		
+	}
 
 }

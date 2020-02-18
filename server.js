@@ -637,18 +637,27 @@ CarService = {
 			    this.addPoller("frp");
 
 			    this.startPolling(1000); //Request all values each second.
+			    
 			}).on('debug', function(msg){
 				CarService.debugMsg(msg);
+
 			}).on('dataReceived', function (data) {				
 				console.log("Event: dataReceived", data);
 				if(data){
 					var d = JSON.parse(data);
-					if(d.value != "NO DATA"){
-						dataReceivedMarker = d;
-				    	CarService.updateOBDUi();	
-					}	
+					dataReceivedMarker = d;
+			    	CarService.updateOBDUi();	
 				}
 				 
+			});
+
+			Socket.on('refreshUI', function(){
+				var msg = {
+					data: dataReceivedMarker,
+					error: obdError,
+					debug: obdDebug
+				};
+				emit('obdFullData', msg);
 			});
 
 		}
