@@ -7,7 +7,7 @@ var YtPageModel = function(params, status){
 	self.params = params;
 
 	self.params.socket.emit('youtube history', '');
-    
+
     self.playYoutubeVideo = function(data){
     	var msg = JSON.stringify(data);
 

@@ -574,6 +574,7 @@ YoutubeService = {
 
 		msgObj = JSON.parse(msg);
 		InfotainmentStatus.yturl = msgObj.url;
+		console.log("OK!");
 		
 		saveFileInPlaylist(msg, yt_playlist);
 
@@ -752,50 +753,68 @@ function saveFileInPlaylist(msg, fileName){
 
 	msgObj = JSON.parse(msg);
 	InfotainmentStatus.yturl = msgObj.url;
+	
 
 	var cmd = "grep '"+ InfotainmentStatus.yturl +"' " + playlistDir+fileName;
 
 	exec(cmd, {shell: '/bin/bash'}, function(err, stdout, stderr){
-
+		
 		if(stdout == ""){
+			
 			//nuovo video
 			cmd = "echo '" + msg + "' > " + playlistDir+"temp_ytPlaylist";
 			exec(cmd, {shell: '/bin/bash'}, function(err, stdout, stderr) {
 				
+				
 				if(stderr != ""){
+					
 					
 					log(stderr);
 					return;
 				}
+				
 
 				cmd = "head -6 " + playlistDir+fileName + " >> " + playlistDir + "temp_ytPlaylist";
 				exec(cmd, {shell: '/bin/bash'}, function(err, stdout, stderr) {
+					
 
 					if(stderr != ""){
+						
 						log(stderr);
 						return;
 					}
+					console.log("10");
 					
 					cmd = "mv " + playlistDir + "temp_ytPlaylist " + playlistDir + fileName;
 				
 					exec(cmd, {shell: '/bin/bash'}, function(err, stdout, stderr) {
+						
 
 						if(stderr != ""){
+							
 							log(stderr);
 							return;
 						}
+						
 											
 						log("Saved");
 						return true;
 					});
+
+					
 				});
+				
 
 			});
+			
 		} else {
+			
 			log("Video già riprodotto");
 		}
+		
 
 		returnYoutubeHistory();
+		
 
 	})
 };
@@ -875,8 +894,6 @@ function statsCallback(dir, c, entry){
 /** ---------- INIZIO FUNZIONI YOUTUBE ---- */
 function returnYoutubeHistory(){
 	var cmd = "tail -7 " + playlistDir + yt_playlist + " | awk '{print}' ORS=', '";
-
-	console.log("CMD YT: " + cmd);
 
 	exec(cmd, {shell: "/bin/bash"}, function(err, stdout, stderr){
 
