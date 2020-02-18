@@ -58,11 +58,7 @@ var CarPageModel = function(params, status){
 
 		manageMessages(self.debug, self.debugBkp);
 		manageMessages(self.error, self.errorBkp);
-		
-		console.log("DEBUG", self.debug());
-		console.log("ERROR", self.error());
 
-		self.test("LOADED");
 	});
 
 	self.params.socket.emit("refreshUI");

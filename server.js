@@ -227,6 +227,13 @@ io.on('connection', function(socket){
 		YoutubeService.loadYoutube(msg);
 	}).on('youtube history', function(msg){
 		returnYoutubeHistory();
+	}).on('refreshUI', function(){
+		var msg = {
+			data: dataReceivedMarker,
+			error: obdError,
+			debug: obdDebug
+		};
+		emit('obdFullData', msg);
 	});
 
 	/** ----------- INIZIO GPS -------- */
@@ -234,8 +241,6 @@ io.on('connection', function(socket){
 		GPSService.coordinates(msg);
 	})
 
-	// Use first device with 'obd' in the name
-	CarService.startObdMonitorin();
 });
 
 /** EVENTS SERVICES */
@@ -612,7 +617,7 @@ var obdError = [];
 var obdDebug = [];
 
 CarService = {
-	startObdMonitorin: function(){
+	startObdMonitoring: function(){
 		if(mode != "debug"){
 			btOBDReader = new OBDReader();	
 			btOBDReader.autoconnect('00:1D:A5:01:47:38');	
@@ -637,7 +642,7 @@ CarService = {
 			    this.addPoller("frp");
 
 			    this.startPolling(1000); //Request all values each second.
-			    
+
 			}).on('debug', function(msg){
 				CarService.debugMsg(msg);
 
@@ -650,16 +655,6 @@ CarService = {
 				}
 				 
 			});
-
-			Socket.on('refreshUI', function(){
-				var msg = {
-					data: dataReceivedMarker,
-					error: obdError,
-					debug: obdDebug
-				};
-				emit('obdFullData', msg);
-			});
-
 		}
 	},
 	updateOBDUi: function(){
@@ -920,5 +915,8 @@ http.listen(8080, function(){
 	shell(commands.updateSystem);
 
 	startFullscreenChromium();	
+
+	// Use first device with 'obd' in the name
+	CarService.startObdMonitoring();
 	
 });
