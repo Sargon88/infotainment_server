@@ -93,10 +93,10 @@ var InfotainmentStatus = {
 	inCall: false,
 
 	//OBD
-	btOBDReader = null,
-	dataReceivedMarker = {},
-	obdError = [],
-	obdDebug = [],
+	btOBDReader: null,
+	dataReceivedMarker: {},
+	obdError: [],
+	obdDebug: [],
 
 	/** NAVBAR */
 	navbar: {
