@@ -620,7 +620,7 @@ CarService = {
 	startObdMonitoring: function(){
 		if(mode != "debug"){
 			btOBDReader = new OBDReader();	
-			btOBDReader.autoconnect('00:1D:A5:01:47:38');	
+			btOBDReader.autoconnect('OBDII');	
 		} else {
 			btOBDReader = Socket;
 
