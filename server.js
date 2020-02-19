@@ -650,7 +650,12 @@ CarService = {
 			}).on('dataReceived', function (data) {				
 				console.log("Event: dataReceived", data);
 				if(data){
-					var d = JSON.parse(data);
+					var d = null;
+					if(typeof(data) != "object"){
+						d = JSON.parse(data);
+					} else {
+						d = data;
+					}
 					dataReceivedMarker = d;
 			    	CarService.updateOBDUi();	
 				}
