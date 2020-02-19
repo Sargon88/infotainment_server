@@ -92,6 +92,12 @@ var InfotainmentStatus = {
 	calling: false,
 	inCall: false,
 
+	//OBD
+	btOBDReader = null,
+	dataReceivedMarker = {},
+	obdError = [],
+	obdDebug = [],
+
 	/** NAVBAR */
 	navbar: {
 		hour: "",
@@ -240,7 +246,6 @@ io.on('connection', function(socket){
 	Socket.on('coordinates', function(msg){
 		GPSService.coordinates(msg);
 	})
-
 });
 
 /** EVENTS SERVICES */
@@ -611,24 +616,27 @@ GPSService = {
 	}
 };
 
+/*
 var btOBDReader = null;
 var dataReceivedMarker = {};
 var obdError = [];
 var obdDebug = [];
+*/
+var connectionInterval = 1000;
 
 CarService = {
 	startObdMonitoring: function(){
 		if(mode != "debug"){
-			btOBDReader = new OBDReader();	
-			btOBDReader.autoconnect('OBDII');	
+			InfotainmentStatus.btOBDReader = new OBDReader();	
+			InfotainmentStatus.btOBDReader.autoconnect('OBDII');	
 		} else {
-			btOBDReader = Socket;
+			InfotainmentStatus.btOBDReader = Socket;
 
 		}
 
-		if(btOBDReader){
+		if(InfotainmentStatus.btOBDReader){
 
-			btOBDReader.on('error', function (err) {
+			InfotainmentStatus.btOBDReader.on('error', function (err) {
 			   console.log("OBD ERROR",err);
 			   CarService.errorMsg(err);
 			}).on('connected', function () {
@@ -655,7 +663,7 @@ CarService = {
 					} else {
 						d = data;
 					}
-					dataReceivedMarker = d;
+					InfotainmentStatus.dataReceivedMarker = d;
 			    	CarService.updateOBDUi();	
 				}
 				 
@@ -663,15 +671,26 @@ CarService = {
 		}
 	},
 	updateOBDUi: function(){
-		emit("updateObdUI", JSON.stringify(dataReceivedMarker));
+		emit("updateObdUI", JSON.stringify(InfotainmentStatus.dataReceivedMarker));
 	},
 	errorMsg: function(msg){
 		emit("obdError", msg);
-		obdError.push(msg);
+		InfotainmentStatus.obdError.push(msg);
+
+		InfotainmentStatus.OBDReader.off();
+		InfotainmentStatus.OBDReader = null;
+		setTimeout(function(){
+			startObdMonitoring();
+		}, connectionInterval);
+
+		if(connectionInterval < 10000){
+			connectionInterval += 1000;
+		}
+		
 	}, 
 	debugMsg: function(msg){
 		emit("obdDebug", msg);
-		obdDebug.push(msg);
+		InfotainmentStatus.obdDebug.push(msg);
 	}
 }
 
@@ -919,5 +938,4 @@ http.listen(8080, function(){
 
 	// Use first device with 'obd' in the name
 	CarService.startObdMonitoring();
-	
 });
