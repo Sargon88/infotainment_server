@@ -649,7 +649,7 @@ CarService = {
 			    this.addPoller("map");
 			    this.addPoller("frp");
 
-			    this.startPolling(1000); //Request all values each second.
+			    this.startPolling(10000); //Request all values each second.
 
 			}).on('debug', function(msg){
 				CarService.debugMsg(msg);
@@ -658,11 +658,11 @@ CarService = {
 				console.log("Event: dataReceived", data);
 				if(data){
 					var d = null;
-					if(typeof(data) != "object"){
-						d = JSON.parse(data);
-					} else {
+				//	if(typeof(data) != "object"){
+					//	d = JSON.parse(data);
+				//	} else {
 						d = data;
-					}
+				//	}
 					InfotainmentStatus.dataReceivedMarker = d;
 			    	CarService.updateOBDUi();	
 				}
