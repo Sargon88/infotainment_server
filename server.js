@@ -235,9 +235,9 @@ io.on('connection', function(socket){
 		returnYoutubeHistory();
 	}).on('refreshUI', function(){
 		var msg = {
-			data: dataReceivedMarker,
-			error: obdError,
-			debug: obdDebug
+			data: InfotainmentStatus.dataReceivedMarker,
+			error: InfotainmentStatus.obdError,
+			debug: InfotainmentStatus.obdDebug
 		};
 		emit('obdFullData', msg);
 	});
@@ -278,8 +278,7 @@ GenericService = {
 		log("REBOOT");
 		shell(cmd_reboot," stdout");
 	},
-	changePage: function(msg, extra){
-		
+	changePage: function(msg, extra){		
 		InfotainmentStatus.newPage = msg;
 		
 		if(InfotainmentStatus.newPage == "map" || InfotainmentStatus.newPage == "ytPlay"){
@@ -655,8 +654,8 @@ CarService = {
 				CarService.debugMsg(msg);
 
 			}).on('dataReceived', function (data) {				
-				console.log("Event: dataReceived", data);
-				if(data){
+				if(data && data.pid){
+					console.log("Event: dataReceived", data);
 					InfotainmentStatus.dataReceivedMarker = data;
 			    	CarService.updateOBDUi();	
 				}
