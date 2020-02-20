@@ -649,7 +649,7 @@ CarService = {
 			    this.addPoller("map");
 			    this.addPoller("frp");
 
-			    this.startPolling(10000); //Request all values each second.
+			    this.startPolling(1000); //Request all values each second.
 
 			}).on('debug', function(msg){
 				CarService.debugMsg(msg);
@@ -657,13 +657,7 @@ CarService = {
 			}).on('dataReceived', function (data) {				
 				console.log("Event: dataReceived", data);
 				if(data){
-					var d = null;
-				//	if(typeof(data) != "object"){
-					//	d = JSON.parse(data);
-				//	} else {
-						d = data;
-				//	}
-					InfotainmentStatus.dataReceivedMarker = d;
+					InfotainmentStatus.dataReceivedMarker = data;
 			    	CarService.updateOBDUi();	
 				}
 				 
@@ -677,10 +671,13 @@ CarService = {
 		emit("obdError", msg);
 		InfotainmentStatus.obdError.push(msg);
 
-		InfotainmentStatus.OBDReader.off();
+		if(InfotainmentStatus.OBDReader){
+			InfotainmentStatus.OBDReader.off();
+		}
+		
 		InfotainmentStatus.OBDReader = null;
 		setTimeout(function(){
-			startObdMonitoring();
+			CarService.startObdMonitoring();
 		}, connectionInterval);
 
 		if(connectionInterval < 10000){

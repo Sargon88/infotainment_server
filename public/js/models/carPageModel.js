@@ -14,6 +14,7 @@ var CarPageModel = function(params, status){
 	self.debugBkp = [];
 
 	self.params.socket.on('updateObdUI', function(msg){
+		console.log("UPDATE");
 		self.lastUpdate(new Date());
 		if(msg){
 			var m = JSON.parse(msg);
