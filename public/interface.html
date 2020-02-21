@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/css/fontawesome/all.min.css">
     <link rel="stylesheet" href="/css/custom/infotainment.css">
+    <link rel="stylesheet" href="/css/custom/cardashboard.css">
     <link rel="stylesheet" href="/css/custom/call.css">
 
     <!-- Scripts -->
@@ -366,7 +367,7 @@
         <!-- *** START CAR *** -->
         <!-- ko if: page() == $root.carpage() -->
         <br />
-        <div id="carpage" class="col-xs-12">
+        <div id="carpage" class="col-xs-12" >
             <!-- DEBUG -->
             <div class="col-xs-offset-1">
                 <br/>
@@ -375,14 +376,18 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-xs-8">
+                    <div class="col-xs-8 carDashboard">
                         <div class="row">
                             <div class="col-xs-12">DATA</div>
                             <div class="col-xs-12" data-bind="text: test"></div>
                         </div>
                         <br />
-                        <div class="row" data-bind="foreach: OBDMessages">
-                            <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
+                        <div class="row">
+                            <div class="col-xs-7 dashboardFooter">
+                                <div class="row" data-bind="foreach: OBDMessages">
+                                    <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-4">

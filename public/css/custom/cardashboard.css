@@ -1,0 +1,14 @@
+.carDashboard {
+	height: 73vh; 
+	background-image: url(../../images/honda-cr-z-2010-3_top.png);
+	background-repeat: no-repeat;
+	background-size: 35vh;
+	background-position-y: center;
+	background-position-x: center;
+}
+
+.dashboardFooter {
+	position: fixed;
+	bottom: 196px;
+	background-color: white;
+}

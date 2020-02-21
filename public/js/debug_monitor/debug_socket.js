@@ -93,22 +93,30 @@ function sendPhoneStatusMessage(){
 
 var obdMsg = 0;
 function sendOBDData(){
-  obdMsg = obdMsg <=2? obdMsg++ : obdMsg = 0;
+  obdMsg = obdMsg <=4? obdMsg++ : obdMsg = 0;
     var a = 'dataReceived';
     var m = "";
 
     switch(obdMsg){
       case 0:
-        m = '{"mode":"41","pid":"0B","name":"map","value":' + (Math.floor(Math.random() * (+1000 - +10) + +10)) +'}';
+        m = '{"mode":"41","pid":"0B","name":"map","value":' + (Math.floor(Math.random() * (+1000 - +10) + +10)) +', "title": "Map"}';
         break;
 
       case 1:
-        m = '{"mode":"41","pid":"0B","name":"temp","value":' + (Math.floor(Math.random() * (+1000 - +10) + +10)) +'}';
+        m = '{"mode":"41","pid":"0B","name":"temp","value":' + (Math.floor(Math.random() * (+1000 - +10) + +10)) +', "title": "Temperature"}';
         break;
 
       case 2:
+        m = '{"mode":"41","pid":"0B","name":"rpm","value":' + (Math.floor(Math.random() * (+1000 - +10) + +1000)) +', "title": "RPM"}';
+        break;
+
+      case 3:
         m = '{"value":"NO DATA"}';
         break;
+
+      case 4:
+        m = '{}';
+        break;  
 
       default:
         break;
@@ -119,7 +127,6 @@ function sendOBDData(){
     if(m){
       socket.emit(a, m);
       obdMsg+=1;
-
     }
 }
 

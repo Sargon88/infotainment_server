@@ -1,5 +1,5 @@
 /** IMPORT **/
-var mode = "";
+var mode = "debug";
 var express = require('express');
 var app = express();
 var path = require('path');
@@ -631,6 +631,9 @@ CarService = {
 		} else {
 			InfotainmentStatus.btOBDReader = Socket;
 
+			if(!InfotainmentStatus.btOBDReader){
+				setTimeout(function(){CarService.startObdMonitoring()}, 2000);
+			}
 		}
 
 		if(InfotainmentStatus.btOBDReader){
@@ -653,7 +656,11 @@ CarService = {
 			}).on('debug', function(msg){
 				CarService.debugMsg(msg);
 
-			}).on('dataReceived', function (data) {				
+			}).on('dataReceived', function (data) {		
+				
+				if(data && typeof(data) != 'object'){
+					data = JSON.parse(data);
+				}
 				if(data && data.pid){
 					console.log("Event: dataReceived", data);
 
