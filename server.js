@@ -644,9 +644,9 @@ CarService = {
 			    this.addPoller("vss");
 			    this.addPoller("rpm");
 			    this.addPoller("temp");
-			    this.addPoller("load_pct");
-			    this.addPoller("map");
-			    this.addPoller("frp");
+			    this.addPoller("fli");
+			    this.addPoller("hybridlife");
+
 
 			    this.startPolling(1000); //Request all values each second.
 
@@ -656,6 +656,27 @@ CarService = {
 			}).on('dataReceived', function (data) {				
 				if(data && data.pid){
 					console.log("Event: dataReceived", data);
+
+					switch(data.name){
+						case 'vss':
+							data.title = 'Speed';
+							break;
+						case 'rpm':
+							data.title = 'RPM';
+							break;
+						case 'temp':
+							data.title = 'Temperature';
+							break;
+						case 'fli':
+							data.title = 'Fuel Level';
+							break;
+						case 'hybridlife':
+							data.title = 'Hybrid Life';
+							break;
+						default:
+							break;
+					}
+
 					InfotainmentStatus.dataReceivedMarker = data;
 			    	CarService.updateOBDUi();	
 				}
