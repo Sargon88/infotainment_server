@@ -12,9 +12,10 @@ var CarPageModel = function(params, status){
 	self.errorBkp = [];
 	self.debug = ko.observableArray();
 	self.debugBkp = [];
+	self.gauge = null;
 
 	self.params.socket.on('updateObdUI', function(msg){
-		console.log("UPDATE");
+		console.log("UPDATE", msg);
 		self.lastUpdate(new Date());
 		if(msg){
 			var m = JSON.parse(msg);
@@ -30,6 +31,10 @@ var CarPageModel = function(params, status){
 		             : left.name < right.name ? -1
 		             : 1;
 		    });
+
+		    if(m.name == "vss"){
+		    	self.gauge.set(m.value); // set actual value
+		    }
 		
 			console.log(self.OBDMessages());
 		}
@@ -76,32 +81,43 @@ var CarPageModel = function(params, status){
 
 	self.initGauges = function(){
 		var opts = {
-			angle: -0.2, // The span of the gauge arc
-			lineWidth: 0.2, // The line thickness
-			radiusScale: 1, // Relative radius
-			pointer: {
-			length: 0.6, // // Relative to gauge radius
-			strokeWidth: 0.035, // The thickness
-			color: '#000000' // Fill color
-			},
-			limitMax: 200,     // If false, max value increases automatically if value > maxValue
-			limitMin: 0,     // If true, the min value of the gauge will be fixed
-			colorStart: '#6FADCF',   // Colors
-			colorStop: '#8FC0DA',    // just experiment with them
-			strokeColor: '#E0E0E0',  // to see which ones work best for you
-			generateGradient: true,
-			highDpiSupport: true,     // High resolution support
+				  angle: -0.15, // The span of the gauge arc
+				  lineWidth: 0.16, // The line thickness
+				  radiusScale: 1, // Relative radius
+				  pointer: {
+				    length: 0.51, // // Relative to gauge radius
+				    strokeWidth: 0.042, // The thickness
+				    color: '#000000' // Fill color
+				  },
+				  limitMax: true,     // If false, max value increases automatically if value > maxValue
+				  limitMin: true,     // If true, the min value of the gauge will be fixed
+				  colorStart: '#6FADCF',   // Colors
+				  colorStop: '#8FC0DA',    // just experiment with them
+				  strokeColor: '#E0E0E0',  // to see which ones work best for you
+				  generateGradient: false,
+				  highDpiSupport: true,     // High resolution support
+				  staticLabels: {
+			        font: "10px sans-serif",
+			        labels: [200, 500, 2100, 2800],
+			        fractionDigits: 0
+			      },
+			      staticZones: [
+			      	{strokeStyle: "#30B32D", min: 0, max: 70},
+			      	{strokeStyle: "#FFDD00", min: 70, max: 130},
+			        {strokeStyle: "#F03E3E", min: 130, max: 200},
+			        ],
+				};
 
-		};
 		var target = document.getElementById('graphsArea'); // your canvas element
-		var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-		gauge.maxValue = 3000; // set max gauge value
-		gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-		gauge.animationSpeed = 32; // set animation speed (32 is default value)
+		self.gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+		self.gauge.setTextField(document.getElementById("preview-textfield"));
+		self.gauge.maxValue = 200; // set max gauge value
+		self.gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+		self.gauge.animationSpeed = 32; // set animation speed (32 is default value)
 		if(self.OBDMessages()["vss"] && self.OBDMessages()["vss"].value){
-			gauge.set(self.OBDMessages()["vss"].value); // set actual value
+			self.gauge.set(self.OBDMessages()["vss"].value); // set actual value
 		} else {
-			gauge.set(0);
+			self.gauge.set(0);
 		}
 		
 	}

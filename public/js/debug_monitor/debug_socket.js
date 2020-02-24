@@ -93,13 +93,13 @@ function sendPhoneStatusMessage(){
 
 var obdMsg = 0;
 function sendOBDData(){
-  obdMsg = obdMsg <=4? obdMsg++ : obdMsg = 0;
+  //obdMsg = obdMsg <=4? obdMsg++ : obdMsg = 0;
     var a = 'dataReceived';
     var m = "";
 
     switch(obdMsg){
       case 0:
-        m = '{"mode":"41","pid":"0B","name":"vss","value":' + (Math.floor(Math.random() * (+1000 - +10) + +10)) +', "title": "Map"}';
+        m = '{"mode":"41","pid":"0B","name":"vss","value":' + (Math.floor(Math.random() * (+300 - 1) + 0)) +', "title": "Valocity"}';
         break;
 
       case 1:
@@ -126,7 +126,7 @@ function sendOBDData(){
 
     if(m){
       socket.emit(a, m);
-      obdMsg+=1;
+    //  obdMsg+=1;
     }
 }
 
