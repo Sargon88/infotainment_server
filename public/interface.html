@@ -25,6 +25,7 @@
     <script src="/js/bootstrap/bootstrap.min.js"></script>
     <script src="/js/knockout/knockout.min.js"></script>
     <script src="/js/moment/moment.js"></script>
+    <script src="/js/gauge/gauge.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/models/callsModel.js"></script>
     <script src="/js/models/fileModel.js"></script>
@@ -377,20 +378,38 @@
 
                 <div class="row">
                     <div class="col-xs-8 carDashboard">
+                        <!--
                         <div class="row">
                             <div class="col-xs-12">DATA</div>
                             <div class="col-xs-12" data-bind="text: test"></div>
                         </div>
+                    -->
                         <br />
                         <div class="row">
                             <div class="col-xs-7 dashboardFooter">
-                                <div class="row" data-bind="foreach: OBDMessages">
+                                <!--
+                                <div class="row" data-bind="foreach: OBDMessages"> 
                                     <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
+                                    
+                                </div>
+                                -->
+                                <div class="row">
+                                    <!-- 
+                                    <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
+                                    -->
+                                    <div class="col-xs-12">
+                                        <canvas id="graphsArea" width="90px" height="100%"></canvas>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-4">
+                        <div class="row" data-bind="foreach: OBDMessages"> 
+                            <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
+                            
+                        </div>
+                        <br />
                         <div class="row">
                             <div class="col-xs-12">ERROR</div>
                         </div>

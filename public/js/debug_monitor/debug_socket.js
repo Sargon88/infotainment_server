@@ -99,7 +99,7 @@ function sendOBDData(){
 
     switch(obdMsg){
       case 0:
-        m = '{"mode":"41","pid":"0B","name":"map","value":' + (Math.floor(Math.random() * (+1000 - +10) + +10)) +', "title": "Map"}';
+        m = '{"mode":"41","pid":"0B","name":"vss","value":' + (Math.floor(Math.random() * (+1000 - +10) + +10)) +', "title": "Map"}';
         break;
 
       case 1:

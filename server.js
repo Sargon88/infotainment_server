@@ -1,5 +1,5 @@
 /** IMPORT **/
-var mode = "debug";
+var mode = "";
 var express = require('express');
 var app = express();
 var path = require('path');

@@ -2,13 +2,17 @@
 	height: 73vh; 
 	background-image: url(../../images/honda-cr-z-2010-3_top.png);
 	background-repeat: no-repeat;
-	background-size: 35vh;
-	background-position-y: center;
+	background-size: 80vh;
 	background-position-x: center;
+	margin-top: 40px;
 }
 
 .dashboardFooter {
 	position: fixed;
-	bottom: 196px;
+	bottom: 70px;
 	background-color: white;
+	height: 90px !important;
+	background-color: rgba(30, 144, 255, 0.02);
+	border-width: 0px;
+	border-top: 1px solid rgba(30, 144, 255, 1);	
 }
