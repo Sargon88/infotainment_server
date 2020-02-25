@@ -370,55 +370,52 @@
         <br />
         <div id="carpage" class="col-xs-12" >
             <!-- DEBUG -->
-            <div class="col-xs-offset-1">
-                <br/>
-                <div class="row">
-                    <div class="col-xs-12">Update: <span data-bind="text: lastUpdate" /></div>
-                </div>
+            <div class="row">
+                <div id="leftPanel" class="col-xs-11 carDashboard">
 
-                <div class="row">
-                    <div class="col-xs-8 carDashboard">
-                        <!--
-                        <div class="row">
-                            <div class="col-xs-12">DATA</div>
-                            <div class="col-xs-12" data-bind="text: test"></div>
+                    <div class="row pull-right">
+                        <div class="col-xs-12">
+                            <button type="button" class="btn btn-default" data-bind="click: toggleRightArea"><i class="fas fa-align-right"></i></button>
                         </div>
-                    -->
-                        <br />
-                        <div class="row">
-                            <div class="col-xs-7 dashboardFooter">
-                                <!--
-                                <div class="row" data-bind="foreach: OBDMessages"> 
-                                    <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
-                                    
-                                </div>
-                                -->
-                                <div class="row">
-                                    <!-- 
-                                    <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
-                                    -->
-                                    <div class="col-xs-12">
-                                        <canvas id="graphsArea" width="150px" height="100%"></canvas>
+                    </div>
+ 
+                    <div class="row">
+                        <div class="col-xs-8 dashboardFooter">
+                            <div class="row">
+                                
+                                <div class="col-xs-3">
+                                    <div class="row">
+                                        <div class="col-xs-12 graph-area"><canvas id="vss-graph" width="100%" height="85%"></canvas></div>
                                     </div>
-                                    <div class="col-xs-4"><div id="preview-textfield"></div></div>
+                                    <div class="row">
+                                        <div class="col-xs-12 graph-textfield" id="vss-textfield"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <div class="row">
+                                        <div class="col-xs-12 graph-area"><canvas id="rpm-graph" width="100%" height="85%"></canvas></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 graph-textfield" id="rpm-textfield"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>                 
+                </div>
+                <div id="rightPanel" class="col-xs-1">
+                    <div class="row" data-bind="foreach: OBDMessages"> 
+                        <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
+                        
                     </div>
-                    <div class="col-xs-4">
-                        <div class="row" data-bind="foreach: OBDMessages"> 
-                            <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
-                            
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col-xs-12">ERROR</div>
-                        </div>
-                        <br />
-                        <!-- ko foreach: error -->
-                            <div class="col-xs-12" data-bind="text: $data"></div>
-                        <!-- /ko -->
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-12">ERROR</div>
                     </div>
+                    <br />
+                    <!-- ko foreach: error -->
+                        <div class="col-xs-12" data-bind="text: $data"></div>
+                    <!-- /ko -->
                 </div>
             </div>
             <!-- DEBUG -->

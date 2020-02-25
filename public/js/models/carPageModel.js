@@ -6,20 +6,19 @@ var CarPageModel = function(params, status){
 	self.params = params;
 
 	self.lastUpdate = ko.observable(new Date());
-	self.test = ko.observable("TEST");
 	self.OBDMessages = ko.observableArray();
 	self.error = ko.observableArray();
 	self.errorBkp = [];
 	self.debug = ko.observableArray();
 	self.debugBkp = [];
-	self.gauge = null;
+	self.vssGauge = null;
+	self.rpmGauge = null;
+	self.rightAreaOpen = ko.observable(false);
 
 	self.params.socket.on('updateObdUI', function(msg){
-		console.log("UPDATE", msg);
 		self.lastUpdate(new Date());
 		if(msg){
 			var m = JSON.parse(msg);
-			self.test(msg);	
 
 			var temp = self.OBDMessages();
 			var oldItem = self.OBDMessages.remove(function(item){return item.name === m.name;});
@@ -33,18 +32,16 @@ var CarPageModel = function(params, status){
 		    });
 
 		    if(m.name == "vss"){
-		    	self.gauge.set(m.value); // set actual value
+		    	self.vssGauge.set(m.value); // set actual value
+		    } else if(m.name == "rpm"){
+		    	self.rpmGauge.set(m.value); // set actual value
 		    }
-		
-			console.log(self.OBDMessages());
 		}
-
 	}).on('obdDebug', function(msg){
 		self.lastUpdate(new Date());
 		self.debugBkp.push(msg);
 
 		manageMessages(self.debug, self.debugBkp);
-
 	}).on('obdError', function(msg){
 		self.lastUpdate(new Date());
 		self.errorBkp.push(msg);
@@ -52,7 +49,6 @@ var CarPageModel = function(params, status){
 		manageMessages(self.error, self.errorBkp);
 
 		console.log(self.error());
-
 	}).on('obdFullData', function(msg){
 		console.log(msg);
 
@@ -64,10 +60,30 @@ var CarPageModel = function(params, status){
 
 		manageMessages(self.debug, self.debugBkp);
 		manageMessages(self.error, self.errorBkp);
-
 	});
 
 	self.params.socket.emit("refreshUI");
+
+	self.toggleRightArea = function(){
+		self.rightAreaOpen(!self.rightAreaOpen());
+
+		$( "#rightPanel" ).removeClass( "col-xs-4" );
+		$( "#rightPanel" ).addClass( "col-xs-1" );
+
+		if(self.rightAreaOpen()){
+			$( "#rightPanel" ).removeClass( "col-xs-1" );
+			$( "#leftPanel" ).removeClass( "col-xs-11" );
+			$( "#rightPanel" ).addClass( "col-xs-4" );
+			$( "#leftPanel" ).addClass( "col-xs-8" );
+		} else {
+			$( "#rightPanel" ).removeClass( "col-xs-4" );
+			$( "#leftPanel" ).removeClass( "col-xs-8" );
+			$( "#rightPanel" ).addClass( "col-xs-1" );
+			$( "#leftPanel" ).addClass( "col-xs-11" );
+		}
+
+		console.log("TOGGLED: open", self.rightAreaOpen());
+	}
 
 	/** Private Functions **/
 	var manageMessages = function(msgArray, bkpArray){
@@ -76,18 +92,18 @@ var CarPageModel = function(params, status){
 		for(var i = 0; i < 5; i++){
 			msgArray.push(bkpArray[bkpArray.length-(i+1)]);
 		}	
-		
 	}
 
 	self.initGauges = function(){
-		var opts = {
+		/** VSS **/
+		var vssopts = {
 				  angle: -0.15, // The span of the gauge arc
 				  lineWidth: 0.16, // The line thickness
 				  radiusScale: 1, // Relative radius
 				  pointer: {
 				    length: 0.51, // // Relative to gauge radius
 				    strokeWidth: 0.042, // The thickness
-				    color: '#000000' // Fill color
+				    color: '#1e90ff' // Fill color
 				  },
 				  limitMax: true,     // If false, max value increases automatically if value > maxValue
 				  limitMin: true,     // If true, the min value of the gauge will be fixed
@@ -96,30 +112,53 @@ var CarPageModel = function(params, status){
 				  strokeColor: '#E0E0E0',  // to see which ones work best for you
 				  generateGradient: false,
 				  highDpiSupport: true,     // High resolution support
-				  staticLabels: {
+				  /*
+				  	staticLabels: {
 			        font: "10px sans-serif",
-			        labels: [200, 500, 2100, 2800],
-			        fractionDigits: 0
+			        labels: [0, 70, 140, 200],
+			        fractionDigits: 0,
+			        color: "#1e90ff",
 			      },
+			      */
 			      staticZones: [
-			      	{strokeStyle: "#30B32D", min: 0, max: 70},
-			      	{strokeStyle: "#FFDD00", min: 70, max: 130},
-			        {strokeStyle: "#F03E3E", min: 130, max: 200},
+			      	{strokeStyle: "rgba(30, 144, 255, 0.05)", min: 0, max: 70},
+			      	{strokeStyle: "rgba(30, 144, 255, 0.2)", min: 70, max: 140},
+			        {strokeStyle: "rgba(30, 144, 255, 0.9)", min: 140, max: 200},
 			        ],
-				};
-
-		var target = document.getElementById('graphsArea'); // your canvas element
-		self.gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-		self.gauge.setTextField(document.getElementById("preview-textfield"));
-		self.gauge.maxValue = 200; // set max gauge value
-		self.gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
-		self.gauge.animationSpeed = 32; // set animation speed (32 is default value)
-		if(self.OBDMessages()["vss"] && self.OBDMessages()["vss"].value){
-			self.gauge.set(self.OBDMessages()["vss"].value); // set actual value
-		} else {
-			self.gauge.set(0);
-		}
+		};
+		var target = document.getElementById('vss-graph'); // your canvas element
+		self.vssGauge = new Gauge(target).setOptions(vssopts); // create sexy gauge!
+		self.vssGauge.setTextField(document.getElementById("vss-textfield"));
+		self.vssGauge.maxValue = 200; // set max gauge value
+		self.vssGauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+		self.vssGauge.animationSpeed = 32; // set animation speed (32 is default value)
+		self.vssGauge.set(0);
 		
+		/** RPM **/
+		var rpmopts = {
+				  angle: -0.15, // The span of the gauge arc
+				  lineWidth: 0.16, // The line thickness
+				  radiusScale: 1, // Relative radius
+				  pointer: {
+				    length: 0.51, // // Relative to gauge radius
+				    strokeWidth: 0.042, // The thickness
+				    color: '#1e90ff' // Fill color
+				  },
+				  limitMax: true,     // If false, max value increases automatically if value > maxValue
+				  limitMin: true,     // If true, the min value of the gauge will be fixed
+				  colorStart: 'rgba(30, 144, 255, 0.05)',   // Colors
+				  colorStop: 'rgba(30, 144, 255, 0.3)',    // just experiment with them
+				  strokeColor: 'rgba(30, 144, 255, 0.05)',  // to see which ones work best for you
+				  generateGradient: true,
+				  highDpiSupport: true,     // High resolution support
+		};
+		target = document.getElementById('rpm-graph'); // your canvas element
+		self.rpmGauge = new Gauge(target).setOptions(rpmopts); // create sexy gauge!
+		self.rpmGauge.setTextField(document.getElementById("rpm-textfield"));
+		self.rpmGauge.maxValue = 8000; // set max gauge value
+		self.rpmGauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+		self.rpmGauge.animationSpeed = 32; // set animation speed (32 is default value)
+		self.rpmGauge.set(0);	
 	}
 
 	setTimeout(function(){ return self.initGauges()}, 100);

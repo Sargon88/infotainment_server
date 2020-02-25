@@ -4,15 +4,28 @@
 	background-repeat: no-repeat;
 	background-size: 80vh;
 	background-position-x: center;
-	margin-top: 40px;
+	background-position-y: 7vh
 }
 
 .dashboardFooter {
 	position: fixed;
 	bottom: 70px;
-	background-color: white;
 	height: 110px !important;
 	background-color: rgba(30, 144, 255, 0.02);
 	border-width: 0px;
-	border-top: 1px solid rgba(30, 144, 255, 1);	
+	border-top: 1px solid rgba(30, 144, 255, 1);
+	margin-left: 15px;	
+}
+
+.graph-textfield {
+	text-align: center;
+}	
+
+.graph-area {
+	padding-left: 21px;
+}
+
+.cardashboard-nav {
+	bottom: 12vh;
+	border-top: 1px solid rgba(30, 144, 255, 1);
 }
