@@ -16,7 +16,7 @@ body {
     margin-left: 5px;
 } 
 
-.navbar-inverse .navbar-collapse {
+.navbar-default .navbar-collapse {
 	border-top: 1px solid rgba(30, 144, 255, 1);
 		
 }

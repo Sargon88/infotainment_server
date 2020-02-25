@@ -22,10 +22,37 @@
 }	
 
 .graph-area {
-	padding-left: 21px;
+	text-align: center;
 }
 
 .cardashboard-nav {
 	bottom: 12vh;
-	border-top: 1px solid rgba(30, 144, 255, 1);
+	background-color: rgba(30, 144, 255, 0.02);
+	border-top: 0px;
+	height: 24vh;
+	width: 100%;
+}
+
+#panelRight {
+  /* for the animation */
+  transition: margin 0.3s ease;
+}
+
+.collapsed {
+  /* hide it for small displays*/
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .collapsed {
+    display: block;
+    /* same width as sidebar */
+    margin-left: -25%;
+  }
+}
+
+#panelLeft {
+  /* necessary to hide collapsed sidebar */
+  overflow-x: hidden;
+  transition: width 0.3s ease;
 }

@@ -13,7 +13,7 @@ var CarPageModel = function(params, status){
 	self.debugBkp = [];
 	self.vssGauge = null;
 	self.rpmGauge = null;
-	self.rightAreaOpen = ko.observable(false);
+	self.rightAreaOpen = ko.observable(true);
 
 	self.params.socket.on('updateObdUI', function(msg){
 		self.lastUpdate(new Date());
@@ -67,21 +67,14 @@ var CarPageModel = function(params, status){
 	self.toggleRightArea = function(){
 		self.rightAreaOpen(!self.rightAreaOpen());
 
-		$( "#rightPanel" ).removeClass( "col-xs-4" );
-		$( "#rightPanel" ).addClass( "col-xs-1" );
-
 		if(self.rightAreaOpen()){
-			$( "#rightPanel" ).removeClass( "col-xs-1" );
-			$( "#leftPanel" ).removeClass( "col-xs-11" );
-			$( "#rightPanel" ).addClass( "col-xs-4" );
-			$( "#leftPanel" ).addClass( "col-xs-8" );
-		} else {
-			$( "#rightPanel" ).removeClass( "col-xs-4" );
-			$( "#leftPanel" ).removeClass( "col-xs-8" );
-			$( "#rightPanel" ).addClass( "col-xs-1" );
-			$( "#leftPanel" ).addClass( "col-xs-11" );
-		}
+			$("#panelRight").toggleClass("collapsed");
+			$("#panelLeft").toggleClass("col-xs-12 col-xs-8");
 
+		} else {
+			$("#panelRight").toggleClass("collapsed");
+			$("#panelLeft").toggleClass("col-xs-12 col-xs-8");
+		}
 		console.log("TOGGLED: open", self.rightAreaOpen());
 	}
 
@@ -161,6 +154,11 @@ var CarPageModel = function(params, status){
 		self.rpmGauge.set(0);	
 	}
 
-	setTimeout(function(){ return self.initGauges()}, 100);
+	self.init = function(){
+		self.toggleRightArea();
+		self.initGauges();
+	}
+
+	setTimeout(function(){ return self.init()}, 100);
 
 }
