@@ -13,7 +13,7 @@ var CarPageModel = function(params, status){
 	self.debugBkp = [];
 	self.vssGauge = null;
 	self.rpmGauge = null;
-	self.rightAreaOpen = ko.observable(true);
+	self.bgClass = ko.observable("dashboardBg");
 
 	self.params.socket.on('updateObdUI', function(msg){
 		self.lastUpdate(new Date());

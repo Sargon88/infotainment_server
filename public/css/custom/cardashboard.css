@@ -1,10 +1,21 @@
 .carDashboard {
 	height: 73vh; 
-	background-image: url(../../images/honda-cr-z-2010-3_top.png);
 	background-repeat: no-repeat;
 	background-size: 80vh;
 	background-position-x: center;
 	background-position-y: 7vh
+}
+
+.dashboardBg {
+	background-image: url(../../images/honda-cr-z-2010-3_top.png);
+}
+
+.dashboardBgRed {
+	background-image: url(../../images/honda-cr-z-2010-3_top_red.png);
+}
+
+.dashboardBgGreen {
+	background-image: url(../../images/honda-cr-z-2010-3_top_green.png);
 }
 
 .dashboardFooter {
@@ -58,4 +69,10 @@
 
 .collapsed-nav {
 	width: 66.66666667%;
+}
+
+.panel-btn {
+	width: 50px;
+    padding-left: 20px;
+    margin-right: 20px;
 }
