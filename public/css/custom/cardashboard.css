@@ -47,7 +47,6 @@
   .collapsed {
     display: block;
     /* same width as sidebar */
-    margin-left: -25%;
   }
 }
 
@@ -55,4 +54,8 @@
   /* necessary to hide collapsed sidebar */
   overflow-x: hidden;
   transition: width 0.3s ease;
+}
+
+.collapsed-nav {
+	width: 66.66666667%;
 }

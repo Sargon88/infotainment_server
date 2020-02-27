@@ -369,15 +369,14 @@
         <!-- ko if: page() == $root.carpage() -->
         <br />
         <div id="carpage" class="col-xs-12" >
-            <!-- DEBUG -->
             <div class="row">
-                <div id="leftPanel" class="col-xs-8 carDashboard">
-
+                <!-- LEFT PANEL -->
+                <div id="leftPanel" class="col-xs-12 carDashboard">
                     <div class="row pull-right">
                         <div class="col-xs-12">
                             <button type="button" class="btn btn-default" data-bind="click: toggleRightArea"><i class="fas fa-align-right"></i></button>
 
-                            <nav id="graphsNav" class="navbar navbar-default navbar-fixed-bottom cardashboard-nav ">
+                            <nav id="graphsNav" class="navbar navbar-default navbar-fixed-bottom cardashboard-nav">
                                 <div class="container-fluid">
                                     <div class="collapse navbar-collapse">
                                         <div class="col-xs-6">
@@ -403,10 +402,10 @@
                     </div>
                 </div>
 
-                <div id="rightPanel" class="col-xs-4">
+                <!-- RIGHT PANEL -->
+                <div id="rightPanel" class="collapsed">
                     <div class="row" data-bind="foreach: OBDMessages"> 
                         <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
-                        
                     </div>
                     <br />
                     <div class="row">
@@ -418,7 +417,6 @@
                     <!-- /ko -->
                 </div>
             </div>
-            <!-- DEBUG -->
         </div>
         <!-- /ko -->
         <!-- *** END CAR *** -->

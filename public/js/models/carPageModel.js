@@ -65,16 +65,12 @@ var CarPageModel = function(params, status){
 	self.params.socket.emit("refreshUI");
 
 	self.toggleRightArea = function(){
-		self.rightAreaOpen(!self.rightAreaOpen());
+		console.log("TOGGLE");
 
-		if(self.rightAreaOpen()){
-			$("#panelRight").toggleClass("collapsed");
-			$("#panelLeft").toggleClass("col-xs-12 col-xs-8");
+		$("#leftPanel").toggleClass("col-xs-12 col-xs-8");
+		$("#rightPanel").toggleClass("collapsed col-xs-4");
+		$('#graphsNav').toggleClass("collapsed-nav");		
 
-		} else {
-			$("#panelRight").toggleClass("collapsed");
-			$("#panelLeft").toggleClass("col-xs-12 col-xs-8");
-		}
 		console.log("TOGGLED: open", self.rightAreaOpen());
 	}
 
@@ -155,7 +151,7 @@ var CarPageModel = function(params, status){
 	}
 
 	self.init = function(){
-		self.toggleRightArea();
+		//self.toggleRightArea();
 		self.initGauges();
 	}
 
