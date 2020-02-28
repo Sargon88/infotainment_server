@@ -404,17 +404,32 @@
 
                 <!-- RIGHT PANEL -->
                 <div id="rightPanel" class="collapsed">
-                    <div class="row" data-bind="foreach: OBDMessages"> 
-                        <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#config" aria-controls="config" role="tab" data-toggle="tab">Config</a></li>
+                        <li role="presentation"><a href="#debug" aria-controls="debug" role="tab" data-toggle="tab">Debug</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="config">Config</div>
+                        <div role="tabpanel" class="tab-pane" id="debug">
+                            <div class="row" data-bind="foreach: OBDMessages"> 
+                                <div class="col-xs-12"><span data-bind="text: $data.title"></span> - <span data-bind="text: $data.value"></span></div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-xs-12">ERROR</div>
+                            </div>
+                            <br />
+                            <!-- ko foreach: error -->
+                                <div class="col-xs-12" data-bind="text: $data"></div>
+                            <!-- /ko -->
+                        </div>
                     </div>
+
                     <br />
-                    <div class="row">
-                        <div class="col-xs-12">ERROR</div>
-                    </div>
-                    <br />
-                    <!-- ko foreach: error -->
-                        <div class="col-xs-12" data-bind="text: $data"></div>
-                    <!-- /ko -->
                 </div>
             </div>
         </div>

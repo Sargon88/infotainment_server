@@ -70,8 +70,6 @@ var CarPageModel = function(params, status){
 		$("#leftPanel").toggleClass("col-xs-12 col-xs-8");
 		$("#rightPanel").toggleClass("collapsed col-xs-4");
 		$('#graphsNav').toggleClass("collapsed-nav");		
-
-		console.log("TOGGLED: open", self.rightAreaOpen());
 	}
 
 	/** Private Functions **/
