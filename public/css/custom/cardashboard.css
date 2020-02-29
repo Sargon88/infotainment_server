@@ -89,3 +89,8 @@
 	border: transparent !important;
 }
 
+.carConfigForm {
+	display: inline-block !important;
+	width: 30% !important;
+	
+}

@@ -651,7 +651,7 @@ CarService = {
 			    this.addPoller("hybridlife");
 
 
-			    this.startPolling(1000); //Request all values each second.
+			    this.startPolling(500); //Request all values each second.
 
 			}).on('debug', function(msg){
 				CarService.debugMsg(msg);
