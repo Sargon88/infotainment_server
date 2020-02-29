@@ -14,6 +14,7 @@ var CarPageModel = function(params, status){
 	self.vssGauge = null;
 	self.rpmGauge = null;
 	self.bgClass = ko.observable("dashboardBg");
+	self.speedLimit = ko.observable(140);
 
 	self.params.socket.on('updateObdUI', function(msg){
 		self.lastUpdate(new Date());

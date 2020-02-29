@@ -79,12 +79,13 @@
 
 .nav-tabs>li.active>a {
 	background-image: radial-gradient(at bottom, rgba(30, 144, 255, 1), rgba(30, 144, 255, 0), #222); 
-	background-color: #222 !important;
-    border: 0px !important;
+	background-color: transparent !important;
+	border: transparent !important;
 }
 
 .nav-tabs>li>a, .nav-tabs>li>a:hover {
-	background-color: #222 !important;
-	color: rgba(204, 204, 204, 1) !important;	
-	border: 0px !important;
+	color: rgba(204, 204, 204, 1) !important;		
+	background-color: transparent !important;
+	border: transparent !important;
 }
+
