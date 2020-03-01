@@ -92,5 +92,37 @@
 .carConfigForm {
 	display: inline-block !important;
 	width: 30% !important;
-	
+}
+
+.car-navbar-inverse {
+	background-color: rgba(30, 144, 255, 0.02);
+	border-width: 0px;
+	border-color: #222 !important;
+	border-right: 1px solid rgba(30, 144, 255, 0.8) !important;	
+	height: 61vh;
+	position: fixed;
+	display: flex;
+}
+
+.car-navbar-inverse {
+	padding-left: 15px !important;
+	padding-right: 0px !important;
+}
+
+.car-navbar-button {
+	color: rgba(30, 144, 255, 1);
+	margin-left: -11px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	display: none;
+}
+
+.car-navbar-collapse {
+	height: auto;
+    border-top: 0px !important;
+    max-height: none;
+    padding-left:0;
+    padding-right:0;
 }

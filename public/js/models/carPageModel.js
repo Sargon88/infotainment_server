@@ -15,6 +15,7 @@ var CarPageModel = function(params, status){
 	self.rpmGauge = null;
 	self.bgClass = ko.observable("dashboardBg");
 	self.vssLimit = ko.observable(140);
+	self.rpmLimit = ko.observable(3000);
 
 	var vssopts = {
 		angle: -0.15, // The span of the gauge arc
@@ -75,7 +76,7 @@ var CarPageModel = function(params, status){
 		             : 1;
 		    });
 
-		    if(m.name == "vss"){
+		    if(m.name == "vss" && self.vssGauge){
 		    	self.vssGauge.set(m.value); // set actual value
 		    	if(m.value > self.vssLimit()){
 		    		
@@ -89,7 +90,7 @@ var CarPageModel = function(params, status){
 
 		    	} else {
 
-		    		vssopts.pointer.color = '#1e90ff';
+		    		vssopts.pointer.color = 'rgba(30, 144, 255, 1)';
 		    		vssopts.staticZones = [
 						{strokeStyle: "rgba(30, 144, 255, 0.05)", min: 0, max: 70},
 						{strokeStyle: "rgba(30, 144, 255, 0.2)", min: 70, max: 140},
@@ -99,8 +100,18 @@ var CarPageModel = function(params, status){
 		    	}
 		    	self.vssGauge.setOptions(vssopts);
 
-		    } else if(m.name == "rpm"){
-		    	self.rpmGauge.set(m.value); // set actual value
+		    } else if(m.name == "rpm"  && self.rpmGauge){
+
+		    	self.rpmGauge.set(m.value); // set actual valueù
+		    	if(m.value > self.rpmLimit()){
+		    		rpmopts.pointer.color = 'rgba(244, 87, 87, 1)';
+		    		rpmopts.colorStop = 'rgba(244, 87, 87, 0.3)';
+		    	} else {
+		    		rpmopts.pointer.color = 'rgba(30, 144, 255, 1)';
+		    		rpmopts.colorStop = 'rgba(30, 144, 255, 0.3)';
+		    	}
+		    	self.rpmGauge.setOptions(vssopts);
+
 		    }
 		}
 	}).on('obdDebug', function(msg){
@@ -133,7 +144,7 @@ var CarPageModel = function(params, status){
 	self.toggleRightArea = function(){
 		console.log("TOGGLE");
 
-		$("#leftPanel").toggleClass("col-xs-12 col-xs-8");
+		$("#leftPanel").toggleClass("col-xs-11 col-xs-7");
 		$("#rightPanel").toggleClass("collapsed col-xs-4");
 		$('#graphsNav').toggleClass("collapsed-nav");		
 	}
