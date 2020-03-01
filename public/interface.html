@@ -415,14 +415,23 @@
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="config">
                             <br />
+                            <!-- vss -->
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Vss</label>
-                                        <input type="number" class="form-control carConfigForm pull-right" data-bind="value: speedLimit">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            Vss <span data-bind="text: vssLimit" />
+                                        </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="col-xs-6"><button class="btn btn-block btn-default">-</button></div>
+                                            <div class="col-xs-6"><button class="btn btn-block btn-default">+</button></div>
+                                        </div>
+                                    </div>    
                                 </div>
                             </div>
+
                         </div>
                         <div role="tabpanel" class="tab-pane" id="debug">
                             <br />
