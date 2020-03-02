@@ -68,7 +68,7 @@
 }
 
 .collapsed-nav {
-	width: 66.66666667%;
+	width: 58.666667%;
 }
 
 .panel-btn {
@@ -109,14 +109,13 @@
 	padding-right: 0px !important;
 }
 
-.car-navbar-button {
+.car-navbar-alert-icon {
 	color: rgba(30, 144, 255, 1);
 	margin-left: -11px;
 	margin-top: 15px;
 	margin-bottom: 15px;
 	padding-top: 5px;
 	padding-bottom: 5px;
-	display: none;
 }
 
 .car-navbar-collapse {
@@ -125,4 +124,11 @@
     max-height: none;
     padding-left:0;
     padding-right:0;
+}
+
+.limit-btn {
+	width: 40%;
+    padding-left: 0px;
+    margin-right: 18px;
+    text-align: center;
 }

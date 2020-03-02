@@ -14,8 +14,12 @@ var CarPageModel = function(params, status){
 	self.vssGauge = null;
 	self.rpmGauge = null;
 	self.bgClass = ko.observable("dashboardBg");
+	self.maxVss = 200;
+	self.maxRpm = 8000;
 	self.vssLimit = ko.observable(140);
-	self.rpmLimit = ko.observable(3000);
+	self.rpmLimit = ko.observable(6000);
+	self.outVss = ko.observable(false);
+	self.outRpm = ko.observable(false);
 
 	var vssopts = {
 		angle: -0.15, // The span of the gauge arc
@@ -79,7 +83,7 @@ var CarPageModel = function(params, status){
 		    if(m.name == "vss" && self.vssGauge){
 		    	self.vssGauge.set(m.value); // set actual value
 		    	if(m.value > self.vssLimit()){
-		    		
+		    		self.outVss(true);
 		    		vssopts.pointer.color = 'rgba(244, 87, 87, 1)';
 		    		vssopts.staticZones = [
 						{strokeStyle: "rgba(244, 87, 87, 0.05)", min: 0, max: 70},
@@ -89,7 +93,7 @@ var CarPageModel = function(params, status){
 
 
 		    	} else {
-
+		    		self.outVss(false);
 		    		vssopts.pointer.color = 'rgba(30, 144, 255, 1)';
 		    		vssopts.staticZones = [
 						{strokeStyle: "rgba(30, 144, 255, 0.05)", min: 0, max: 70},
@@ -104,13 +108,15 @@ var CarPageModel = function(params, status){
 
 		    	self.rpmGauge.set(m.value); // set actual valueù
 		    	if(m.value > self.rpmLimit()){
+		    		self.outRpm(true);
 		    		rpmopts.pointer.color = 'rgba(244, 87, 87, 1)';
 		    		rpmopts.colorStop = 'rgba(244, 87, 87, 0.3)';
 		    	} else {
+		    		self.outRpm(false);
 		    		rpmopts.pointer.color = 'rgba(30, 144, 255, 1)';
 		    		rpmopts.colorStop = 'rgba(30, 144, 255, 0.3)';
 		    	}
-		    	self.rpmGauge.setOptions(vssopts);
+		    	self.rpmGauge.setOptions(rpmopts);
 
 		    }
 		}
@@ -141,21 +147,11 @@ var CarPageModel = function(params, status){
 
 	self.params.socket.emit("refreshUI");
 
+	/** Private Functions **/
 	self.toggleRightArea = function(){
-		console.log("TOGGLE");
-
 		$("#leftPanel").toggleClass("col-xs-11 col-xs-7");
 		$("#rightPanel").toggleClass("collapsed col-xs-4");
 		$('#graphsNav').toggleClass("collapsed-nav");		
-	}
-
-	/** Private Functions **/
-	var manageMessages = function(msgArray, bkpArray){
-		msgArray([]);
-
-		for(var i = 0; i < 5; i++){
-			msgArray.push(bkpArray[bkpArray.length-(i+1)]);
-		}	
 	}
 
 	self.initGauges = function(){
@@ -163,7 +159,7 @@ var CarPageModel = function(params, status){
 		var target = document.getElementById('vss-graph'); // your canvas element
 		self.vssGauge = new Gauge(target).setOptions(vssopts); // create sexy gauge!
 		self.vssGauge.setTextField(document.getElementById("vss-textfield"));
-		self.vssGauge.maxValue = 200; // set max gauge value
+		self.vssGauge.maxValue = self.maxVss; // set max gauge value
 		self.vssGauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
 		self.vssGauge.animationSpeed = 32; // set animation speed (32 is default value)
 		self.vssGauge.set(0);
@@ -172,15 +168,59 @@ var CarPageModel = function(params, status){
 		target = document.getElementById('rpm-graph'); // your canvas element
 		self.rpmGauge = new Gauge(target).setOptions(rpmopts); // create sexy gauge!
 		self.rpmGauge.setTextField(document.getElementById("rpm-textfield"));
-		self.rpmGauge.maxValue = 8000; // set max gauge value
+		self.rpmGauge.maxValue = self.maxRpm; // set max gauge value
 		self.rpmGauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
 		self.rpmGauge.animationSpeed = 32; // set animation speed (32 is default value)
 		self.rpmGauge.set(0);	
 	}
 
+	self.addLimit = function(param){
+
+		switch(param){
+			case "vss":
+				if(self.vssLimit() + 5 < self.maxVss){
+					self.vssLimit(self.vssLimit() + 5);
+				}
+				break;
+			case "rpm":
+				if(self.rpmLimit() + 1000 < self.maxRpm){
+					self.rpmLimit(self.rpmLimit() + 1000);
+				}
+				break;
+			default:
+				break;
+		}
+
+	}
+
+	self.removeLimit = function(param){
+		switch(param){
+			case "vss":
+				if(self.vssLimit() - 5 > 0){
+					self.vssLimit(self.vssLimit() - 5);
+				}
+				break;
+			case "rpm":
+				if(self.rpmLimit() - 1000 > 0){
+					self.rpmLimit(self.rpmLimit() - 1000);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
 	self.init = function(){
 		//self.toggleRightArea();
 		self.initGauges();
+	}
+
+	var manageMessages = function(msgArray, bkpArray){
+		msgArray([]);
+
+		for(var i = 0; i < 5; i++){
+			msgArray.push(bkpArray[bkpArray.length-(i+1)]);
+		}	
 	}
 
 	setTimeout(function(){ return self.init()}, 100);
