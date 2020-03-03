@@ -8,10 +8,14 @@
 
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/css/fontawesome/all.min.css">
-    <link rel="stylesheet" href="/js/leaflet/leaflet.css">
+    <!-- <link rel="stylesheet" href="/js/leaflet/leaflet.css"> -->
     <link rel="stylesheet" href="/css/custom/infotainment.css">
     <link rel="stylesheet" href="/css/custom/cardashboard.css">
-    <link rel="stylesheet" href="/css/custom/call.css">
+    <link rel="stylesheet" href="/css/custom/call.css"> 
+
+    <!-- MAPBOX -->
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.css' rel='stylesheet' />
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.css" rel="stylesheet" />
 
     <!-- Scripts -->
     <script src="/js/jquery/jquery.min.js"></script>
@@ -27,7 +31,9 @@
     <script src="/js/knockout/knockout.min.js"></script>
     <script src="/js/moment/moment.js"></script>
     <script src="/js/gauge/gauge.min.js"></script>
-    <script src="/js/leaflet/leaflet.js"></script>
+    <!-- <script src="/js/leaflet/leaflet.js"></script> -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.js'></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/models/callsModel.js"></script>
     <script src="/js/models/fileModel.js"></script>
@@ -249,18 +255,8 @@
         <div id="mapspage">
             <br />
             <div class="row">
-                <div class="col-xs-12">Map</div>
-            </div>
-
-            <div class="row">
-                <div id="mapid"></div>
-            </div>
-
-            <div class="row">
-                <div class="col-xs-12" data-bind="text:htmlGeoMsg"></div>
-            </div>
-
-            
+                <div id="mapid" style="height: 88vh; width: 95%; margin-left: 2.5%"></div>
+            </div>            
         </div>    
         <!-- /ko-->
         <!-- *** END MAP *** -->
