@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/css/fontawesome/all.min.css">
+    <link rel="stylesheet" href="/js/leaflet/leaflet.css">
     <link rel="stylesheet" href="/css/custom/infotainment.css">
     <link rel="stylesheet" href="/css/custom/cardashboard.css">
     <link rel="stylesheet" href="/css/custom/call.css">
@@ -26,6 +27,7 @@
     <script src="/js/knockout/knockout.min.js"></script>
     <script src="/js/moment/moment.js"></script>
     <script src="/js/gauge/gauge.min.js"></script>
+    <script src="/js/leaflet/leaflet.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/models/callsModel.js"></script>
     <script src="/js/models/fileModel.js"></script>
@@ -242,6 +244,27 @@
         <!-- /ko-->
         <!-- *** END HOMEPAGE *** -->
 
+        <!-- *** START MAP *** -->        
+        <!-- ko if: page() == $root.mapspage() -->
+        <div id="mapspage">
+            <br />
+            <div class="row">
+                <div class="col-xs-12">Map</div>
+            </div>
+
+            <div class="row">
+                <div id="mapid"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12" data-bind="text:htmlGeoMsg"></div>
+            </div>
+
+            
+        </div>    
+        <!-- /ko-->
+        <!-- *** END MAP *** -->
+
         <!-- *** START YOUTUBE *** -->
         <!-- ko if: page() == $root.ytpage() -->
         <br />
@@ -379,7 +402,12 @@
                                 <div class="container-fluid">
                                     <div class="collapse navbar-collapse car-navbar-collapse" id="car-navbar-alert-icons">
                                         <ul class="nav">
-                                            <li><a><i class="fas fa-play car-navbar-alert-icon" data-bind="visible: outVss"></i></a></li>
+                                            <li><a>
+                                                <span class="fa-stack fa-2x">
+                                                  <i class="fas fa-square fa-stack-2x"></i>
+                                                  <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                                <i class="fas fa-play car-navbar-alert-icon" data-bind="visible: outVss"></i></a></li>
                                             <li><a><i class="fas fa-stop car-navbar-alert-icon"  data-bind="visible: outRpm"></i></a></li>
                                         </ul> 
                                     </div><!-- /.navbar-collapse -->

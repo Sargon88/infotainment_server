@@ -184,7 +184,8 @@ io.on('connection', function(socket){
 	}).on('change page', function(msg){
 		//cambio pagina
 		log("changepage", msg);
-		GenericService.changePage(msg);
+		//GenericService.changePage(msg);
+		GenericService.changePage_temp(msg);
 	}).on('getPage', function(msg){
 		GenericService.getPage(msg);
 	}).on('getStatus', function(msg){
@@ -286,6 +287,46 @@ GenericService = {
 			shell(cmd_killKeepAlive, null, changeToMapYtPage);
 	
 		} else if(InfotainmentStatus.page == "map" || InfotainmentStatus.page == "ytPlay" ) {
+			//se la pagina su cui mi trovo è la mappa, devo ricostruire l'interfaccia grande
+	
+			exec("sudo killall keepAliveChromium.sh", function(err, stdout, stderr) {
+	
+				log("------ KILLED KEEP ALIVE ------");
+	
+				if(stderr != ""){
+					log("---- stderr --- ");
+					log(stderr);
+					log("");	
+				}
+					
+				InfotainmentStatus.page = msg;
+	
+				exec("killall keepAliveNavit.sh navit omxplayer.bin", function(err, stdout, stderr){
+					if(stderr != ""){
+						log("---- killall stderr --- ");
+						log(stderr);
+						log("");	
+					}
+					
+				});
+	
+				startFullscreenChromium();
+	
+			});
+	
+		} else {
+			//caso in cui non devo riavviare il browser
+			emit("set page", msg);
+		}	
+	},
+	changePage_temp: function(msg, extra){		
+		InfotainmentStatus.newPage = msg;
+		
+		if(InfotainmentStatus.newPage == "ytPlay"){
+			//devo killare chromium per ricostruire l'interfaccia più piccola
+			shell(cmd_killKeepAlive, null, changeToMapYtPage);
+	
+		} else if(InfotainmentStatus.page == "ytPlay" ) {
 			//se la pagina su cui mi trovo è la mappa, devo ricostruire l'interfaccia grande
 	
 			exec("sudo killall keepAliveChromium.sh", function(err, stdout, stderr) {
