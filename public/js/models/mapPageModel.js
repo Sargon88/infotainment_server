@@ -19,7 +19,6 @@ var MapPageModel = function(params, status){
     };
 
     self.manageGeolocation = function(position){
-    	console.log(position.coords.latitude, position.coords.longitude);
     	self.latitude = position.coords.latitude;
     	self.longitude = position.coords.longitude;
     }
@@ -45,8 +44,10 @@ var MapPageModel = function(params, status){
 			zoom: 15
 		});
 
+    	//naviator
 		self.map.addControl(new mapboxgl.NavigationControl());
 
+		//directions
 		self.map.addControl(
 			new MapboxDirections({
 				accessToken: mapboxgl.accessToken
@@ -54,6 +55,7 @@ var MapPageModel = function(params, status){
 			'top-left'
 		);  
 
+		//follow user
 		self.map.addControl(
 			new mapboxgl.GeolocateControl({
 				positionOptions: {
@@ -63,42 +65,32 @@ var MapPageModel = function(params, status){
 			})
 		);
 
-		self.map.on("load", function () {
-			/* Image: An image is loaded and added to the map. */
-			self.map.loadImage("https://i.imgur.com/MK4NUzI.png", function(error, image) {
-				if (error) throw error;
-				self.map.addImage("custom-marker", image);
-				/* Style layer: A style layer ties together the source and image and specifies how they are displayed on the map. */
-				self.map.addLayer({
-					id: "markers",
-					type: "symbol",
-					/* Source: A data source specifies the geographic coordinate where the image marker gets placed. */
-					source: {
-						type: "geojson",
-						data: {
-							type: 'FeatureCollection',
-							features: [
-								{
-									type: 'Feature',
-									properties: {},
-									geometry: {
-										type: "Point",
-										coordinates: [lat, lon]
-									}
-								}
-							]
-						}
-					},
-					layout: {
-						"icon-image": "custom-marker",
-					}
-				});
-			});
-		});
 
+		self.position = new mapboxgl.Marker()
+		  .setLngLat([lon, lat])
+		  .addTo(self.map);
+
+		//update marker position
+		setInterval(function(){
+
+			console.log("Update coordinates");
+			var lat = infoViewModel.status.latitude();
+	    	var lon = infoViewModel.status.longitude();
+
+	    	if(!lat){
+	    		lat = self.latitude;
+	    	}
+
+	    	if(!lon){
+	    		lon = self.longitude;
+	    	}
+
+			self.position.setLngLat([lon,lat])
+
+		}, 500);  
     }
 
 
-    setInterval(self.getLocation(), 500);
+    setInterval(function(){ return self.getLocation()}, 500);
     setTimeout(function(){return self.initMap()}, 500);
 }

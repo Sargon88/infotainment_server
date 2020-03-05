@@ -172,7 +172,7 @@ io.on('connection', function(socket){
 	Socket.on('identify', function(msg){
 		log("---------------------------- " + msg + " CONNECTED! --------------------------------------");
 	}).on('phone status', function(msg){
-		//log("Phone status");
+		log("Phone status", msg);
 		GenericService.phoneStatus(msg);
 	}).on('disconnect', function(msg){
 		log("---------------------------- DISCONNECTED! --------------------------------------");		
