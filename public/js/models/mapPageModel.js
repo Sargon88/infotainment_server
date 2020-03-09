@@ -9,6 +9,11 @@ var MapPageModel = function(params, status){
     self.htmlGeoMsg = ko.observable("");
     self.latitude = null;
     self.longitude = null;
+    self.followUser = true;
+
+    navigator.geolocation.getCurrentPosition = function(callback){
+    	console.log("OK!!!!!", callback);
+    }
 
     self.getLocation = function() {
       if (navigator.geolocation) {
@@ -44,53 +49,57 @@ var MapPageModel = function(params, status){
 			zoom: 15
 		});
 
-    	//naviator
-		self.map.addControl(new mapboxgl.NavigationControl());
+		self.map.on('load', function(){
+			//naviator
+			self.map.addControl(new mapboxgl.NavigationControl());
 
-		//directions
-		self.map.addControl(
-			new MapboxDirections({
-				accessToken: mapboxgl.accessToken
-			}),
-			'top-left'
-		);  
+			//directions
+			self.map.addControl(
+				new MapboxDirections({
+					accessToken: mapboxgl.accessToken
+				}),
+				'top-left'
+			);  
 
-		//follow user
-		self.map.addControl(
-			new mapboxgl.GeolocateControl({
-				positionOptions: {
-					enableHighAccuracy: true
-				},
-				trackUserLocation: true
-			})
-		);
+			self.position = new mapboxgl.Marker()
+			  .setLngLat([lon, lat])
+			  .addTo(self.map);
 
+			//update marker position
+			setInterval(function(){
 
-		self.position = new mapboxgl.Marker()
-		  .setLngLat([lon, lat])
-		  .addTo(self.map);
+				var lat = infoViewModel.status.latitude();
+		    	var lon = infoViewModel.status.longitude();
 
-		//update marker position
-		setInterval(function(){
+		    	if(!lat){
+		    		lat = self.latitude;
+		    	}
 
-			console.log("Update coordinates");
-			var lat = infoViewModel.status.latitude();
-	    	var lon = infoViewModel.status.longitude();
+		    	if(!lon){
+		    		lon = self.longitude;
+		    	}
 
-	    	if(!lat){
-	    		lat = self.latitude;
-	    	}
+		    	var coordinates = [lon,lat];
+				self.position.setLngLat(coordinates);
 
-	    	if(!lon){
-	    		lon = self.longitude;
-	    	}
+				if(self.followUser){
+					self.map.flyTo({ center: coordinates });	
+				}
+				
 
-			self.position.setLngLat([lon,lat])
+			}, 500);  
+		});
 
-		}, 500);  
+		self.map.on('dragstart', function(){
+			self.followUser = false;
+		});
+
+		self.map.on('dblclick', function(){
+			self.followUser = !self.followUser;
+			self.map.setZoom(15);
+		})
     }
 
-
-    setInterval(function(){ return self.getLocation()}, 500);
+    //setInterval(function(){ return self.getLocation()}, 500);
     setTimeout(function(){return self.initMap()}, 500);
 }

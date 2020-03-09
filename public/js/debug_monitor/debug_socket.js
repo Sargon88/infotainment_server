@@ -85,7 +85,7 @@ function sendPhoneStatus(){
 
 function sendPhoneStatusMessage(){
   var a = 'phone status';
-  var m = '{"brightness":0,"lastCalls":[{"callDate":"1550758342424","callDayTime":"Feb 21, 2019 15:12:22","callDuration":"117","callType":"1","callTypeDesc":"INCOMING","phNumber":"+390392725028"},{"callDate":"1550756755273","callDayTime":"Feb 21, 2019 14:45:55","callDuration":"0","callType":"2","callTypeDesc":"OUTGOING","name":"Sofia Monici","phNumber":"+393475974026"},{"callDate":"1550743812808","callDayTime":"Feb 21, 2019 11:10:12","callDuration":"88","callType":"1","callTypeDesc":"INCOMING","phNumber":"+390287178073"},{"callDate":"1550681877105","callDayTime":"Feb 20, 2019 17:57:57","callDuration":"1552","callType":"2","callTypeDesc":"OUTGOING","name":"Viola Chat","phNumber":"3472207715"},{"callDate":"1550680855680","callDayTime":"Feb 20, 2019 17:40:55","callDuration":"0","callType":"2","callTypeDesc":"OUTGOING","name":"Sofia Monici","phNumber":"+393475974026"},{"callDate":"1550664915569","callDayTime":"Feb 20, 2019 13:15:15","callDuration":"773","callType":"1","callTypeDesc":"INCOMING","name":"Sofia Monici","phNumber":"+393475974026"},{"callDate":"1550606907803","callDayTime":"Feb 19, 2019 21:08:27","callDuration":"0","callType":"2","callTypeDesc":"OUTGOING","name":"Mamma","phNumber":"3386776738"}],"latitude":"45.5171738647099","longitude":"9.224617857378878","navbar":{"batt":"94","battInt":94,"bluetooth":true,"signal":0,"wifi":true},"starredContacts":[{"name":"Mamma","number":"3386776738"},{"name":"Sofia Monici","number":"3475974026"},{"name":"Maria Elena Bonacini","number":"+393319979680"},{"name":"Panda","number":"+393385628165"}]}';
+  var m = '{"brightness":0,"lastCalls":[{"callDate":"1550758342424","callDayTime":"Feb 21, 2019 15:12:22","callDuration":"117","callType":"1","callTypeDesc":"INCOMING","phNumber":"+390392725028"},{"callDate":"1550756755273","callDayTime":"Feb 21, 2019 14:45:55","callDuration":"0","callType":"2","callTypeDesc":"OUTGOING","name":"Sofia Monici","phNumber":"+393475974026"},{"callDate":"1550743812808","callDayTime":"Feb 21, 2019 11:10:12","callDuration":"88","callType":"1","callTypeDesc":"INCOMING","phNumber":"+390287178073"},{"callDate":"1550681877105","callDayTime":"Feb 20, 2019 17:57:57","callDuration":"1552","callType":"2","callTypeDesc":"OUTGOING","name":"Viola Chat","phNumber":"3472207715"},{"callDate":"1550680855680","callDayTime":"Feb 20, 2019 17:40:55","callDuration":"0","callType":"2","callTypeDesc":"OUTGOING","name":"Sofia Monici","phNumber":"+393475974026"},{"callDate":"1550664915569","callDayTime":"Feb 20, 2019 13:15:15","callDuration":"773","callType":"1","callTypeDesc":"INCOMING","name":"Sofia Monici","phNumber":"+393475974026"},{"callDate":"1550606907803","callDayTime":"Feb 19, 2019 21:08:27","callDuration":"0","callType":"2","callTypeDesc":"OUTGOING","name":"Mamma","phNumber":"3386776738"}],"latitude":"' + getRandomInRange(-90, 90, 3)+'","longitude":"'+getRandomInRange(-90, 90, 3)+'","navbar":{"batt":"94","battInt":94,"bluetooth":true,"signal":0,"wifi":true},"starredContacts":[{"name":"Mamma","number":"3386776738"},{"name":"Sofia Monici","number":"3475974026"},{"name":"Maria Elena Bonacini","number":"+393319979680"},{"name":"Panda","number":"+393385628165"}]}';
 
   socket.emit(a, m);
   
@@ -350,4 +350,9 @@ function sendOBDNodata(){
 
   $('#a').val(a);
   $('#m').val(m);
+}
+
+function getRandomInRange(from, to, fixed) {
+    return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
+    // .toFixed() returns string, so ' * 1' is a trick to convert to number
 }
