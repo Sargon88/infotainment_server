@@ -32,16 +32,9 @@ var MapPageModel = function(params, status){
 
     	var lat = infoViewModel.status.latitude();
     	var lon = infoViewModel.status.longitude();
-
-    	if(!lat){
-    		lat = self.latitude;
-    	}
-
-    	if(!lon){
-    		lon = self.longitude;
-    	}
-
     	
+    	console.log("LAT: " + lat + " - LON: " + lon);
+
     	self.map = new mapboxgl.Map({
 			container: 'mapid',
 			style: 'mapbox://styles/mapbox/streets-v11',
