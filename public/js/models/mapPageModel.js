@@ -17,6 +17,7 @@ var MapPageModel = function(params, status){
 
     self.getLocation = function() {
       if (navigator.geolocation) {
+      	console.log("ok1");
       	navigator.geolocation.getCurrentPosition(self.manageGeolocation);
       } else {
         self.errorMsg("Geolocation is not supported by this browser.");
@@ -26,6 +27,7 @@ var MapPageModel = function(params, status){
     self.manageGeolocation = function(position){
     	self.latitude = position.coords.latitude;
     	self.longitude = position.coords.longitude;
+    	console.log("OK2: ", self.latitude, self.longitude);
     }
 
     self.initMap = function() {
