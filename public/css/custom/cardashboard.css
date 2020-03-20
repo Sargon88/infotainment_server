@@ -102,11 +102,10 @@
 	height: 61vh;
 	position: fixed;
 	display: flex;
-}
-
-.car-navbar-inverse {
-	padding-left: 15px !important;
+	padding-left: 0px !important;
 	padding-right: 0px !important;
+	width: 81.5px;
+
 }
 
 .car-navbar-alert-icon {
@@ -116,6 +115,8 @@
 	margin-bottom: 15px;
 	padding-top: 5px;
 	padding-bottom: 5px;
+	padding-left: 0px !important;
+	padding-right: 0px !important;
 }
 
 .car-navbar-collapse {
