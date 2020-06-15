@@ -32,14 +32,19 @@ var infoViewModel = function(){
         calling: ko.observable(false),
         inCall: ko.observable(false),
 
+        //CAR
+        vssLimit : ko.observable(140),
+        rpmLimit : ko.observable(6000),
+
         /** NAVBAR */
         navbar: {
-            hour: ko.observable(),
             battInt: ko.observable(0),
-            batt: ko.observable("--"),
-            bluetooth: ko.observable(false),
             wifi: ko.observable(false),
-            signal: ko.observable(0)
+            signal: ko.observable(0),
+            obdError: ko.observable(false),
+            obdConnected: ko.observable(false),
+            outVss: ko.observable(false),
+            compact: ko.observable(false),
         }
     };
 
@@ -65,9 +70,6 @@ var infoViewModel = function(){
             return true;
         }
     });
-    self.showAlert = ko.observable(false);
-    self.messageAlert = ko.observable("");
-
 
     //youtube
     self.status.ytUrl = ko.observable(null);
@@ -77,9 +79,11 @@ var infoViewModel = function(){
         console.log("App Start");
         self.model(new PhonePageModel(self.params, self.status));
 
-        self.startTime();
+        //self.startTime();
+        //rivedere
         self.params.socket.emit("getPage", "");
         self.params.socket.emit("getStatus", "");
+        //
 
         self.checkConnection();
 
@@ -94,11 +98,11 @@ var infoViewModel = function(){
             self.status.longitude(stat.longitude);
 
             self.status.navbar.battInt(parseInt(stat.navbar.batt));
-            self.status.navbar.batt(stat.navbar.batt + "%");
-            self.status.navbar.bluetooth(stat.navbar.bluetooth == 'true');
             self.status.navbar.wifi(stat.navbar.wifi == 'true');
             self.status.starredContacts(stat.starredContacts.slice(0, 5));
             self.status.navbar.signal(parseInt(stat.navbar.signal));
+            self.status.navbar.obdError(stat.navbar.obdError);
+            self.status.navbar.obdConnected(stat.navbar.obdConnected);
 
             self.buildLastCall(stat.lastCalls);
             
@@ -133,6 +137,39 @@ var infoViewModel = function(){
         }).on('url history', function(msg){
             console.log("URL HISTORY");
             self.loadYtHistory(msg); 
+        }).on('updateObdUI', function(msg){
+            self.status.lastUpdate(new Date());
+            if(msg){
+                var m = JSON.parse(msg);
+
+                if(self.model().page() == "CarPageModel"){ //active page = carpage
+                    self.model().manageObdMessage(m);
+                }
+
+                if(m.name == "vss"){
+                    self.status.navbar.outVss(m.value > self.status.vssLimit());
+                }
+                
+                
+            }
+        }).on('obdError', function(msg){
+            self.status.lastUpdate(new Date());
+
+            if(self.model().page() == "CarPageModel"){ //active page = carpage
+                self.model().errorBkp.push(msg);
+                self.model().manageMessages(self.error, self.errorBkp);
+                console.log(self.error());
+            }
+
+            //update status bar
+            self.status.navbar.obdError(true);
+            self.status.navbar.obdConnected(false);       
+        }).on('obdConnected', function(msg){
+            self.status.lastUpdate(new Date());
+
+            //update status bar
+            self.status.navbar.obdError(false);
+            self.status.navbar.obdConnected(true);
         });
     };
 
@@ -162,11 +199,6 @@ var infoViewModel = function(){
     self.turnoff = function(){
         console.log("REBOOT");
         self.params.socket.emit('reboot', "");
-    }
-
-    self.openwifi = function(){
-        console.log("Open Wifi");
-        self.params.socket.emit('wifi', "")
     }
 
     self.changeBrightness = function(){
@@ -229,13 +261,12 @@ var infoViewModel = function(){
     /** FINE YOUTUBE */
 
     /** Utility */
+    /*
     self.startTime = function(){
         var today = new Date();
         var h = today.getHours();
         var m = today.getMinutes();
         m = self.checkTime(m);
-
-        self.status.navbar.hour(h + ":" + m);
         var t = setTimeout(self.startTime, 500);
     }
 
@@ -243,6 +274,7 @@ var infoViewModel = function(){
         if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
         return i;
     }
+    */
 
     self.checkConnection = function(){
 
@@ -259,11 +291,25 @@ var infoViewModel = function(){
 
     self.resetInterface = function(){
         self.status.navbar.battInt(0);
-        self.status.navbar.batt("--");
-        self.status.navbar.bluetooth(false);
         self.status.navbar.wifi(false);
         self.status.starredContacts.removeAll();
         self.status.lastCalls.removeAll();
+        self.status.navbar.obdError(false);
+        self.status.navbar.obdConnected(false);
+        self.status.vssLimit(140);
+        self.status.rpmLimit(6000);
+        self.status.navbar.outVss(false);
+        self.status.navbar.compact(false);
+    }
+
+    self.extend = function(){
+        var val = !self.status.navbar.compact();
+        self.status.navbar.compact(val);
+
+        setTimeout(function(){
+            var val = !self.status.navbar.compact();
+            self.status.navbar.compact(val);
+        }, 3000);
     }
 
     //LAST

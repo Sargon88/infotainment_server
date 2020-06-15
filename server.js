@@ -100,15 +100,14 @@ var InfotainmentStatus = {
 
 	/** NAVBAR */
 	navbar: {
-		hour: "",
 		battInt: 0,
-		batt: "--",
-		bluetooth: false,
 		wifi: false,
 		starredContacts: [],
 		lastCalls: [],
 		lastUpdate: new Date(),
-		signal: 0
+		signal: 0,
+		obdError: false,
+        obdConnected: false,
 	}
 };
 
@@ -680,7 +679,12 @@ CarService = {
 
 			InfotainmentStatus.btOBDReader.on('error', function (err) {
 			   console.log("OBD ERROR",err);
+
+			   InfotainmentStatus.navbar.obdConnected = false;
+			   InfotainmentStatus.navbar.obdError = true;
+
 			   CarService.errorMsg(err);
+			   
 			}).on('connected', function () {
 			    //this.requestValueByName("vss"); //vss = vehicle speed sensor
 
@@ -692,6 +696,11 @@ CarService = {
 
 
 			    this.startPolling(500); //Request all values each second.
+
+			    InfotainmentStatus.navbar.obdConnected = true;
+			    InfotainmentStatus.navbar.obdError = false;
+
+			    emit("obdConnected", "");
 
 			}).on('debug', function(msg){
 				CarService.debugMsg(msg);

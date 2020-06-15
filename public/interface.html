@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -8,7 +8,6 @@
 
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/css/fontawesome/all.min.css">
-    <!-- <link rel="stylesheet" href="/js/leaflet/leaflet.css"> -->
     <link rel="stylesheet" href="/css/custom/infotainment.css">
     <link rel="stylesheet" href="/css/custom/cardashboard.css">
     <link rel="stylesheet" href="/css/custom/call.css"> 
@@ -23,7 +22,6 @@
     <!-- DEBUG -->
     <link rel="stylesheet" href="/js/treeView/all.min.css" />
     <script src="/js/treeView/shieldui-all.min.js"></script>
-    <!-- <script type="text/javascript" src="https://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script> -->
     <script src="/js/treeView/fileManagerData.js"></script>
 
     <script src="/js/popper/popper.min.js"></script>
@@ -31,7 +29,6 @@
     <script src="/js/knockout/knockout.min.js"></script>
     <script src="/js/moment/moment.js"></script>
     <script src="/js/gauge/gauge.min.js"></script>
-    <!-- <script src="/js/leaflet/leaflet.js"></script> -->
     <script src='https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.js'></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -44,10 +41,7 @@
     <script src="/js/models/ytPageModel.js"></script>
     <script src="/js/models/ytplayPageModel.js"></script>
     <script src="/js/models/carPageModel.js"></script>
-    <script src="/js/application_call.js"></script>
-    
-
-
+    <script src="/js/application_call.js"></script>    
 </head>
 
 <!-- *** CALL MODAL *** -->
@@ -224,14 +218,6 @@
                                 </div>
                                 <table>
                                     <tr>
-                                        <td>Latitude:</td>
-                                        <td data-bind="text: $root.lat"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Longitude:</td>
-                                        <td data-bind="text: $root.long"></td>
-                                    </tr>
-                                    <tr>
                                         <td>Update:</td>
                                         <td data-bind="text: $root.status.lastUpdate"></td>
                                     </tr>
@@ -251,7 +237,7 @@
         <!-- *** END HOMEPAGE *** -->
 
         <!-- *** START MAP *** -->        
-        <!-- ko if: page() == $root.mapspage() -->
+        <!-- ko if: page() == $root.mapspage() -->    
         <div id="mapspage">
             <br />
             <div class="row">
@@ -452,7 +438,7 @@
                                 <div class="col-xs-12">
                                     <div class="row">
                                         <div class="col-xs-4">
-                                            Vss <span data-bind="text: vssLimit" />
+                                            Vss <span data-bind="text: $root.status.vssLimit" />
                                         </div>
                                     
                                         <div class="col-xs-8">
@@ -468,7 +454,7 @@
                                 <div class="col-xs-12">
                                     <div class="row">
                                         <div class="col-xs-4">
-                                            Rpm <span data-bind="text: rpmLimit" />
+                                            Rpm <span data-bind="text: $root.status.rpmLimit" />
                                         </div>
                                         <div class="col-xs-8">
                                             <div class="col-xs-6 bot-right panel-btn limit-btn" data-bind="click: removeLimit('rpm')">-</div>
@@ -514,28 +500,38 @@
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="navbar-buttons" style="text-align: center">
+                
                 <ul class="nav navbar-nav">
                     <li data-bind="css: {active: model().page() == homepage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('home') }"><i class="fas fa-phone" data-bind="style: { color: model().page() == homepage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
-                    <li data-bind="css: {active: model().page() == mapspage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('map') }"><i class="fas fa-map-marker-alt" data-bind="style: { color: model().page() == mapspage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
-                    <li data-bind="css: {active: model().page() == omxpage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('omx') }"><i class="fas fa-compact-disc" data-bind="style: { color: model().page() == omxpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
-                    <li data-bind="css: {active: model().page() == ytpage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('yt') }"><i class="fab fa-youtube" data-bind="style: { color: model().page() == ytpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
-                    <li data-bind="css: {active: model().page() == carpage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('car') }"><i class="fas fa-car" data-bind="style: { color: model().page() == carpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == mapspage()}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('map') }"><i class="fas fa-map-marker-alt" data-bind="style: { color: model().page() == mapspage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == omxpage()}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('omx') }"><i class="fas fa-compact-disc" data-bind="style: { color: model().page() == omxpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == ytpage()}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('yt') }"><i class="fab fa-youtube" data-bind="style: { color: model().page() == ytpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == carpage()}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('car') }"><i class="fas fa-car" data-bind="style: { color: model().page() == carpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    
+                    <li data-bind="if: $root.status.navbar.compact"><a class="navbar-info-btn" data-bind="click:extend()"><i class="fas fa-angle-right" style="color:rgba(30, 144, 255, 1)"></i></a></li>
                 </ul>
+                
+                
                 <ul class="nav navbar-nav navbar-right">
                     <span class="navbar-text" id="status">
-                        <!-- ko if: status.navbar.bluetooth -->
-                            <i class="fab fa-bluetooth-b fa-lg" style="color: rgba(30, 144, 255, 1)"></i>
+                        <!-- ko if: status.navbar.outVss -->
+                        <i class="fas fa-tachometer-alt fa-lg" style="color: crimson"></i>
                         <!-- /ko -->
-                        <!-- ko ifnot: status.navbar.bluetooth -->
+                        <!-- ko if: status.navbar.obdConnected -->
+                        <i class="fab fa-bluetooth-b fa-lg" style="color: rgba(30, 144, 255, 1)"></i>
+                        <!-- /ko -->
+                        <!-- ko if: status.navbar.obdError -->
+                        <i class="fab fa-bluetooth-b fa-lg" style="color:crimson"></i>
+                        <!-- /ko -->
+                        <!-- ko if: status.navbar.bluetooth != 1 && status.navbar.obdError != 1 -->
                         <i class="fab fa-bluetooth-b fa-lg"></i>
                         <!-- /ko -->
                         <!-- ko if: status.navbar.wifi -->
-                        <i class="fas fa-wifi fa-lg" data-bind="click: openwifi" style="color:rgba(30, 144, 255, 1)"></i>
+                        <i class="fas fa-wifi fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
                         <!-- ko ifnot: status.navbar.wifi -->
-                        <i class="fas fa-wifi fa-lg" data-bind="click: openwifi"></i>
+                        <i class="fas fa-wifi fa-lg"></i>
                         <!-- /ko -->
-                        <span id="batt" data-bind="text: status.navbar.batt" style="color:rgba(30, 144, 255, 1)"></span>
                         <!-- ko if: status.navbar.battInt() <= 10 -->
                         <i class="fas fa-battery-empty" style="color:crimson"></i>
                         <!-- /ko -->
@@ -552,7 +548,6 @@
                         <i class="fas fa-battery-full fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
                     </span>
-                    <p class="navbar-text" id="hour" data-bind="text: status.navbar.hour" style="color:rgba(30, 144, 255, 1)"></p>
                     <p class="navbar-text" id="off" data-bind="click: turnoff"><i class="fas fa-power-off fa-lg" style="color:crimson"></i></p>
                 </ul>
             </div><!-- /.navbar-collapse -->

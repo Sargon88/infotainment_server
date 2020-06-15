@@ -16,8 +16,6 @@ var CarPageModel = function(params, status){
 	self.bgClass = ko.observable("dashboardBg");
 	self.maxVss = 200;
 	self.maxRpm = 8000;
-	self.vssLimit = ko.observable(140);
-	self.rpmLimit = ko.observable(6000);
 	self.outVss = ko.observable(false);
 	self.outRpm = ko.observable(false);
 
@@ -64,74 +62,11 @@ var CarPageModel = function(params, status){
 
 
 
-	self.params.socket.on('updateObdUI', function(msg){
-		self.lastUpdate(new Date());
-		if(msg){
-			var m = JSON.parse(msg);
-
-			var temp = self.OBDMessages();
-			var oldItem = self.OBDMessages.remove(function(item){return item.name === m.name;});
-			self.OBDMessages.push(m);
-			self.OBDMessages.sort();
-
-			self.OBDMessages.sort(function (left, right) {
-		        return left.name === right.name ? 0
-		             : left.name < right.name ? -1
-		             : 1;
-		    });
-
-		    if(m.name == "vss" && self.vssGauge){
-		    	self.vssGauge.set(m.value); // set actual value
-		    	if(m.value > self.vssLimit()){
-		    		self.outVss(true);
-		    		vssopts.pointer.color = 'rgba(244, 87, 87, 1)';
-		    		vssopts.staticZones = [
-						{strokeStyle: "rgba(244, 87, 87, 0.05)", min: 0, max: 70},
-						{strokeStyle: "rgba(244, 87, 87, 0.2)", min: 70, max: 140},
-						{strokeStyle: "rgba(244, 87, 87, 0.7)", min: 140, max: 200},
-					];
-
-
-		    	} else {
-		    		self.outVss(false);
-		    		vssopts.pointer.color = 'rgba(30, 144, 255, 1)';
-		    		vssopts.staticZones = [
-						{strokeStyle: "rgba(30, 144, 255, 0.05)", min: 0, max: 70},
-						{strokeStyle: "rgba(30, 144, 255, 0.2)", min: 70, max: 140},
-						{strokeStyle: "rgba(30, 144, 255, 0.9)", min: 140, max: 200},
-					];
-
-		    	}
-		    	self.vssGauge.setOptions(vssopts);
-
-		    } else if(m.name == "rpm"  && self.rpmGauge){
-
-		    	self.rpmGauge.set(m.value); // set actual valueù
-		    	if(m.value > self.rpmLimit()){
-		    		self.outRpm(true);
-		    		rpmopts.pointer.color = 'rgba(244, 87, 87, 1)';
-		    		rpmopts.colorStop = 'rgba(244, 87, 87, 0.3)';
-		    	} else {
-		    		self.outRpm(false);
-		    		rpmopts.pointer.color = 'rgba(30, 144, 255, 1)';
-		    		rpmopts.colorStop = 'rgba(30, 144, 255, 0.3)';
-		    	}
-		    	self.rpmGauge.setOptions(rpmopts);
-
-		    }
-		}
-	}).on('obdDebug', function(msg){
+	self.params.socket.on('obdDebug', function(msg){
 		self.lastUpdate(new Date());
 		self.debugBkp.push(msg);
 
 		manageMessages(self.debug, self.debugBkp);
-	}).on('obdError', function(msg){
-		self.lastUpdate(new Date());
-		self.errorBkp.push(msg);
-		
-		manageMessages(self.error, self.errorBkp);
-
-		console.log(self.error());
 	}).on('obdFullData', function(msg){
 		console.log(msg);
 
@@ -178,13 +113,13 @@ var CarPageModel = function(params, status){
 
 		switch(param){
 			case "vss":
-				if(self.vssLimit() + 5 < self.maxVss){
-					self.vssLimit(self.vssLimit() + 5);
+				if(infoViewModel.status.vssLimit() + 5 < self.maxVss){
+					infoViewModel.status.vssLimit(infoViewModel.status.vssLimit() + 5);
 				}
 				break;
 			case "rpm":
-				if(self.rpmLimit() + 1000 < self.maxRpm){
-					self.rpmLimit(self.rpmLimit() + 1000);
+				if(infoViewModel.status.rpmLimit() + 1000 < self.maxRpm){
+					infoViewModel.status.rpmLimit(infoViewModel.status.rpmLimit() + 1000);
 				}
 				break;
 			default:
@@ -196,18 +131,71 @@ var CarPageModel = function(params, status){
 	self.removeLimit = function(param){
 		switch(param){
 			case "vss":
-				if(self.vssLimit() - 5 > 0){
-					self.vssLimit(self.vssLimit() - 5);
+				if(infoViewModel.status.vssLimit() - 5 > 0){
+					infoViewModel.status.vssLimit(infoViewModel.status.vssLimit() - 5);
 				}
 				break;
 			case "rpm":
-				if(self.rpmLimit() - 1000 > 0){
-					self.rpmLimit(self.rpmLimit() - 1000);
+				if(infoViewModel.status.rpmLimit() - 1000 > 0){
+					infoViewModel.status.rpmLimit(infoViewModel.status.rpmLimit() - 1000);
 				}
 				break;
 			default:
 				break;
 		}
+	}
+
+	self.manageObdMessage = function(m){
+		var temp = self.OBDMessages();
+		var oldItem = self.OBDMessages.remove(function(item){return item.name === m.name;});
+        self.OBDMessages.push(m);
+        self.OBDMessages.sort();
+
+        self.OBDMessages.sort(function (left, right) {
+            return left.name === right.name ? 0
+                 : left.name < right.name ? -1
+                 : 1;
+        });
+
+        if(m.name == "vss" && self.vssGauge){
+            self.vssGauge.set(m.value); // set actual value
+            if(m.value > infoViewModel.status.vssLimit()){
+                self.outVss(true);
+                vssopts.pointer.color = 'rgba(244, 87, 87, 1)';
+                vssopts.staticZones = [
+                    {strokeStyle: "rgba(244, 87, 87, 0.05)", min: 0, max: 70},
+                    {strokeStyle: "rgba(244, 87, 87, 0.2)", min: 70, max: 140},
+                    {strokeStyle: "rgba(244, 87, 87, 0.7)", min: 140, max: 200},
+                ];
+
+
+            } else {
+                self.outVss(false);
+                vssopts.pointer.color = 'rgba(30, 144, 255, 1)';
+                vssopts.staticZones = [
+                    {strokeStyle: "rgba(30, 144, 255, 0.05)", min: 0, max: 70},
+                    {strokeStyle: "rgba(30, 144, 255, 0.2)", min: 70, max: 140},
+                    {strokeStyle: "rgba(30, 144, 255, 0.9)", min: 140, max: 200},
+                ];
+
+            }
+            self.vssGauge.setOptions(vssopts);
+
+        } else if(m.name == "rpm"  && self.rpmGauge){
+
+            self.rpmGauge.set(m.value); // set actual valueù
+            if(m.value > infoViewModel.status.rpmLimit()){
+                self.outRpm(true);
+                rpmopts.pointer.color = 'rgba(244, 87, 87, 1)';
+                rpmopts.colorStop = 'rgba(244, 87, 87, 0.3)';
+            } else {
+                self.outRpm(false);
+                rpmopts.pointer.color = 'rgba(30, 144, 255, 1)';
+                rpmopts.colorStop = 'rgba(30, 144, 255, 0.3)';
+            }
+            self.rpmGauge.setOptions(rpmopts);
+
+        }
 	}
 
 	self.init = function(){
