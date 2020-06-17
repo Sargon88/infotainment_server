@@ -44,7 +44,7 @@ var infoViewModel = function(){
             obdConnected: ko.observable(false),
             outVss: ko.observable(false),
             compact: ko.observable(false),
-            phoneConnected: ko.observable(false);
+            phoneConnected: ko.observable(false)
         }
     };
 

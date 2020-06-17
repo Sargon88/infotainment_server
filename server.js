@@ -253,16 +253,12 @@ io.on('connection', function(socket){
 /** EVENTS SERVICES */
 GenericService = {
 	phoneStatus: function(msg){
-		//TODO rimuovere questo
-		emit('phone', msg);
+		var msgObj = JSON.parse(msg);
+
+		msgObj.navbar.phoneConnected = true;
 
 		//retrocompatibilità
-		emit('phone status', msg);
-
-		//TODO debug per angular
-		var msgObj = JSON.parse(msg);
-		emit('status', '{"bluetooth":' + msgObj.bluetooth + ', "wifi":' + msgObj.wifi + ', "batteryValue":' + msgObj.batt +'}');
-		
+		emit('phone status', JSON.stringify(msgObj));		
 
 		if(InfotainmentStatus.page == "map"){
 			var msgObj = JSON.parse(msg);
