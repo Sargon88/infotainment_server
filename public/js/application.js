@@ -44,6 +44,7 @@ var infoViewModel = function(){
             obdConnected: ko.observable(false),
             outVss: ko.observable(false),
             compact: ko.observable(false),
+            phoneConnected: ko.observable(false);
         }
     };
 
@@ -101,6 +102,7 @@ var infoViewModel = function(){
             self.status.starredContacts(stat.starredContacts.slice(0, 5));
             self.status.navbar.signal(parseInt(stat.navbar.signal));
             self.status.navbar.obdConnected(stat.navbar.obdConnected);
+            self.status.navbar.phoneConnected(stat.navbar.phoneConnected);
 
             self.buildLastCall(stat.lastCalls);
             
@@ -290,6 +292,7 @@ var infoViewModel = function(){
         self.status.starredContacts.removeAll();
         self.status.lastCalls.removeAll();
         self.status.navbar.obdConnected(false);
+        self.status.navbar.phoneConnected(false);
         self.status.vssLimit(140);
         self.status.rpmLimit(6000);
         self.status.navbar.outVss(false);

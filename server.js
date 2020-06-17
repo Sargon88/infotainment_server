@@ -107,6 +107,7 @@ var InfotainmentStatus = {
 		lastUpdate: new Date(),
 		signal: 0,
         obdConnected: false,
+        phoneConnected: false,
 	}
 };
 
@@ -169,10 +170,13 @@ io.on('connection', function(socket){
 	/** --------- GENERIC --------------- */
 	Socket.on('identify', function(msg){
 		log("---------------------------- " + msg + " CONNECTED! --------------------------------------");
+		if(msg == "Mobile Phone"){
+			InfotainmentStatus.navbar.phoneConnected = true;
+		}
 	}).on('phone status', function(msg){
 		GenericService.phoneStatus(msg);
 	}).on('disconnect', function(msg){
-		log("---------------------------- DISCONNECTED! --------------------------------------");		
+		log("---------------------------- " + msg + " DISCONNECTED! --------------------------------------");		
 	}).on('DEBUG', function(msg){
 		GenericService.debug(msg);		
 	}).on('reboot', function(){
@@ -677,7 +681,9 @@ CarService = {
 		if(InfotainmentStatus.btOBDReader){
 
 			InfotainmentStatus.btOBDReader.on('error', function (err) {
-			   console.log("OBD ERROR",err);
+				if(err !== "No suitable devices found"){
+					console.log("OBD ERROR",err);
+				}
 
 			   InfotainmentStatus.navbar.obdConnected = false;
 

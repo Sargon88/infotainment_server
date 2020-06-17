@@ -523,10 +523,10 @@
                         <!-- ko ifnot: status.navbar.obdConnected -->
                         <i class="fab fa-bluetooth-b fa-lg"></i>
                         <!-- /ko -->
-                        <!-- ko if: status.navbar.wifi -->
+                        <!-- ko if: status.navbar.phoneConnected -->
                         <i class="fas fa-wifi fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
-                        <!-- ko ifnot: status.navbar.wifi -->
+                        <!-- ko ifnot: status.navbar.phoneConnected -->
                         <i class="fas fa-wifi fa-lg"></i>
                         <!-- /ko -->
                         <!-- ko if: status.navbar.battInt() <= 10 -->
