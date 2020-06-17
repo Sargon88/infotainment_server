@@ -106,7 +106,6 @@ var InfotainmentStatus = {
 		lastCalls: [],
 		lastUpdate: new Date(),
 		signal: 0,
-		obdError: false,
         obdConnected: false,
 	}
 };
@@ -681,7 +680,6 @@ CarService = {
 			   console.log("OBD ERROR",err);
 
 			   InfotainmentStatus.navbar.obdConnected = false;
-			   InfotainmentStatus.navbar.obdError = true;
 
 			   CarService.errorMsg(err);
 			   
@@ -698,7 +696,6 @@ CarService = {
 			    this.startPolling(500); //Request all values each second.
 
 			    InfotainmentStatus.navbar.obdConnected = true;
-			    InfotainmentStatus.navbar.obdError = false;
 
 			    emit("obdConnected", "");
 

@@ -520,10 +520,7 @@
                         <!-- ko if: status.navbar.obdConnected -->
                         <i class="fab fa-bluetooth-b fa-lg" style="color: rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
-                        <!-- ko if: status.navbar.obdError -->
-                        <i class="fab fa-bluetooth-b fa-lg" style="color:crimson"></i>
-                        <!-- /ko -->
-                        <!-- ko if: status.navbar.bluetooth != 1 && status.navbar.obdError != 1 -->
+                        <!-- ko ifnot: status.navbar.obdConnected -->
                         <i class="fab fa-bluetooth-b fa-lg"></i>
                         <!-- /ko -->
                         <!-- ko if: status.navbar.wifi -->

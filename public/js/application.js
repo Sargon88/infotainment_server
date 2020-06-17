@@ -41,7 +41,6 @@ var infoViewModel = function(){
             battInt: ko.observable(0),
             wifi: ko.observable(false),
             signal: ko.observable(0),
-            obdError: ko.observable(false),
             obdConnected: ko.observable(false),
             outVss: ko.observable(false),
             compact: ko.observable(false),
@@ -101,7 +100,6 @@ var infoViewModel = function(){
             self.status.navbar.wifi(stat.navbar.wifi == 'true');
             self.status.starredContacts(stat.starredContacts.slice(0, 5));
             self.status.navbar.signal(parseInt(stat.navbar.signal));
-            self.status.navbar.obdError(stat.navbar.obdError);
             self.status.navbar.obdConnected(stat.navbar.obdConnected);
 
             self.buildLastCall(stat.lastCalls);
@@ -153,7 +151,6 @@ var infoViewModel = function(){
                 
             }
         }).on('obdError', function(msg){
-            self.status.lastUpdate(new Date());
 
             if(self.model().page() == "CarPageModel"){ //active page = carpage
                 self.model().errorBkp.push(msg);
@@ -162,13 +159,11 @@ var infoViewModel = function(){
             }
 
             //update status bar
-            self.status.navbar.obdError(true);
-            self.status.navbar.obdConnected(false);       
+            self.status.navbar.obdConnected(false);   
+
         }).on('obdConnected', function(msg){
-            self.status.lastUpdate(new Date());
 
             //update status bar
-            self.status.navbar.obdError(false);
             self.status.navbar.obdConnected(true);
         });
     };
@@ -294,7 +289,6 @@ var infoViewModel = function(){
         self.status.navbar.wifi(false);
         self.status.starredContacts.removeAll();
         self.status.lastCalls.removeAll();
-        self.status.navbar.obdError(false);
         self.status.navbar.obdConnected(false);
         self.status.vssLimit(140);
         self.status.rpmLimit(6000);
