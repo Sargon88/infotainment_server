@@ -530,19 +530,19 @@
                         <i class="fas fa-wifi fa-lg"></i>
                         <!-- /ko -->
                         <!-- ko if: status.navbar.battInt() <= 10 -->
-                        <i class="fas fa-battery-empty" style="color:crimson"></i>
+                        <i class="fas fa-battery-empty fa-rotate-270" style="color:crimson"></i>
                         <!-- /ko -->
                         <!-- ko if: (status.navbar.battInt() > 10 && status.navbar.battInt() <= 50) -->
-                        <i class="fas fa-battery-quarter fa-lg fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                        <i class="fas fa-battery-quarter fa-lg fa-lg fa-rotate-270" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
                         <!-- ko if: status.navbar.battInt() > 50 && status.navbar.battInt() <= 75 -->
-                        <i class="fas fa-battery-half fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                        <i class="fas fa-battery-half fa-lg fa-rotate-270" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
                         <!-- ko if: status.navbar.battInt() > 75 && status.navbar.battInt() <= 90 -->
-                        <i class="fas fa-battery-three-quarters fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                        <i class="fas fa-battery-three-quarters fa-lg fa-rotate-270" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
                         <!-- ko if: status.navbar.battInt() > 90 && status.navbar.battInt() <= 100 -->
-                        <i class="fas fa-battery-full fa-lg" style="color:rgba(30, 144, 255, 1)"></i>
+                        <i class="fas fa-battery-full fa-lg fa-rotate-270" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
                     </span>
                     <p class="navbar-text" id="off" data-bind="click: turnoff"><i class="fas fa-power-off fa-lg" style="color:crimson"></i></p>
