@@ -10,15 +10,12 @@ var exec = require('child_process').exec;
 var request = require('request');
 var fs = require('fs');
 var omx = null;
-var omx = null;	
 var OBDReader = null;
 
 if(mode !== "debug"){
 	omx = require('node-omxplayer');	
 	OBDReader = require('bluetooth-obd');	
 }
-
-
 
 
 /** CONSTANTS */
@@ -30,15 +27,6 @@ var yt_playlist = "yt_playlist";
 
 
 /** SHELL COMMANDS */
-var cmd_sendDbusCoordinate = "export DISPLAY=:0.0; dbus-send  --print-reply --session --dest=org.navit_project.navit /org/navit_project/navit/default_navit org.navit_project.navit.navit.set_center_by_string string:\"geo: %coordinates%\"";
-var cmd_reboot = "sudo reboot";
-var cmd_killKeepAlive = "sudo killall keepAliveChromium.sh omxplayer.bin keepAliveNavit.sh navit";
-var cmd_startNavit = "/home/pi/info_scripts/keepAliveNavit.sh >> /home/pi/infotainment_logs/navit.log &";
-var cmd_tailCommandFile = "tail -f /dev/null > " + omxCommandFile;
-//var cmd_startYTOmx = 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,152,800,500 $(youtube-dl -g -f mp4 "%yturl%")';
-var cmd_startYTOmx = 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,0,800,400 $(youtube-dl -g -f mp4 "%yturl%")';
-var cmd_setBrightness = 'sudo bash -c "echo %br% > /sys/class/backlight/rpi_backlight/brightness"';
-
 var commands = {
 	omx: {
 		getPlaylistList: "ls -F " + playlistDir + " | grep playlist_",
@@ -47,6 +35,11 @@ var commands = {
 		startObdService: "/home/pi/info_scripts/obd_interface.py"
 	},
 	updateSystem: "git pull",
+	reboot: "sudo reboot",
+	killKeepAlive: "sudo killall keepAliveChromium.sh omxplayer.bin keepAliveNavit.sh navit",
+	tailCommandFile: "tail -f /dev/null > " + omxCommandFile,
+	startYTOmx: 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,0,800,400 $(youtube-dl -g -f mp4 "%yturl%")',
+	setBrightness: 'sudo bash -c "echo %br% > /sys/class/backlight/rpi_backlight/brightness"',
 }
 
 
@@ -263,9 +256,6 @@ GenericService = {
 		if(InfotainmentStatus.page == "map"){
 			var msgObj = JSON.parse(msg);
 			var coordinates = InfotainmentStatus.longitude + " " + InfotainmentStatus.latitude;
-
-			var cmd = cmd_sendDbusCoordinate.replace("%coordinates%", coordinates);
-			shell(cmd);
 		}
 	},
 	debug: function(msg){
@@ -274,14 +264,14 @@ GenericService = {
 	},
 	reboot: function(){
 		log("REBOOT");
-		shell(cmd_reboot," stdout");
+		shell(commands.reboot," stdout");
 	},
 	changePage: function(msg, extra){		
 		InfotainmentStatus.newPage = msg;
 		
 		if(InfotainmentStatus.newPage == "map" || InfotainmentStatus.newPage == "ytPlay"){
 			//devo killare chromium per ricostruire l'interfaccia più piccola
-			shell(cmd_killKeepAlive, null, changeToMapYtPage);
+			shell(commands.killKeepAlive, null, changeToMapYtPage);
 	
 		} else if(InfotainmentStatus.page == "map" || InfotainmentStatus.page == "ytPlay" ) {
 			//se la pagina su cui mi trovo è la mappa, devo ricostruire l'interfaccia grande
@@ -367,7 +357,7 @@ GenericService = {
 			InfotainmentStatus.brightness = 255;
 		}
 
-		var cmd_complete = cmd_setBrightness.replace("%br%", InfotainmentStatus.brightness);
+		var cmd_complete = commands.setBrightness.replace("%br%", InfotainmentStatus.brightness);
 		exec(cmd_complete);
 	}
 };
@@ -773,16 +763,11 @@ function changeToMapYtPage(){
 	if(InfotainmentStatus.newPage == "map"){
 		log("TEST", "Change page to: " + InfotainmentStatus.newPage);
 
-		setTimeout(function(){
-
-			shell(cmd_startNavit);
-		}, 1500);
-
 	} else if(InfotainmentStatus.newPage == "ytPlay"){
 
-		shell(cmd_tailCommandFile);
+		shell(commands.tailCommandFile);
 
-		var completeCommand = cmd_startYTOmx.replace('%yturl%', InfotainmentStatus.yturl);
+		var completeCommand = commands.startYTOmx.replace('%yturl%', InfotainmentStatus.yturl);
 		console.log("YTURL: " + completeCommand);
 		//TODO
 		shell(completeCommand, "stdout");
