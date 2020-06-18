@@ -20,16 +20,18 @@ if(mode !== "debug"){
 
 /** CONSTANTS */
 var Socket;
-var mediaDocRoot = "/media";
-var playlistDir = "/home/pi/omx_playlists/";
-var omxCommandFile = "/tmp/omx_control"
-var yt_playlist = "yt_playlist";
+var path = {
+	mediaDocRoot: "/media",
+	playlistDir: "/home/pi/omx_playlists/",
+	omxCommandFile: "/tmp/omx_control",
+	yt_playlist: "yt_playlist",
+};
 
 
 /** SHELL COMMANDS */
 var commands = {
 	omx: {
-		getPlaylistList: "ls -F " + playlistDir + " | grep playlist_",
+		getPlaylistList: "ls -F " + path.playlistDir + " | grep playlist_",
 	},
 	car: {
 		startObdService: "/home/pi/info_scripts/obd_interface.py"
@@ -37,55 +39,43 @@ var commands = {
 	updateSystem: "git pull",
 	reboot: "sudo reboot",
 	killKeepAlive: "sudo killall keepAliveChromium.sh omxplayer.bin keepAliveNavit.sh navit",
-	tailCommandFile: "tail -f /dev/null > " + omxCommandFile,
-	startYTOmx: 'cat ' + omxCommandFile + ' | omxplayer --display 4 --loop --win 0,0,800,400 $(youtube-dl -g -f mp4 "%yturl%")',
+	tailCommandFile: "tail -f /dev/null > " + path.omxCommandFile,
+	startYTOmx: 'cat ' + path.omxCommandFile + ' | omxplayer --display 4 --loop --win 0,0,800,400 $(youtube-dl -g -f mp4 "%yturl%")',
 	setBrightness: 'sudo bash -c "echo %br% > /sys/class/backlight/rpi_backlight/brightness"',
-}
+	topBar: "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &", //old
+	bottomBar: "./../info_scripts/keepAliveChromium.sh 1920 100 0 980 >> /home/pi/infotainment_logs/chromium.log &",
+};
 
 
 /** PAGE MANAGER */
 app.use(express.static('public'));
-//app.use(express.static(path.join(__dirname, "dist/infotainment")));
-
 app.get('/monitor', function(req, res){
 	res.sendFile(__dirname + '/public/monitor.html');
 });
-//versione 1.0 con knockout
 app.get('/interface', function(req, res){
 	res.sendFile(__dirname + '/public/interface.html');
 });
-
-//versione con angular
-/*
-app.get('/interface', function(req, res){
-	
-		res.sendFile(__dirname + '/dist/infotainment/index.html');
-});
-*/
-
 app.get('/call', function(req, res){
 	res.sendFile(__dirname + '/public/call.html');
 });
 
-
-
 /** PARAMS */
 var InfotainmentStatus = {
-	//params
 	page: "home",
 	longitude: "",
 	latitude: "",
-	callerNum: "",
+	
 	yturl: "",
 	lastUsbStatus: "",
 	newPage: "",
 	brightness: 255,
 
-	//CHIAMATE
+	/**CHIAMATE**/
 	calling: false,
 	inCall: false,
+	callerNum: "",
 
-	//OBD
+	/**OBD**/
 	btOBDReader: null,
 	dataReceivedMarker: {},
 	obdError: [],
@@ -113,7 +103,6 @@ function log(tag, msg){
 		console.log(tag);
 	}	
 };
-
 function emit(event, msg){
 
 	if(event != "coordinates"){
@@ -125,7 +114,6 @@ function emit(event, msg){
 
 	io.emit(event, msg);
 };
-
 function shell(cmd, lvl, f){
 	log("SHELL", cmd);
 
@@ -167,16 +155,19 @@ io.on('connection', function(socket){
 			InfotainmentStatus.navbar.phoneConnected = true;
 		}
 	}).on('phone status', function(msg){
+		log('----- Phone Status -----');
+		log(msg);
+		log('');
+		InfotainmentStatus.navbar.phoneConnected = true;
+
 		GenericService.phoneStatus(msg);
 	}).on('disconnect', function(msg){
 		log("---------------------------- " + msg + " DISCONNECTED! --------------------------------------");		
 	}).on('DEBUG', function(msg){
 		GenericService.debug(msg);		
 	}).on('reboot', function(){
-		//reboot command
 		GenericService.reboot();		
 	}).on('change page', function(msg){
-		//cambio pagina
 		log("changepage", msg);
 		//GenericService.changePage(msg);
 		GenericService.changePage_temp(msg);
@@ -228,6 +219,11 @@ io.on('connection', function(socket){
 		YoutubeService.loadYoutube(msg);
 	}).on('youtube history', function(msg){
 		returnYoutubeHistory();
+	});
+
+	/** ----------- INIZIO GPS -------- */
+	Socket.on('coordinates', function(msg){
+		GPSService.coordinates(msg);
 	}).on('refreshUI', function(){
 		var msg = {
 			data: InfotainmentStatus.dataReceivedMarker,
@@ -236,11 +232,6 @@ io.on('connection', function(socket){
 		};
 		emit('obdFullData', msg);
 	});
-
-	/** ----------- INIZIO GPS -------- */
-	Socket.on('coordinates', function(msg){
-		GPSService.coordinates(msg);
-	})
 });
 
 /** EVENTS SERVICES */
@@ -481,7 +472,7 @@ OmxService = {
 
 			directoryTree.data = [];
 
-			exec("ls -F " + mediaDocRoot, function(err, stdout, stderr) {
+			exec("ls -F " + path.mediaDocRoot, function(err, stdout, stderr) {
 				
 				if(stdout != ""){
 					var array = stdout.split("\n");
@@ -518,7 +509,7 @@ OmxService = {
 			omxPlayer.quit();
 		}
 
-		omxPlayer = omx(mediaDocRoot + msg, false, 100);
+		omxPlayer = omx(path.mediaDocRoot + msg, false, 100);
 		omxPlayer.play();		
 	},
 	stopFile: function(msg){
@@ -556,7 +547,7 @@ OmxService = {
 
 		var playlist = JSON.parse(msg);
 
-		var fileName = playlistDir + playlist.name;
+		var fileName = path.playlistDir + playlist.name;
 		var songsArray = playlist.files;
 
 		exec("> " + fileName, function(err, stdout, stderr) {
@@ -571,7 +562,7 @@ OmxService = {
 	loadPlaylist: function(msg){
 		log("--------- load playlst: " + msg + " ---------");
 
-		var filePath = playlistDir + msg;
+		var filePath = path.playlistDir + msg;
 
 		log("Path: " + filePath);
 		exec("cat " + filepath, function(err, stdout, stderr) {
@@ -607,7 +598,7 @@ YoutubeService = {
 		msgObj = JSON.parse(msg);
 		InfotainmentStatus.yturl = msgObj.url;
 		
-		saveFileInPlaylist(msg, yt_playlist);
+		saveFileInPlaylist(msg, path.yt_playlist);
 
 		GenericService.changePage("ytPlay");
 	},
@@ -643,12 +634,6 @@ GPSService = {
 	}
 };
 
-/*
-var btOBDReader = null;
-var dataReceivedMarker = {};
-var obdError = [];
-var obdDebug = [];
-*/
 var connectionInterval = 1000;
 
 CarService = {
@@ -793,13 +778,10 @@ function startFullscreenChromium(){
 	});
 };
 
-var topBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 0 >> /home/pi/infotainment_logs/chromium.log &";
-var bottomBar = "./../info_scripts/keepAliveChromium.sh 1920 100 0 980 >> /home/pi/infotainment_logs/chromium.log &";
-
 function startBarChromium(){
 	log("START BAR CHROMIUM");
 
-	exec(bottomBar, function(err, stdout, stderr) {
+	exec(commands.bottomBar, function(err, stdout, stderr) {
 		if(stderr != ""){
 			log("---- stderr --- ");
 			log(stderr);
@@ -834,13 +816,13 @@ function saveFileInPlaylist(msg, fileName){
 	msgObj = JSON.parse(msg);
 	InfotainmentStatus.yturl = msgObj.url;
 	
-	var cmd = "grep '"+ InfotainmentStatus.yturl +"' " + playlistDir+fileName;
+	var cmd = "grep '"+ InfotainmentStatus.yturl +"' " + path.playlistDir+fileName;
 
 	exec(cmd, {shell: '/bin/bash'}, function(err, stdout, stderr){
 		
 		if(stdout == ""){	
 			//nuovo video
-			cmd = "echo '" + msg + "' > " + playlistDir+"temp_ytPlaylist";
+			cmd = "echo '" + msg + "' > " + path.playlistDir+"temp_ytPlaylist";
 			exec(cmd, {shell: '/bin/bash'}, function(err, stdout, stderr) {
 
 				if(stderr != ""){
@@ -849,7 +831,7 @@ function saveFileInPlaylist(msg, fileName){
 				}
 				
 
-				cmd = "head -6 " + playlistDir+fileName + " >> " + playlistDir + "temp_ytPlaylist";
+				cmd = "head -6 " + path.playlistDir+fileName + " >> " + path.playlistDir + "temp_ytPlaylist";
 				exec(cmd, {shell: '/bin/bash'}, function(err, stdout, stderr) {
 					
 
@@ -858,7 +840,7 @@ function saveFileInPlaylist(msg, fileName){
 						return;
 					}
 					
-					cmd = "mv " + playlistDir + "temp_ytPlaylist " + playlistDir + fileName;
+					cmd = "mv " + path.playlistDir + "temp_ytPlaylist " + path.playlistDir + fileName;
 					exec(cmd, {shell: '/bin/bash'}, function(err, stdout, stderr) {
 						
 						if(stderr != ""){
@@ -897,12 +879,12 @@ function exploreDirectory(dir, item, array){
     };
     array.push(entry);
 
-	fs.readdir(mediaDocRoot + dir + item, function(err, items) {
+	fs.readdir(path.mediaDocRoot + dir + item, function(err, items) {
 		try{
 			for (var i=0; i<items.length; i++) {
 			        var c = items[i];
 			        
-		        	fs.stat(mediaDocRoot + dir + item + "/" + c, statsCallback(dir + item, c, entry)); 	
+		        	fs.stat(path.mediaDocRoot + dir + item + "/" + c, statsCallback(dir + item, c, entry)); 	
     
 			    }
 	 	} catch(e){
@@ -953,7 +935,7 @@ function statsCallback(dir, c, entry){
 
 /** ---------- INIZIO FUNZIONI YOUTUBE ---- */
 function returnYoutubeHistory(){
-	var cmd = "tail -7 " + playlistDir + yt_playlist + " | awk '{print}' ORS=', '";
+	var cmd = "tail -7 " + path.playlistDir + path.yt_playlist + " | awk '{print}' ORS=', '";
 
 	exec(cmd, {shell: "/bin/bash"}, function(err, stdout, stderr){
 
