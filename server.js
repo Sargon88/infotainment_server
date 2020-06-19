@@ -360,6 +360,7 @@ CallService = {
 		log('----- Incoming Calling -----');
 		InfotainmentStatus.callId = msg;
 		InfotainmentStatus.calling = true;
+		InfotainmentStatus.inCall = false;
 
 		emit("incoming calling", msg);
 	},

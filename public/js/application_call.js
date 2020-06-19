@@ -1,4 +1,4 @@
-var callViewModel = function(){
+var callViewModel = function(callerId){
     var self = this;
 
     //context
@@ -26,11 +26,27 @@ var callViewModel = function(){
 
     //functions
     self.startApp = function(){
-        console.log("App Calling Start");
+        console.log("App Calling Start NEW");
         
         self.message("Chiamata in arrivo");
-        self.socket.emit("getCall", "");
+        //self.socket.emit("getCall", "");
         //self.socket.emit("omx command", "pause");
+
+
+        var data = JSON.parse(callerId);
+
+        if(data != null && data.number != null){
+            self.callerNumber(data.number);
+        }
+
+        if(data != null && data.name != null && data.name != ""){
+            self.callerName(data.name);
+        }
+
+        if(data != null && data.type == "out"){
+            self.answered(true);
+        }
+
 
         self.socket.on('call answer', function(msg){
             self.answered(true);
@@ -41,6 +57,7 @@ var callViewModel = function(){
             //self.socket.emit("omx command", "pause");            
         });
 
+        /*
         self.socket.on('call data', function(msg){
             console.log(msg);
 
@@ -57,7 +74,7 @@ var callViewModel = function(){
             if(data != null && data.type == "out"){
                 self.answered(true);
             }
-/*
+
             if(data != null && data.date != null){
                 self.lastCall(data.date);
             }
@@ -69,9 +86,10 @@ var callViewModel = function(){
 
                 //self.lastCall(data.date);
             }
-            */
+            
             
         });
+        */
 
     };
 

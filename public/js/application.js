@@ -60,14 +60,15 @@ var infoViewModel = function(){
     //self.callingUI = ko.observable(null);
     self.callingUI = ko.computed(function(){
         console.log("COMPUTED 1");
-        console.log("COMPUTED incall", self.status.inCall());
-        console.log("COMPUTED callid", self.status.callId());
+        console.log("COMPUTED self.status.inCall()", self.status.inCall());
+        console.log("COMPUTED self.status.callId()", self.status.callId());
         if(self.status.inCall() && self.status.callId()){
+            console.log("COMPUTED 2");
             $('#callModal').modal('toggle');
+            console.log("COMPUTED 3");
             return new callViewModel(self.status.callId());
-            console.log("COMPUTED 4");
         }
-        console.log("COMPUTED 5");
+        console.log("COMPUTED 4");
 
         return null;
     });
@@ -89,6 +90,7 @@ var infoViewModel = function(){
             self.params.socket.emit("identify", "Raspberry");
         }).on('phone status', function(msg){
             var stat = JSON.parse(msg);
+            console.log("STATUS", stat.inCall);
 
             self.status.latitude(stat.latitude);
             self.status.longitude(stat.longitude);
