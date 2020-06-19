@@ -74,6 +74,7 @@ var InfotainmentStatus = {
 	calling: false,
 	inCall: false,
 	callerNum: "",
+	callId: null;
 
 	/**OBD**/
 	btOBDReader: null,
@@ -155,9 +156,6 @@ io.on('connection', function(socket){
 			InfotainmentStatus.navbar.phoneConnected = true;
 		}
 	}).on('phone status', function(msg){
-		log('----- Phone Status -----');
-		log(msg);
-		log('');
 		InfotainmentStatus.navbar.phoneConnected = true;
 
 		GenericService.phoneStatus(msg);

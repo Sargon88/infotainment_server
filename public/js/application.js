@@ -6,6 +6,14 @@ var infoViewModel = function(){
         server : "http://infotainment_srv:8080",
         callingendpoint : "/call",
         socket :  io(),
+        pages: {
+            homepage: "PhonePageModel",
+            mapspage: "MapPageModel",
+            omxpage: "OmxPageModel",
+            ytpage: "YtPageModel",
+            ytplaypage: "YtplayPageModel",
+            carpage: "CarPageModel",
+        },
     }
 
     /** PARAMS */
@@ -15,7 +23,7 @@ var infoViewModel = function(){
         longitude: ko.observable(),
         latitude: ko.observable(),
         callerNum: ko.observable(),
-        yturl: ko.observable(),
+        yturl: ko.observable(null),
         lastUsbStatus: ko.observable(),
         newPage: ko.observable(),
         brightness: ko.observable(),
@@ -24,8 +32,9 @@ var infoViewModel = function(){
         lastUpdate: ko.observable(new Date()),
 
         //CHIAMATE
-        calling: ko.observable(false),
+        calling: ko.observable(null),
         inCall: ko.observable(false),
+        callId: ko.observable(null),
 
         //CAR
         vssLimit : ko.observable(140),
@@ -46,28 +55,9 @@ var infoViewModel = function(){
     /*Application active model*/
     self.model = ko.observable();
 
-    //pages
-    self.homepage = ko.observable("PhonePageModel");
-    self.mapspage = ko.observable("MapPageModel");
-    self.omxpage = ko.observable("OmxPageModel");
-    self.ytpage = ko.observable("YtPageModel");
-    self.ytplaypage = ko.observable("YtplayPageModel");
-    self.carpage = ko.observable("CarPageModel");
-
     //varies
     self.loaded = ko.observable(false);
-    self.wazeurl = ko.observable("");
     self.callingUI = ko.observable(null);
-    self.status.inCall = ko.computed(function(){
-        if(self.callingUI() == null){
-            return false;
-        } else {
-            return true;
-        }
-    });
-
-    //youtube
-    self.status.ytUrl = ko.observable(null);
 
     /** FUNCTIONS */
     self.startApp = function(){
@@ -152,7 +142,6 @@ var infoViewModel = function(){
 
             //update status bar
             self.status.navbar.obdConnected(false);   
-
         }).on('obdConnected', function(msg){
 
             //update status bar
@@ -215,7 +204,8 @@ var infoViewModel = function(){
     self.openCallInterface = function(){
         console.log("toggleCallInterface");
         var endpoint = self.params.server + self.params.callingendpoint;
-        self.callingUI(new callViewModel());   
+        self.callingUI(new callViewModel());  
+        self.status.inCall(true); 
         $('#callModal').modal('toggle');
         console.log("ok");
     }
@@ -226,6 +216,7 @@ var infoViewModel = function(){
             $('#callModal').modal('toggle');
             self.callingUI(null);
         }        
+        self.status.inCall(false);
     }
 
     /** YOUTUBE */
@@ -287,6 +278,8 @@ var infoViewModel = function(){
         self.status.rpmLimit(6000);
         self.status.navbar.outVss(false);
         self.status.navbar.compact(false);
+        self.callingUI(null); //to be removed
+        self.status.calling(null);
     }
 
     self.extend = function(){

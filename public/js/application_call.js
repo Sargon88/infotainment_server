@@ -2,7 +2,6 @@ var callViewModel = function(){
     var self = this;
 
     //context
-//    self.server = "http://192.168.43.111:8080";
     self.server = "http://infotainment_srv:8080";
 
     //call state
@@ -27,23 +26,19 @@ var callViewModel = function(){
 
     //functions
     self.startApp = function(){
-        console.log("App Start");
+        console.log("App Calling Start");
         
         self.message("Chiamata in arrivo");
         self.socket.emit("getCall", "");
-        //  self.socket.emit("omx command", "pause");
+        //self.socket.emit("omx command", "pause");
 
         self.socket.on('call answer', function(msg){
             self.answered(true);
-            
         });
 
         self.socket.on('call end', function(msg){
             self.ended(true);
-            //self.socket.emit("omx command", "pause");
-
-
-            
+            //self.socket.emit("omx command", "pause");            
         });
 
         self.socket.on('call data', function(msg){
@@ -107,8 +102,3 @@ var callViewModel = function(){
     //LAST
     self.startApp();
 }
-
-/*
-var callViewModel = new callViewModel();
-ko.applyBindings(callViewModel);
-*/

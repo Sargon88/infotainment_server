@@ -120,7 +120,7 @@
     <!-- Page Container -->
     <div class="row" data-bind="with: model">
         <!-- *** START HOMEPAGE *** -->        
-        <!-- ko if: page() == $root.homepage() -->
+        <!-- ko if: page() == $root.params.pages.homepage -->
         <div id="homepage">
             <br />
             <!-- ko ifnot: $root.status.navbar.phoneConnected -->
@@ -237,7 +237,7 @@
         <!-- *** END HOMEPAGE *** -->
 
         <!-- *** START MAP *** -->        
-        <!-- ko if: page() == $root.mapspage() -->    
+        <!-- ko if: page() == $root.params.pages.mapspage -->    
         <div id="mapspage">
             <br />
             <div class="row" style="width: 99%">
@@ -248,7 +248,7 @@
         <!-- *** END MAP *** -->
 
         <!-- *** START YOUTUBE *** -->
-        <!-- ko if: page() == $root.ytpage() -->
+        <!-- ko if: page() == $root.params.pages.ytpage -->
         <br />
         <div id="ytpage">
             <div class="col-xs-12">
@@ -285,7 +285,7 @@
         <!-- *** END YOUTUBE *** -->
 
         <!-- *** START OMX *** -->
-        <!-- ko if: page() == $root.omxpage() -->
+        <!-- ko if: page() == $root.params.pages.omxpage -->
         <br />
         <div id="omxpage" class="col-xs-12">
 
@@ -371,7 +371,7 @@
         <!-- *** END OMX *** -->
 
         <!-- *** START CAR *** -->
-        <!-- ko if: page() == $root.carpage() -->
+        <!-- ko if: page() == $root.params.pages.carpage -->
         <br />
         <div id="carpage" class="col-xs-12" >
             <div class="row">
@@ -502,11 +502,11 @@
             <div class="collapse navbar-collapse" id="navbar-buttons" style="text-align: center">
                 
                 <ul class="nav navbar-nav">
-                    <li data-bind="css: {active: model().page() == homepage()}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('home') }"><i class="fas fa-phone" data-bind="style: { color: model().page() == homepage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
-                    <li data-bind="css: {active: model().page() == mapspage()}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('map') }"><i class="fas fa-map-marker-alt" data-bind="style: { color: model().page() == mapspage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
-                    <li data-bind="css: {active: model().page() == omxpage()}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('omx') }"><i class="fas fa-compact-disc" data-bind="style: { color: model().page() == omxpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
-                    <li data-bind="css: {active: model().page() == ytpage()}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('yt') }"><i class="fab fa-youtube" data-bind="style: { color: model().page() == ytpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
-                    <li data-bind="css: {active: model().page() == carpage()}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('car') }"><i class="fas fa-car" data-bind="style: { color: model().page() == carpage() ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == $root.params.pages.homepage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('home') }"><i class="fas fa-phone" data-bind="style: { color: model().page() == $root.params.pages.homepage ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == $root.params.pages.mapspage}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('map') }"><i class="fas fa-map-marker-alt" data-bind="style: { color: model().page() == $root.params.pages.mapspage ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == $root.params.pages.omxpage}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('omx') }"><i class="fas fa-compact-disc" data-bind="style: { color: model().page() == $root.params.pages.omxpage ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == $root.params.pages.ytpage}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('yt') }"><i class="fab fa-youtube" data-bind="style: { color: model().page() == $root.params.pages.ytpage ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == $root.params.pages.carpage}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('car') }"><i class="fas fa-car" data-bind="style: { color: model().page() == $root.params.pages.carpage ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
                     
                     <li data-bind="if: $root.status.navbar.compact"><a class="navbar-info-btn" data-bind="click:extend()"><i class="fas fa-angle-right" style="color:rgba(30, 144, 255, 1)"></i></a></li>
                 </ul>
