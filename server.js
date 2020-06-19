@@ -74,7 +74,7 @@ var InfotainmentStatus = {
 	calling: false,
 	inCall: false,
 	callerNum: "",
-	callId: null;
+	callId: null,
 
 	/**OBD**/
 	btOBDReader: null,
