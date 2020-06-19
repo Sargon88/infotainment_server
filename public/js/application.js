@@ -1,11 +1,6 @@
 var infoViewModel = function(){
     var self = this;
 
-    //DEBUG
-    self.lat = ko.observable();
-    self.long = ko.observable();
-    //DEBUG
-
     //context
     self.params = {
         server : "http://infotainment_srv:8080",
@@ -92,8 +87,6 @@ var infoViewModel = function(){
         }).on('phone status', function(msg){
             var stat = JSON.parse(msg);
 
-            self.lat(stat.latitude);
-            self.long(stat.longitude);
             self.status.latitude(stat.latitude);
             self.status.longitude(stat.longitude);
 
@@ -111,9 +104,6 @@ var infoViewModel = function(){
         }).on('coordinates', function(msg){
 
             var stat = JSON.parse(msg);
-
-            self.lat(stat.latitude);
-            self.long(stat.longitude);
 
             self.status.lastUpdate(new Date());
         }).on('DEBUG', function(msg){
