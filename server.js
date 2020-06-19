@@ -73,8 +73,7 @@ var InfotainmentStatus = {
 	/**CHIAMATE**/
 	calling: false,
 	inCall: false,
-	callerNum: "",
-	callId: null,
+	callId: "",
 
 	/**OBD**/
 	btOBDReader: null,
@@ -238,6 +237,9 @@ GenericService = {
 		var msgObj = JSON.parse(msg);
 
 		msgObj.navbar.phoneConnected = true;
+		msgObj.inCall = InfotainmentStatus.inCall;
+		msgObj.callId = InfotainmentStatus.callId;
+		msgObj.calling = InfotainmentStatus.calling;
 
 		//retrocompatibilità
 		emit('phone status', JSON.stringify(msgObj));		
@@ -356,7 +358,7 @@ CallService = {
 		log('----- Incoming Calling -----');
 		log('Caller Number: ' + msg);
 		log('----- Incoming Calling -----');
-		InfotainmentStatus.callerNum = msg;
+		InfotainmentStatus.callId = msg;
 		InfotainmentStatus.calling = true;
 
 		emit("incoming calling", msg);
@@ -365,16 +367,17 @@ CallService = {
 		log('----- Call end -----');
 		log('>>> Caller Number: ' + msg);
 		log('----- Call end -----');
-		InfotainmentStatus.callerNum = "";
+		InfotainmentStatus.callId = "";
 		InfotainmentStatus.calling = false;
 		InfotainmentStatus.inCall = false;
 
 		emit("call end", msg);
 	},
 	getCall: function(){
+		log("GET CALL");
 
 		if(InfotainmentStatus.calling || InfotainmentStatus.inCall){
-			emit("call data", InfotainmentStatus.callerNum);
+			emit("call data", InfotainmentStatus.callId);
 
 			//put omxplayer on pause
 			OmxService.omxCommand("pause");
@@ -385,6 +388,7 @@ CallService = {
 		}		
 	},
 	callAnswer: function(msg){
+		log("CALL ANSWER");
 
 		if(InfotainmentStatus.calling){
 			InfotainmentStatus.inCall = true;
@@ -396,6 +400,7 @@ CallService = {
 		}
 	},
 	answerCall: function(msg){
+		log("ANSWER CALL");
 
 		if(InfotainmentStatus.calling){
 			InfotainmentStatus.inCall = true;
@@ -407,6 +412,7 @@ CallService = {
 		}
 	},
 	endCall: function(msg){
+		log("END CALL");
 
 		if(InfotainmentStatus.calling || InfotainmentStatus.inCall){
 			InfotainmentStatus.inCall = false;
@@ -441,7 +447,7 @@ CallService = {
 		log("----- start outgoing calling ------ ");
 
 		InfotainmentStatus.inCall = true;
-		InfotainmentStatus.callerNum = msg;
+		InfotainmentStatus.callId = msg;
 
 		emit("outgoing calling", msg);
 	}

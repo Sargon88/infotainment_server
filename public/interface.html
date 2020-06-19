@@ -529,19 +529,19 @@
                         <!-- ko ifnot: status.navbar.phoneConnected -->
                         <i class="fas fa-wifi fa-lg"></i>
                         <!-- /ko -->
-                        <!-- ko if: status.navbar.battInt() <= 10 -->
+                        <!-- ko if: status.navbar.battInt() <= 10 && status.navbar.phoneConnected -->
                         <i class="fas fa-battery-empty fa-rotate-270" style="color:crimson"></i>
                         <!-- /ko -->
-                        <!-- ko if: (status.navbar.battInt() > 10 && status.navbar.battInt() <= 50) -->
+                        <!-- ko if: (status.navbar.battInt() > 10 && status.navbar.battInt() <= 50) && status.navbar.phoneConnected -->
                         <i class="fas fa-battery-quarter fa-lg fa-lg fa-rotate-270" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
-                        <!-- ko if: status.navbar.battInt() > 50 && status.navbar.battInt() <= 75 -->
+                        <!-- ko if: status.navbar.battInt() > 50 && status.navbar.battInt() <= 75 && status.navbar.phoneConnected -->
                         <i class="fas fa-battery-half fa-lg fa-rotate-270" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
-                        <!-- ko if: status.navbar.battInt() > 75 && status.navbar.battInt() <= 90 -->
+                        <!-- ko if: status.navbar.battInt() > 75 && status.navbar.battInt() <= 90 && status.navbar.phoneConnected -->
                         <i class="fas fa-battery-three-quarters fa-lg fa-rotate-270" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
-                        <!-- ko if: status.navbar.battInt() > 90 && status.navbar.battInt() <= 100 -->
+                        <!-- ko if: status.navbar.battInt() > 90 && status.navbar.battInt() <= 100 && status.navbar.phoneConnected -->
                         <i class="fas fa-battery-full fa-lg fa-rotate-270" style="color:rgba(30, 144, 255, 1)"></i>
                         <!-- /ko -->
                     </span>

@@ -1,0 +1,18 @@
+Chiama entrante:
+	----- Incoming Calling -----
+	Caller Number: {"date":"19/06/2020 11:28","type":"in","name":"Aziendale Eduteam","number":"+393770830641"}
+	----- Incoming Calling -----
+	GET CALL
+	omx command: pause
+	END
+
+	GET CALL
+	omx command: pause
+	END
+
+	END CALL
+	omx command: pause
+	END
+
+	omx command: pause
+	END

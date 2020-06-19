@@ -57,7 +57,20 @@ var infoViewModel = function(){
 
     //varies
     self.loaded = ko.observable(false);
-    self.callingUI = ko.observable(null);
+    //self.callingUI = ko.observable(null);
+    self.callingUI = ko.computed(function(){
+        console.log("COMPUTED 1");
+        console.log("COMPUTED incall", self.status.inCall());
+        console.log("COMPUTED callid", self.status.callId());
+        if(self.status.inCall() && self.status.callId()){
+            $('#callModal').modal('toggle');
+            return new callViewModel(self.status.callId());
+            console.log("COMPUTED 4");
+        }
+        console.log("COMPUTED 5");
+
+        return null;
+    });
 
     /** FUNCTIONS */
     self.startApp = function(){
@@ -86,6 +99,9 @@ var infoViewModel = function(){
             self.status.navbar.signal(parseInt(stat.navbar.signal));
             self.status.navbar.obdConnected(stat.navbar.obdConnected);
             self.status.navbar.phoneConnected(stat.navbar.phoneConnected);
+            self.status.calling(stat.calling);
+            self.status.inCall(stat.inCall);
+            self.status.callId(stat.callId);
 
             self.buildLastCall(stat.lastCalls);
             
@@ -103,9 +119,9 @@ var infoViewModel = function(){
         }).on('change page', function(msg){
             self.loadPage(msg);
         }).on('incoming calling', function(msg){
-            self.openCallInterface();
+            self.openCallInterface(msg);
         }).on('outgoing calling', function(msg){
-            self.openCallInterface();
+            self.openCallInterface(msg);
         }).on('call end', function(msg){
            setTimeout(self.closeCallInterface, 2000);
         }).on('open yt video', function(msg){
@@ -201,13 +217,12 @@ var infoViewModel = function(){
 
 
     /** Calls */
-    self.openCallInterface = function(){
+    self.openCallInterface = function(callerId){
         console.log("toggleCallInterface");
         var endpoint = self.params.server + self.params.callingendpoint;
-        self.callingUI(new callViewModel());  
+        //self.callingUI(new callViewModel());  
         self.status.inCall(true); 
-        $('#callModal').modal('toggle');
-        console.log("ok");
+        self.status.callId(callerId);        
     }
 
     self.closeCallInterface = function(){
