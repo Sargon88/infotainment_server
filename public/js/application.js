@@ -13,6 +13,7 @@ var infoViewModel = function(){
             ytpage: "YtPageModel",
             ytplaypage: "YtplayPageModel",
             carpage: "CarPageModel",
+            ytplaypage: "YtplayPageModel",
         },
     }
 
@@ -22,7 +23,6 @@ var infoViewModel = function(){
         page: ko.observable("home"),
         longitude: ko.observable(),
         latitude: ko.observable(),
-        callerNum: ko.observable(),
         yturl: ko.observable(null),
         lastUsbStatus: ko.observable(),
         newPage: ko.observable(),
@@ -35,6 +35,7 @@ var infoViewModel = function(){
         calling: ko.observable(null),
         inCall: ko.observable(false),
         callId: ko.observable(null),
+        callerNum: ko.observable(),//da rimuovere
 
         //CAR
         vssLimit : ko.observable(140),
@@ -62,15 +63,23 @@ var infoViewModel = function(){
         console.log("COMPUTED 1");
         console.log("COMPUTED self.status.inCall()", self.status.inCall());
         console.log("COMPUTED self.status.callId()", self.status.callId());
-        if(self.status.inCall() && self.status.callId()){
+        if(self.status.inCall()){
             console.log("COMPUTED 2");
-            $('#callModal').modal('toggle');
+            $('#callModal').modal('show');
             console.log("COMPUTED 3");
             return new callViewModel(self.status.callId());
         }
         console.log("COMPUTED 4");
+        $('#callModal').modal('hide');
 
         return null;
+    });
+    self.compactBar = ko.computed(function(){
+        if(self.status.inCall()){
+            self.status.navbar.compact(true);
+        } else {
+            self.status.navbar.compact(false);
+        }
     });
 
     /** FUNCTIONS */
@@ -101,10 +110,7 @@ var infoViewModel = function(){
             self.status.navbar.signal(parseInt(stat.navbar.signal));
             self.status.navbar.obdConnected(stat.navbar.obdConnected);
             self.status.navbar.phoneConnected(stat.navbar.phoneConnected);
-            self.status.calling(stat.calling);
-            self.status.inCall(stat.inCall);
-            self.status.callId(stat.callId);
-
+            
             self.buildLastCall(stat.lastCalls);
             
             self.status.lastUpdate(new Date());
@@ -128,7 +134,7 @@ var infoViewModel = function(){
            setTimeout(self.closeCallInterface, 2000);
         }).on('open yt video', function(msg){
             console.log("OPEN YT Video: " + msg);
-            self.changePage("yt");
+            self.changePa
         }).on('youtube url', function(msg){
             console.log("youtube url: " + msg);
             self.ytUrl(msg);
@@ -174,7 +180,7 @@ var infoViewModel = function(){
     }
     self.loadPage = function(msg){
         if(msg == "home"){
-            self.model(new PhonePageModel(self.params, self.status));
+            self.model(new PhonePageModel(self.params, self.status));            
         } else if(msg == "yt"){
             self.model(new YtPageModel(self.params, self.status));
         } else if(msg == "map"){
@@ -186,6 +192,7 @@ var infoViewModel = function(){
         }  else if(msg == "ytPlay"){
             self.model(new YtplayPageModel(self.params, self.status));
         }
+        self.status.page(msg);
     }
     /*Page management*/
 
@@ -228,11 +235,7 @@ var infoViewModel = function(){
     }
 
     self.closeCallInterface = function(){
-        console.log("toggleCallInterface");
-        if(self.callingUI() != null){
-            $('#callModal').modal('toggle');
-            self.callingUI(null);
-        }        
+        console.log("toggleCallInterface");     
         self.status.inCall(false);
     }
 
@@ -273,10 +276,8 @@ var infoViewModel = function(){
 
     self.checkConnection = function(){
 
-        setInterval(function(){
-            console.log("RESET? " + ((new Date() - self.status.lastUpdate()) / 1000));
-            
-            if(((new Date() - self.status.lastUpdate()) / 1000) > 60){
+        setInterval(function(){            
+            if(((new Date() - self.status.lastUpdate()) / 1000) > 30){
                 self.loaded(false);
                 self.resetInterface();
             }
@@ -295,7 +296,6 @@ var infoViewModel = function(){
         self.status.rpmLimit(6000);
         self.status.navbar.outVss(false);
         self.status.navbar.compact(false);
-        self.callingUI(null); //to be removed
         self.status.calling(null);
     }
 
@@ -306,7 +306,7 @@ var infoViewModel = function(){
         setTimeout(function(){
             var val = !self.status.navbar.compact();
             self.status.navbar.compact(val);
-        }, 3000);
+        }, 10000);
     }
 
     //LAST

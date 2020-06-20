@@ -236,6 +236,7 @@ GenericService = {
 	phoneStatus: function(msg){
 		var msgObj = JSON.parse(msg);
 
+		msgObj.page = InfotainmentStatus.page;
 		msgObj.navbar.phoneConnected = true;
 		msgObj.inCall = InfotainmentStatus.inCall;
 		msgObj.callId = InfotainmentStatus.callId;
@@ -294,6 +295,7 @@ GenericService = {
 	
 		} else {
 			//caso in cui non devo riavviare il browser
+			InfotainmentStatus.page = msg;
 			emit("set page", msg);
 		}	
 	},
@@ -334,6 +336,7 @@ GenericService = {
 	
 		} else {
 			//caso in cui non devo riavviare il browser
+			InfotainmentStatus.page = msg;
 			emit("set page", msg);
 		}	
 	},

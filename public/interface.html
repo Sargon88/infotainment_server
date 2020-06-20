@@ -45,7 +45,7 @@
 </head>
 
 <!-- *** CALL MODAL *** -->
-<div class="modal fade" id="callModal" tabindex="-1" role="dialog" data-bind="with:callingUI" data-backdrop="static">
+<div class="modal fade" id="callModal" tabindex="-1" role="dialog" data-bind="with:callingUI">
     <div class="bb">
   <div class="modal-dialog call-modal-dialog" role="document">
     <div class="modal-content call-modal-content container-fluid">
@@ -505,12 +505,11 @@
                     <li data-bind="css: {active: model().page() == $root.params.pages.homepage}"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('home') }"><i class="fas fa-phone" data-bind="style: { color: model().page() == $root.params.pages.homepage ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
                     <li data-bind="css: {active: model().page() == $root.params.pages.mapspage}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('map') }"><i class="fas fa-map-marker-alt" data-bind="style: { color: model().page() == $root.params.pages.mapspage ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
                     <li data-bind="css: {active: model().page() == $root.params.pages.omxpage}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('omx') }"><i class="fas fa-compact-disc" data-bind="style: { color: model().page() == $root.params.pages.omxpage ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
-                    <li data-bind="css: {active: model().page() == $root.params.pages.ytpage}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('yt') }"><i class="fab fa-youtube" data-bind="style: { color: model().page() == $root.params.pages.ytpage ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
+                    <li data-bind="css: {active: model().page() == ($root.params.pages.ytpage || $root.params.pages.ytplaypage )}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('yt') }"><i class="fab fa-youtube" data-bind="style: { color: model().page() == ($root.params.pages.ytpage || $root.params.pages.ytplaypage ) ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
                     <li data-bind="css: {active: model().page() == $root.params.pages.carpage}, ifnot: status.navbar.compact"><a class="navbar-info-btn" data-bind="click:function(data, event) { changePage('car') }"><i class="fas fa-car" data-bind="style: { color: model().page() == $root.params.pages.carpage ? 'rgba(30, 144, 255, 1)' : 'rgba(30, 144, 255, 0.4)' }"></i></a></li>
-                    
+
                     <li data-bind="if: $root.status.navbar.compact"><a class="navbar-info-btn" data-bind="click:extend()"><i class="fas fa-angle-right" style="color:rgba(30, 144, 255, 1)"></i></a></li>
                 </ul>
-                
                 
                 <ul class="nav navbar-nav navbar-right">
                     <span class="navbar-text" id="status">
