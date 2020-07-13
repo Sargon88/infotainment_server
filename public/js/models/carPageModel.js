@@ -207,7 +207,10 @@ var CarPageModel = function(params, status){
 		msgArray([]);
 
 		for(var i = 0; i < 5; i++){
-			msgArray.push(bkpArray[bkpArray.length-(i+1)]);
+			if(bkpArray && bkpArray.length > 0){
+				msgArray.push(bkpArray[bkpArray.length-(i+1)]);
+			}
+			
 		}	
 	}
 

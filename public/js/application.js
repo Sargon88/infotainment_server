@@ -29,7 +29,7 @@ var infoViewModel = function(){
         brightness: ko.observable(),
         lastCalls: ko.observableArray(),
         starredContacts: ko.observableArray(),
-        lastUpdate: ko.observable(new Date()),
+        lastUpdate: ko.observable(),
 
         //CHIAMATE
         calling: ko.observable(null),
@@ -60,16 +60,10 @@ var infoViewModel = function(){
     self.loaded = ko.observable(false);
     //self.callingUI = ko.observable(null);
     self.callingUI = ko.computed(function(){
-        console.log("COMPUTED 1");
-        console.log("COMPUTED self.status.inCall()", self.status.inCall());
-        console.log("COMPUTED self.status.callId()", self.status.callId());
-        if(self.status.inCall()){
-            console.log("COMPUTED 2");
+        if(self.status.inCall() && self.status.callId()){
             $('#callModal').modal('show');
-            console.log("COMPUTED 3");
             return new callViewModel(self.status.callId());
         }
-        console.log("COMPUTED 4");
         $('#callModal').modal('hide');
 
         return null;
@@ -99,22 +93,25 @@ var infoViewModel = function(){
             self.params.socket.emit("identify", "Raspberry");
         }).on('phone status', function(msg){
             var stat = JSON.parse(msg);
-            console.log("STATUS", stat.inCall);
+            //console.log("STATUS " + stat.inCall + " - timestamp: " + stat.timestamp + " - lastupdate: " + self.status.lastUpdate());
 
-            self.status.latitude(stat.latitude);
-            self.status.longitude(stat.longitude);
+            if(!self.status.lastUpdate() || stat.timestamp > self.status.lastUpdate()){
+                self.status.latitude(stat.latitude);
+                self.status.longitude(stat.longitude);
 
-            self.status.navbar.battInt(parseInt(stat.navbar.batt));
-            self.status.navbar.wifi(stat.navbar.wifi == 'true');
-            self.status.starredContacts(stat.starredContacts.slice(0, 5));
-            self.status.navbar.signal(parseInt(stat.navbar.signal));
-            self.status.navbar.obdConnected(stat.navbar.obdConnected);
-            self.status.navbar.phoneConnected(stat.navbar.phoneConnected);
+                self.status.navbar.battInt(parseInt(stat.navbar.batt));
+                self.status.navbar.wifi(stat.navbar.wifi == 'true');
+                self.status.starredContacts(stat.starredContacts.slice(0, 5));
+                self.status.navbar.signal(parseInt(stat.navbar.signal));
+                self.status.navbar.obdConnected(stat.navbar.obdConnected);
+                self.status.navbar.phoneConnected(stat.navbar.phoneConnected);
+                
+                self.buildLastCall(stat.lastCalls);
+                
+                self.status.lastUpdate(stat.timestamp);
+                self.loaded(true);    
+            }
             
-            self.buildLastCall(stat.lastCalls);
-            
-            self.status.lastUpdate(new Date());
-            self.loaded(true);
         }).on('coordinates', function(msg){
 
             var stat = JSON.parse(msg);
@@ -179,17 +176,19 @@ var infoViewModel = function(){
         self.params.socket.emit("change page", page);
     }
     self.loadPage = function(msg){
-        if(msg == "home"){
+        var msgObj = JSON.parse(msg);
+
+        if(msgObj.msg == "home"){
             self.model(new PhonePageModel(self.params, self.status));            
-        } else if(msg == "yt"){
+        } else if(msgObj.msg == "yt"){
             self.model(new YtPageModel(self.params, self.status));
-        } else if(msg == "map"){
+        } else if(msgObj.msg == "map"){
             self.model(new MapPageModel(self.params, self.status));
-        } else if(msg == "car"){
+        } else if(msgObj.msg == "car"){
             self.model(new CarPageModel(self.params, self.status));
-        } else if(msg == "omx"){
+        } else if(msgObj.msg == "omx"){
             self.model(new OmxPageModel(self.params, self.status));
-        }  else if(msg == "ytPlay"){
+        }  else if(msgObj.msg == "ytPlay"){
             self.model(new YtplayPageModel(self.params, self.status));
         }
         self.status.page(msg);
@@ -230,8 +229,11 @@ var infoViewModel = function(){
         console.log("toggleCallInterface");
         var endpoint = self.params.server + self.params.callingendpoint;
         //self.callingUI(new callViewModel());  
-        self.status.inCall(true); 
-        self.status.callId(callerId);        
+        var cIdObj = JSON.parse(callerId);
+        if(callerId.msg){
+            self.status.callId(callerId.msg);        
+            self.status.inCall(true);     
+        }
     }
 
     self.closeCallInterface = function(){

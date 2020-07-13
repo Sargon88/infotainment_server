@@ -104,6 +104,16 @@ function log(tag, msg){
 	}	
 };
 function emit(event, msg){
+	var msgObj;
+	if(typeof(msg) !== "object"){
+		//retrocompatibilità. da rivedere 
+		msgObj = {"msg": msg};
+	} else {
+		msgObj = msg;
+	}
+
+	msgObj.timestamp = Date.now();
+	msg = JSON.stringify(msgObj);
 
 	if(event != "coordinates"){
 		//satura i log
@@ -237,13 +247,17 @@ GenericService = {
 		var msgObj = JSON.parse(msg);
 
 		msgObj.page = InfotainmentStatus.page;
+		if(msgObj.navbar == null){
+			//retrocompatibilità
+			msgObj.navbar = {};
+		}
 		msgObj.navbar.phoneConnected = true;
 		msgObj.inCall = InfotainmentStatus.inCall;
 		msgObj.callId = InfotainmentStatus.callId;
 		msgObj.calling = InfotainmentStatus.calling;
 
 		//retrocompatibilità
-		emit('phone status', JSON.stringify(msgObj));		
+		emit('phone status', msgObj);		
 
 		if(InfotainmentStatus.page == "map"){
 			var msgObj = JSON.parse(msg);
@@ -475,7 +489,7 @@ OmxService = {
 		//qualunque periferica venga collegata viene automaticamente montata sotto /media/usb*
 		loadDeviceInterval = setInterval(function(){
 			if(directoryTree.data.length != 0){
-				rsp = JSON.stringify(directoryTree);
+				rsp = directoryTree;
 			}
 
 			directoryTree.data = [];
@@ -693,7 +707,7 @@ CarService = {
 					data = JSON.parse(data);
 				}
 				if(data && data.pid){
-					console.log("Event: dataReceived", data);
+					//console.log("Event: dataReceived", data);
 
 					switch(data.name){
 						case 'vss':
@@ -723,7 +737,7 @@ CarService = {
 		}
 	},
 	updateOBDUi: function(){
-		emit("updateObdUI", JSON.stringify(InfotainmentStatus.dataReceivedMarker));
+		emit("updateObdUI", InfotainmentStatus.dataReceivedMarker);
 	},
 	errorMsg: function(msg){
 		emit("obdError", msg);
@@ -947,7 +961,7 @@ function returnYoutubeHistory(){
 
 	exec(cmd, {shell: "/bin/bash"}, function(err, stdout, stderr){
 
-		var rsp = "{urls: []}";
+		var rsp = "{'urls': []}";
 
 		if(err != null){
 			log(err);
