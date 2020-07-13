@@ -229,9 +229,9 @@ var infoViewModel = function(){
         console.log("toggleCallInterface");
         var endpoint = self.params.server + self.params.callingendpoint;
         //self.callingUI(new callViewModel());  
-        var cIdObj = JSON.parse(callerId);
-        if(callerId.msg){
-            self.status.callId(callerId.msg);        
+        var callerIdObj = JSON.parse(callerId);
+        if(callerIdObj.msg){
+            self.status.callId(callerIdObj.msg);        
             self.status.inCall(true);     
         }
     }
