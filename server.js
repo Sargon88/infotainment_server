@@ -3,8 +3,11 @@ var mode = "debug";
 var express = require('express');
 var app = express();
 var path = require('path');
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var http = require('http').createServer(app);
+var io = require('socket.io')(http, {
+	pingTimeout: 30000,
+	transports: ["websocket"],
+});
 var sys = require('sys');
 var exec = require('child_process').exec;
 var request = require('request');
@@ -49,7 +52,7 @@ var commands = {
 
 /** PAGE MANAGER */
 app.use(express.static('public'));
-app.get('/monitor', function(req, res){
+app.get('/monitor', function(req, res){ //only debug
 	res.sendFile(__dirname + '/public/monitor.html');
 });
 app.get('/interface', function(req, res){
@@ -159,14 +162,24 @@ function shell(cmd, lvl, f){
 io.on('connection', function(socket){
 	Socket = socket;
 	/** --------- GENERIC --------------- */
+	log("---------------------------- New client connected --------------------------------------");
+	
 	Socket.on('identify', function(msg){
 		log("---------------------------- " + msg + " CONNECTED! --------------------------------------");
 		if(msg == "Mobile Phone"){
 			InfotainmentStatus.navbar.phoneConnected = true;
 		}
+
+		//debug
+		setInterval(()=>{
+			var date = new Date();
+			Socket.emit('FromAPI', date);
+		}, 1000);
+		//debug
+
+
 	}).on('phone status', function(msg){
 		InfotainmentStatus.navbar.phoneConnected = true;
-
 		GenericService.phoneStatus(msg);
 	}).on('disconnect', function(msg){
 		log("---------------------------- " + msg + " DISCONNECTED! --------------------------------------");		
@@ -255,6 +268,10 @@ GenericService = {
 		msgObj.inCall = InfotainmentStatus.inCall;
 		msgObj.callId = InfotainmentStatus.callId;
 		msgObj.calling = InfotainmentStatus.calling;
+
+		if(mode == "debug"){
+			msgObj.navbar.obdConnected = true;
+		}
 
 		//retrocompatibilità
 		emit('phone status', msgObj);		
