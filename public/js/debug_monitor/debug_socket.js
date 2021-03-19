@@ -1,4 +1,7 @@
-var socket = io();
+var socket = io({
+  pingTimeout: 30000,
+  transports: ["websocket"],
+  });
 
 $(function () {
   /* UTILITY */

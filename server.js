@@ -469,7 +469,7 @@ CallService = {
 			log(">>> Number outgoing call: " + msg);
 			log("----- start phone call ------ ");
 			InfotainmentStatus.calling = true;
-			emit("start phone call", msg);
+			emit("start phone call", msg); // <-- emit to phone
 
 		} else {
 			log("ERROR", "Starting Another Call during a Call");
