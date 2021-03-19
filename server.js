@@ -283,7 +283,7 @@ GenericService = {
 	},
 	debug: function(msg){
 		emit("DEBUG", msg);
-		log(msg);
+		log("DEBUG: " + msg);
 	},
 	reboot: function(){
 		log("REBOOT");
