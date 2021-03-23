@@ -234,7 +234,9 @@ io.on('connection', function(socket){
 
 	/** ----------- YOUTUBE ------------ */
 	Socket.on('open yt video', function(msg){
-		YoutubeService.openVideo(msg);
+		//YoutubeService.openVideo(msg); //OLD
+		log('open yt video', msg);
+		Socket.emit('open yt video', msg)
 	}).on('load youtube', function(msg){
 		YoutubeService.loadYoutube(msg);
 	}).on('youtube history', function(msg){
@@ -716,16 +718,18 @@ CarService = {
 			    emit("obdConnected", "");
 
 			}).on('debug', function(msg){
+				console.log("OBD debug", msg);
 				CarService.debugMsg(msg);
 
 			}).on('dataReceived', function (data) {		
 				
+				log("OBD dataReceived", data);
+
 				if(data && typeof(data) != 'object'){
 					data = JSON.parse(data);
 				}
 				if(data && data.pid){
 					//console.log("Event: dataReceived", data);
-
 					switch(data.name){
 						case 'vss':
 							data.title = 'Speed';
