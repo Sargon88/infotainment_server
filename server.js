@@ -182,7 +182,8 @@ io.on('connection', function(socket){
 		InfotainmentStatus.navbar.phoneConnected = true;
 		GenericService.phoneStatus(msg);
 	}).on('disconnect', function(msg){
-		log("---------------------------- " + msg + " DISCONNECTED! --------------------------------------");		
+		log("---------------------------- " + msg + " DISCONNECTED! --------------------------------------");
+		Socket.emit('disconnected');	
 	}).on('DEBUG', function(msg){
 		GenericService.debug(msg);		
 	}).on('reboot', function(){
