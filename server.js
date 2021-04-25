@@ -173,7 +173,7 @@ io.on('connection', function(socket){
 		//debug
 		setInterval(()=>{
 			var date = new Date();
-			Socket.emit('FromAPI', date);
+			emit('FromAPI', date);
 		}, 1000);
 		//debug
 
@@ -183,7 +183,7 @@ io.on('connection', function(socket){
 		GenericService.phoneStatus(msg);
 	}).on('disconnect', function(msg){
 		log("---------------------------- " + msg + " DISCONNECTED! --------------------------------------");
-		Socket.emit('disconnected');	
+		emit('disconnected');	
 	}).on('DEBUG', function(msg){
 		GenericService.debug(msg);		
 	}).on('reboot', function(){
@@ -237,7 +237,7 @@ io.on('connection', function(socket){
 	Socket.on('open yt video', function(msg){
 		//YoutubeService.openVideo(msg); //OLD
 		log('open yt video', msg);
-		Socket.emit('open yt video', msg)
+		emit('open yt video', msg)
 	}).on('load youtube', function(msg){
 		YoutubeService.loadYoutube(msg);
 	}).on('youtube history', function(msg){
@@ -621,7 +621,7 @@ OmxService = {
 
 				log(stdout);
 				
-				Socket.emit('load playlist data', stdout);
+				emit('load playlist data', stdout);
 
 			} else if(stderr != ""){
 				log(stderr);	
@@ -983,14 +983,15 @@ function returnYoutubeHistory(){
 
 	exec(cmd, {shell: "/bin/bash"}, function(err, stdout, stderr){
 
-		var rsp = "{'urls': []}";
+		var rsp = '{"urls": []}',
+		msg = '';
 
 		if(err != null){
 			log(err);
 		} else {
-			var msg = stdout.substr(0, stdout.length-2);
+			msg = stdout.substr(0, stdout.length-2);
 
-			if(msg == ""){
+			if(msg == "" || mode === "debug"){
 				//DEBUG ONLY
 				msg = msg+JSON.stringify({'url': 'DEBUG', 'description':'DEBUG'})+', ';
 				msg = msg+JSON.stringify({'url': 'https://www.youtube.com/watch?v=cHImmMWehhE', 'description':'Descr1'})+', ';
@@ -1001,8 +1002,18 @@ function returnYoutubeHistory(){
 			rsp = '{"urls": [' + msg + ']}';
 			
 		}
+
+		if(mode === "debug"){
+			//DEBUG ONLY
+			msg = msg+JSON.stringify({'url': 'DEBUG', 'description':'DEBUG'})+', ';
+			msg = msg+JSON.stringify({'url': 'https://www.youtube.com/watch?v=cHImmMWehhE', 'description':'Descr1'})+', ';
+			msg = msg+JSON.stringify({'url': 'https://www.youtube.com/watch?v=P_kn2rtuc4o', 'description':'descr2'})+', ';
+			msg = msg+JSON.stringify({'url':'https://www.youtube.com/watch?v=lLtuT4Wq0ug', 'description':'descr3'});
+
+			rsp = '{"urls": [' + msg + ']}';
+		}
 		
-		Socket.emit('url history', rsp);
+		emit('url history', rsp);
 	});
 }
 /** ---------- FINE FUNZIONI YOUTUBE ------ */
